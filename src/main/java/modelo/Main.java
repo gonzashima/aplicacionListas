@@ -9,24 +9,30 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
 public class Main extends Application{
 
     @Override
-    public void start(Stage stage) {
-        AnchorPane anchorPane = new AnchorPane();
+    public void start(Stage stage) throws IOException {
+//        AnchorPane anchorPane = new AnchorPane();
+//
+//        Button boton = new Button("Hola");
+//        anchorPane.getChildren().add(boton);
+//        Scene escenaPrincipal = new Scene(anchorPane);
+//
+//        stage.setTitle("hola");
+//        stage.setScene(escenaPrincipal);
+//        stage.show();
+//
+//        stage.setOnCloseRequest(e->{e.consume();
+//            cerrarPrograma(stage);});
 
-        Button boton = new Button("Hola");
-        anchorPane.getChildren().add(boton);
-        Scene escenaPrincipal = new Scene(anchorPane);
-
-        stage.setTitle("hola");
-        stage.setScene(escenaPrincipal);
-        stage.show();
-
-        stage.setOnCloseRequest(e->{e.consume();
-            cerrarPrograma(stage);});
+        File duravit = new File("src/main/resources/DURAVIT.pdf");
+        LectorArchivos lectorArchivos = new LectorArchivos();
+        lectorArchivos.leerArchivo(duravit);
     }
 
     private void cerrarPrograma(Stage ventana) {

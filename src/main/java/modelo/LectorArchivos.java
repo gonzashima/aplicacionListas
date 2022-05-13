@@ -6,16 +6,15 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LectorArchivos {
-    private LinkedList<Producto> listaProductos;
-    private static final String PATRON_DURAVIT = "(\\w*\\s*)*(\\d{5})(\\s)*(\\d*)\\.\\d{2}";
+    private ArrayList<Producto> listaProductos;
+    private static final String PATRON_DURAVIT = "(\\w*[+/.]*\\s*)* (\\d{5})(\\s*) ((\\d*)\\.\\d{2})";
 
     public LectorArchivos() {
-        this.listaProductos = new LinkedList<>();
+        this.listaProductos = new ArrayList<>();
     }
 
 
@@ -25,17 +24,17 @@ public class LectorArchivos {
 
         String texto = String.valueOf(textStripper.getText(pdf));
 
-        Pattern pattern = Pattern.compile(PATRON_DURAVIT, Pattern.CASE_INSENSITIVE);
+        String[] lineasTexto = texto.trim().split(textStripper.getLineSeparator());
+        ArrayList<String> lineas = new ArrayList<>();
 
-        Matcher matcher = pattern.matcher(texto);
+        for(String leida : lineasTexto){
+            Pattern pattern = Pattern.compile(PATRON_DURAVIT);
+            Matcher matcher = pattern.matcher(leida);
 
-        while(matcher.find()){
-            String leido = matcher.group();
-            String[] partido = leido.split("\\s*");
-            int indice = partido.length;
-
-            System.out.println(partido[0]);
+            if(matcher.matches())
+                lineas.add(leida);
         }
+
 
         pdf.close();
     }

@@ -1,9 +1,9 @@
 package modelo;
 
 public class Producto {
-    private String nombre;
+    private final String nombre;
     private float precio;
-    private float costo;
+    private final float costo;
 
     public Producto(String nombre, float costo){
         this.nombre = nombre;
@@ -17,5 +17,15 @@ public class Producto {
     public float precio(){
         return this.precio;
     }
+
+    public String getNombre(){
+        return nombre;
+    }
+
+    public float getCosto(){
+        return costo;
+    }
+
+
 
 }

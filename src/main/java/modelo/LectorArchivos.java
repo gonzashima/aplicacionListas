@@ -24,10 +24,11 @@ public class LectorArchivos {
 
         String[] lineasTexto = texto.trim().split(textStripper.getLineSeparator());
 
-        for(String leida : lineasTexto){
-            Pattern pattern = Pattern.compile(PATRON_DURAVIT);
-            Matcher matcher = pattern.matcher(leida);
+        Pattern pattern = Pattern.compile(PATRON_DURAVIT);
+        Matcher matcher;
 
+        for(String leida : lineasTexto){
+            matcher = pattern.matcher(leida);
             if(matcher.matches())
                 listaProductos.add(parser.aProducto(leida));
         }

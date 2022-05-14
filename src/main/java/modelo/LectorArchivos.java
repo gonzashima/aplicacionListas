@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LectorArchivos {
-    private ArrayList<Producto> listaProductos;
+    private final ArrayList<Producto> listaProductos;
     private static final String PATRON_DURAVIT = "(\\w*[+/.]*\\s*)* (\\d{5})(\\s*) ((\\d*)\\.\\d{2})";
 
     public LectorArchivos() {
@@ -18,23 +18,25 @@ public class LectorArchivos {
     }
 
 
+    /**
+     * Lee el archivo pdf y pasa las lineas a productos, con sus respectivos nombres, codigos y costos
+     * */
     public void leerArchivo(File archivo) throws IOException {
         PDDocument pdf = PDDocument.load(archivo);
         PDFTextStripper textStripper = new PDFTextStripper();
+        ParserTextoAProducto parser = new ParserTextoAProducto();
 
         String texto = String.valueOf(textStripper.getText(pdf));
 
         String[] lineasTexto = texto.trim().split(textStripper.getLineSeparator());
-        ArrayList<String> lineas = new ArrayList<>();
 
         for(String leida : lineasTexto){
             Pattern pattern = Pattern.compile(PATRON_DURAVIT);
             Matcher matcher = pattern.matcher(leida);
 
             if(matcher.matches())
-                lineas.add(leida);
+                listaProductos.add(parser.aProducto(leida));
         }
-
 
         pdf.close();
     }

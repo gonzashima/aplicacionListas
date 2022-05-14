@@ -30,9 +30,10 @@ public class Main extends Application{
 //        stage.setOnCloseRequest(e->{e.consume();
 //            cerrarPrograma(stage);});
 
+        Aplicacion aplicacion = new Aplicacion();
         File duravit = new File("src/main/resources/DURAVIT.pdf");
-        LectorArchivos lectorArchivos = new LectorArchivos();
-        lectorArchivos.leerArchivo(duravit);
+
+        aplicacion.leerArchivo(duravit);
     }
 
     private void cerrarPrograma(Stage ventana) {

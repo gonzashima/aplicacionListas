@@ -3,6 +3,7 @@ module aplicacionListas {
     requires javafx.fxml;
     requires java.desktop;
     requires org.apache.pdfbox;
+    requires java.sql;
 
     opens modelo;
 }

@@ -1,22 +1,20 @@
 package modelo;
 
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class Main extends Application{
 
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws IOException, SQLException {
 //        AnchorPane anchorPane = new AnchorPane();
 //
 //        Button boton = new Button("Hola");

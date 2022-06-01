@@ -8,7 +8,7 @@ public class ParserTextoAProducto {
     public Producto aProducto(String linea){
         StringBuilder nombre = new StringBuilder();
         int codigo;
-        double costo;
+        int costo;
 
         String[] lineaSeparada = linea.trim().split(" ");
         ArrayList<String> palabras = new ArrayList<>(Arrays.asList(lineaSeparada));
@@ -28,7 +28,7 @@ public class ParserTextoAProducto {
         }
 
         codigo = Integer.parseInt(palabras.get(tamanio - 2));
-        costo = Double.parseDouble(palabras.get(tamanio - 1));
+        costo = (int) Math.round(Double.parseDouble(palabras.get(tamanio - 1)));
 
         return new Producto(nombre.toString(), codigo, costo);
     }

@@ -6,4 +6,5 @@ module aplicacionListas {
     requires java.sql;
 
     opens modelo;
+    opens modelo.Estado;
 }

@@ -33,6 +33,10 @@ public class Producto {
         return costo;
     }
 
+
+    /**
+     * Redondea el precio a la decena mas cercana
+     * */
     private int redondearPrecio(int precio){
         int resultado = precio % 10;
         switch (resultado) {

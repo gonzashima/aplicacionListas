@@ -1,5 +1,7 @@
 package modelo;
 
+import modelo.Utils.ManejadorPrecios;
+
 public class Producto {
     private final String nombre;
     private final int codigo;
@@ -13,8 +15,9 @@ public class Producto {
     }
 
     public void calcularPrecio(){
+        ManejadorPrecios manejador = new ManejadorPrecios();
         int parcial = costo * 2;
-        this.precio = redondearPrecio(parcial);
+        this.precio = manejador.redondearPrecio(parcial);
     }
 
     public int precio(){
@@ -33,18 +36,5 @@ public class Producto {
         return costo;
     }
 
-
-    /**
-     * Redondea el precio a la decena mas cercana
-     * */
-    private int redondearPrecio(int precio){
-        int resultado = precio % 10;
-        switch (resultado) {
-            case 1, 2, 3, 4 -> precio = precio - resultado;
-            case 5, 6, 7, 8, 9 -> precio = precio + (10 - resultado);
-            default -> {}
-        }
-        return precio;
-    }
 
 }

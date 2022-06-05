@@ -18,26 +18,31 @@ public class Aplicacion {
         productos = new ArrayList<>();
     }
 
-    public void leerArchivo(File archivo) throws IOException, SQLException {
+    public void leerArchivo(File archivo) throws IOException {
         LectorArchivos lectorArchivos = new LectorArchivos();
         lectorArchivos.leerArchivo(archivo, productos);
         determinarEstadoBaseDeDatos();
         estado.insertarABaseDeDatos(productos);
     }
 
-    private void determinarEstadoBaseDeDatos() throws SQLException {
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/productos", "root", "2520804");
-        Statement statement = connection.createStatement();
+    private void determinarEstadoBaseDeDatos() {
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/productos", "root", "2520804");
+            Statement statement = connection.createStatement();
 
-        ResultSet resultSet = statement.executeQuery("select count(*) from productos");
+            ResultSet resultSet = statement.executeQuery("select count(*) from productos");
 
-        int cantidad = 0;
-        while(resultSet.next())
-            cantidad = resultSet.getInt(1);
+            int cantidad = 0;
+            while (resultSet.next())
+                cantidad = resultSet.getInt(1);
 
-        if(cantidad == 0)
-            estado = new Vacia();
-        else
-            estado = new NoVacia();
+            if (cantidad == 0)
+                estado = new Vacia();
+            else
+                estado = new NoVacia();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

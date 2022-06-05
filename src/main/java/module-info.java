@@ -7,4 +7,5 @@ module aplicacionListas {
 
     opens modelo;
     opens modelo.Estado;
+    opens modelo.Utils;
 }

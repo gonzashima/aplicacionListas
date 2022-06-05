@@ -1,4 +1,4 @@
-import modelo.ParserTextoAProducto;
+import modelo.Utils.ParserTextoAProducto;
 import modelo.Producto;
 import org.junit.jupiter.api.Test;
 

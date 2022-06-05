@@ -1,5 +1,6 @@
 package modelo;
 
+import modelo.Utils.ParserTextoAProducto;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 

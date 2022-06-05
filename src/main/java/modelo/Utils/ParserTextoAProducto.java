@@ -1,4 +1,6 @@
-package modelo;
+package modelo.Utils;
+
+import modelo.Producto;
 
 import java.util.ArrayList;
 import java.util.Arrays;

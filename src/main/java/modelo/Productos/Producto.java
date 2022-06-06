@@ -2,6 +2,10 @@ package modelo.Productos;
 
 import modelo.Utils.ManejadorPrecios;
 
+/**
+ * TODO en un futuro la clase producto se deberia convertir en una clase abstracta o interfaz y que todos los productos de las diferentes
+ * TODO listas hereden de ella. Es una idea. Evaluar mas adelante
+ * */
 public class Producto {
     private final String nombre;
     private final int codigo;

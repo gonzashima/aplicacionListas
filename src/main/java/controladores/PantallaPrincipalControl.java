@@ -7,7 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import modelo.ConectorDB;
+import modelo.Utils.ConectorDB;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -42,6 +42,9 @@ public class PantallaPrincipalControl implements Initializable {
         precio.setCellValueFactory(new PropertyValueFactory<>("precio"));
     }
 
+    /**
+     * Muestra toda la informacion de la tabla pedida, exceptuando a aquellos productos cuyo precio sea 0
+     * */
     public void apretoBotonMostrar(ActionEvent e) throws SQLException {
         String opcion = opcionesListas.getValue();
         if (opcion == null) {

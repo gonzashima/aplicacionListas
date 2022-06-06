@@ -1,6 +1,6 @@
 package modelo.Estado;
 
-import modelo.ConectorDB;
+import modelo.Utils.ConectorDB;
 import modelo.Productos.Producto;
 
 import java.sql.Connection;

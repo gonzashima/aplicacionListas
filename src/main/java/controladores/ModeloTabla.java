@@ -1,18 +1,10 @@
 package controladores;
 
-public class ModeloTabla {
+/**
+ * Este record es necesario para la biblioteca de JavaFX
+ * */
 
-    private final String codigo;
-    private final String nombre;
-    private final int costo;
-    private final int precio;
-
-    public ModeloTabla(String codigo, String nombre, int costo, int precio) {
-        this.codigo = codigo;
-        this.nombre = nombre;
-        this.costo = costo;
-        this.precio = precio;
-    }
+public record ModeloTabla(String codigo, String nombre, int costo, int precio) {
 
     public String getCodigo() {
         return codigo;

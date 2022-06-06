@@ -7,6 +7,9 @@ import java.util.Arrays;
 
 public class ParserTextoAProducto {
 
+    /**
+     * Transforma la linea leida a un objeto Producto
+     * */
     public Producto aProducto(String linea){
         StringBuilder nombre = new StringBuilder();
         int codigo;

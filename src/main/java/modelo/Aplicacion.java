@@ -4,6 +4,7 @@ import modelo.Estado.Estado;
 import modelo.Estado.NoVacia;
 import modelo.Estado.Vacia;
 import modelo.Productos.Producto;
+import modelo.Utils.ConectorDB;
 import modelo.Utils.LectorArchivos;
 
 import java.io.File;

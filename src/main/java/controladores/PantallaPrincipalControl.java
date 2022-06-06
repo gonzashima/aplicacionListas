@@ -34,6 +34,7 @@ public class PantallaPrincipalControl implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         opcionesListas.getItems().addAll(listas);
         advertencia.setVisible(false);
+        advertenciaDB.setVisible(false);
 
         codigo.setCellValueFactory(new PropertyValueFactory<>("codigo"));
         nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -44,7 +45,6 @@ public class PantallaPrincipalControl implements Initializable {
     public void apretoBotonMostrar(ActionEvent e) throws SQLException {
         String opcion = opcionesListas.getValue();
         if (opcion == null) {
-            System.out.println("null");
             advertencia.setVisible(true);
         }
         else {
@@ -53,7 +53,7 @@ public class PantallaPrincipalControl implements Initializable {
 
             Connection connection = ConectorDB.getConnection();
 
-            if(connection != null) {
+            if(connection != null && listaOb.isEmpty()) {
                 Statement statement = connection.createStatement();
 
                 ResultSet rs = statement.executeQuery("SELECT * from productos WHERE precio != 0");
@@ -63,7 +63,7 @@ public class PantallaPrincipalControl implements Initializable {
                             rs.getInt("costo"), rs.getInt("precio")));
                 }
                 tabla.setItems(listaOb);
-            } else
+            } else if (connection == null)
                 advertenciaDB.setVisible(true);
 
         }

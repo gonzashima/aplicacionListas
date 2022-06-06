@@ -36,7 +36,5 @@ public class NoVacia implements Estado {
 
             statement.executeUpdate(queryCosto.toString());
         }
-        else
-            System.out.println("No se pudo conectar con la base de datos");
     }
 }

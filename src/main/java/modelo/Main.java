@@ -18,16 +18,14 @@ public class Main extends Application{
 
     @Override
     public void start(Stage stage) throws IOException {
-        Aplicacion aplicacion = new Aplicacion();
-        File duravit = new File("src/main/resources/DURAVIT.pdf");
-
         URL url = new File("src/main/java/interfaz/PantallaPrincipal.fxml").toURI().toURL();
 
         Parent root = FXMLLoader.load(url);
         Scene escenaPrincipal = new Scene(root);
 
-        stage.setTitle("hola");
+        stage.setTitle("Listas");
         stage.setScene(escenaPrincipal);
+        stage.setResizable(false);
         stage.show();
 
         stage.setOnCloseRequest(e->{e.consume();

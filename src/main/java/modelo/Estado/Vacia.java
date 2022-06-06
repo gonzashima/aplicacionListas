@@ -33,7 +33,5 @@ public class Vacia implements Estado {
             }
             statement.executeUpdate(query.toString());
         }
-        else
-            System.out.println("No se pudo conectar con la base de datos");
     }
 }

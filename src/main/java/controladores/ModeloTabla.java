@@ -2,8 +2,10 @@ package controladores;
 
 public class ModeloTabla {
 
-    private String codigo, nombre;
-    private int costo, precio;
+    private final String codigo;
+    private final String nombre;
+    private final int costo;
+    private final int precio;
 
     public ModeloTabla(String codigo, String nombre, int costo, int precio) {
         this.codigo = codigo;
@@ -16,31 +18,15 @@ public class ModeloTabla {
         return codigo;
     }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
     public String getNombre() {
         return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
     }
 
     public int getCosto() {
         return costo;
     }
 
-    public void setCosto(int costo) {
-        this.costo = costo;
-    }
-
     public int getPrecio() {
         return precio;
-    }
-
-    public void setPrecio(int precio) {
-        this.precio = precio;
     }
 }

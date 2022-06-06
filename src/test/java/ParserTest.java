@@ -1,5 +1,5 @@
 import modelo.Utils.ParserTextoAProducto;
-import modelo.Producto;
+import modelo.Productos.Producto;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,6 +15,6 @@ public class ParserTest {
 
         assertEquals("Producto", producto.getNombre());
         assertEquals(32891, producto.getCodigo());
-        assertEquals(50.2, producto.getCosto());
+        assertEquals(50, producto.getCosto());
     }
 }

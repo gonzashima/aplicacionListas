@@ -1,4 +1,4 @@
-package modelo;
+package modelo.Productos;
 
 import modelo.Utils.ManejadorPrecios;
 
@@ -20,7 +20,7 @@ public class Producto {
         this.precio = manejador.redondearPrecio(parcial);
     }
 
-    public int precio(){
+    public int getPrecio(){
         return this.precio;
     }
 

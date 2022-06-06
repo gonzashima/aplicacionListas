@@ -1,18 +1,18 @@
 package modelo.Estado;
 
-import modelo.Producto;
+import modelo.ConectorDB;
+import modelo.Productos.Producto;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
 public class NoVacia implements Estado {
     @Override
-    public void insertarABaseDeDatos(ArrayList<Producto> productos) {
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/productos", "root", "2520804");
+    public void insertarABaseDeDatos(ArrayList<Producto> productos) throws SQLException {
+        Connection connection = ConectorDB.getConnection();
+        if(connection != null) {
             Statement statement = connection.createStatement();
 
             int codigo;
@@ -24,7 +24,7 @@ public class NoVacia implements Estado {
             for (Producto producto : productos) {
                 codigo = producto.getCodigo();
                 costo = producto.getCosto();
-                precio = producto.precio();
+                precio = producto.getPrecio();
 
                 queryCosto.append("WHEN codigo = ").append(codigo).append(" THEN ").append(costo).append(" ");
                 queryPrecio.append("WHEN codigo = ").append(codigo).append(" THEN ").append(precio).append(" ");
@@ -35,9 +35,8 @@ public class NoVacia implements Estado {
             queryCosto.append(queryPrecio);
 
             statement.executeUpdate(queryCosto.toString());
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
+        else
+            System.out.println("No se pudo conectar con la base de datos");
     }
 }

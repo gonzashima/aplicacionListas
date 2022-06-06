@@ -1,9 +1,10 @@
 package modelo.Estado;
 
-import modelo.Producto;
+import modelo.Productos.Producto;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface Estado {
-    void insertarABaseDeDatos(ArrayList<Producto> productos);
+    void insertarABaseDeDatos(ArrayList<Producto> productos) throws SQLException;
 }

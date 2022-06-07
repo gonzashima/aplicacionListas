@@ -7,6 +7,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import modelo.Aplicacion;
+import modelo.Productos.Producto;
 import modelo.Utils.ConectorDB;
 
 import java.net.URL;
@@ -14,17 +19,25 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class PantallaPrincipalControl implements Initializable {
 
+    @FXML private AnchorPane contenedorPrincipal;
+
     @FXML private ChoiceBox<String> opcionesListas;
 
-    @FXML private Label advertencia, advertenciaDB;
+    @FXML private Label advertencia, advertenciaDB, advertenciaBuscar;
 
     @FXML private TableView<ModeloTabla> tabla;
 
     @FXML private TableColumn<ModeloTabla, String> codigo, nombre, costo, precio;
+
+    @FXML private TextField textoBuscado;
+
+    @FXML private MenuItem opcionCerrar;
 
     private final String[] listas = {"Duravit"};
 
@@ -35,6 +48,7 @@ public class PantallaPrincipalControl implements Initializable {
         opcionesListas.getItems().addAll(listas);
         advertencia.setVisible(false);
         advertenciaDB.setVisible(false);
+        advertenciaBuscar.setVisible(false);
 
         codigo.setCellValueFactory(new PropertyValueFactory<>("codigo"));
         nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -45,30 +59,84 @@ public class PantallaPrincipalControl implements Initializable {
     /**
      * Muestra toda la informacion de la tabla pedida, exceptuando a aquellos productos cuyo precio sea 0
      * */
-    public void apretoBotonMostrar(ActionEvent e) throws SQLException {
-        String opcion = opcionesListas.getValue();
-        if (opcion == null) {
+    public void mostrarDatos(ActionEvent e) throws SQLException {
+        String nombreLista = opcionesListas.getValue();
+        Aplicacion app = Aplicacion.getInstance();
+
+        if (nombreLista == null)
             advertencia.setVisible(true);
-        }
         else {
-            if(advertencia.isVisible())
+            if (advertencia.isVisible())
                 advertencia.setVisible(false);
 
             Connection connection = ConectorDB.getConnection();
+            nombreLista = nombreLista.toLowerCase();
 
-            if(connection != null && listaOb.isEmpty()) {
-                Statement statement = connection.createStatement();
+            /*
+             * Basicamente, si la conexion esta y todavia no tengo en memoria la info para mostrar, voy a la DB.
+             * Si ya tengo la info, no hace falta ir a la DB.
+             * */
+            if (connection != null && app.estaVacia(nombreLista)) {
+                Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-                ResultSet rs = statement.executeQuery("SELECT * from productos WHERE precio != 0");
+                ResultSet rs = statement.executeQuery("SELECT * from " + nombreLista + " WHERE precio != 0");
+
+                ArrayList<Producto> productos = new ArrayList<>();
 
                 while (rs.next()) {
-                    listaOb.add(new ModeloTabla(rs.getString("codigo"), rs.getString("nombre"),
-                            rs.getInt("costo"), rs.getInt("precio")));
+                    int codigo = rs.getInt("codigo");
+                    String nombre = rs.getString("nombre");
+                    int costo = rs.getInt("costo");
+                    int precio = rs.getInt("precio");
+
+                    listaOb.add(new ModeloTabla(codigo, nombre, costo, precio));
+                    productos.add(new Producto(codigo, nombre, costo, precio));
                 }
+                app.agregarListaDeProductos(nombreLista, productos);
                 tabla.setItems(listaOb);
             } else if (connection == null)
                 advertenciaDB.setVisible(true);
-
+            else {
+                ArrayList<Producto> productos = app.obtenerLista(nombreLista);
+                listaOb.clear();
+                for (Producto p : productos)
+                    listaOb.add(new ModeloTabla(p.getCodigo(), p.getNombre(), p.getCosto(), p.getPrecio()));
+            }
         }
+    }
+
+    public void buscarProducto(ActionEvent e){
+        String tabla = opcionesListas.getValue();
+        String nombreBuscado = textoBuscado.getText();
+        Aplicacion app = Aplicacion.getInstance();
+
+        if (tabla == null || app.estaVacia(tabla)) {
+            advertenciaBuscar.setVisible(true);
+        }
+
+        else {
+            ArrayList<Producto> filtrados = app.buscarProducto(tabla, nombreBuscado);
+            listaOb.clear();
+
+            for (Producto p : filtrados) {
+                listaOb.add(new ModeloTabla(p.getCodigo(), p.getNombre(), p.getCosto(), p.getPrecio()));
+            }
+            this.tabla.setItems(listaOb);
+        }
+    }
+
+    public void cerrarApp(ActionEvent e){
+        Stage ventana = (Stage) contenedorPrincipal.getScene().getWindow();
+        Alert.AlertType tipo = Alert.AlertType.CONFIRMATION;
+        Alert alerta = new Alert(tipo, "");
+
+        alerta.initModality(Modality.APPLICATION_MODAL);
+        alerta.initOwner(ventana);
+        alerta.getDialogPane().setContentText("Seguro que desea salir?");
+        alerta.getDialogPane().setHeaderText("SALIR");
+
+        Optional<ButtonType> resultado = alerta.showAndWait();
+
+        if (resultado.isPresent() && resultado.get() == ButtonType.OK) { ventana.close();}
     }
 }

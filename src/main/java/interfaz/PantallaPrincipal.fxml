@@ -3,18 +3,30 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/18"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.PantallaPrincipalControl">
-   <HBox alignment="CENTER_LEFT" layoutX="100.0" layoutY="711.0" prefHeight="130.0" prefWidth="1000.0">
-      <VBox alignment="TOP_CENTER" prefHeight="130.0" prefWidth="400.0">
-         <HBox alignment="CENTER" prefHeight="50.0" prefWidth="400.0" spacing="15.0">
+<AnchorPane fx:id="contenedorPrincipal" prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.PantallaPrincipalControl">
+   <HBox alignment="CENTER_LEFT" layoutX="100.0" layoutY="726.0" prefHeight="115.0" prefWidth="1000.0">
+      <AnchorPane prefHeight="115.0" prefWidth="500.0">
+         <HBox alignment="CENTER" layoutX="98.0" layoutY="48.0" prefHeight="51.0" prefWidth="394.0" spacing="15.0">
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="68.0" text="Buscar:">
+               <font>
+                  <Font size="18.0"/>
+               </font>
+            </Label>
+            <TextField fx:id="textoBuscado" alignment="CENTER" promptText="Nombre del producto"/>
+            <Button mnemonicParsing="false" onAction="#buscarProducto" text="Buscar"/>
+         </HBox>
+         <HBox alignment="CENTER" layoutX="57.0" prefHeight="48.0" prefWidth="400.0" spacing="15.0">
             <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="150.0"
                    text="Lista a mostrar:">
                <font>
@@ -22,32 +34,41 @@
                </font>
             </Label>
             <ChoiceBox fx:id="opcionesListas" prefWidth="150.0"/>
-            <Button mnemonicParsing="false" onAction="#apretoBotonMostrar" text="Mostrar"/>
+            <Button mnemonicParsing="false" onAction="#mostrarDatos" text="Mostrar"/>
          </HBox>
-         <Label fx:id="advertencia" alignment="TOP_CENTER" prefHeight="45.0" prefWidth="400.0"
-                text="Selecciona una lista" textFill="RED">
+      </AnchorPane>
+      <VBox alignment="CENTER" prefHeight="115.0" prefWidth="476.0">
+         <Label fx:id="advertencia" alignment="CENTER" prefHeight="45.0" prefWidth="400.0" text="Selecciona una lista"
+                textFill="RED">
             <font>
                <Font size="16.0"/>
             </font>
          </Label>
-      </VBox>
-      <VBox prefHeight="130.0" prefWidth="300.0"/>
-      <VBox prefHeight="130.0" prefWidth="300.0">
+         <Label fx:id="advertenciaBuscar" alignment="CENTER" prefHeight="35.0" prefWidth="307.0"
+                text="Primero hay que mostrar la lista deseada" textFill="RED">
+            <font>
+               <Font size="15.0"/>
+            </font>
+         </Label>
          <Label fx:id="advertenciaDB" alignment="CENTER" prefHeight="48.0" prefWidth="300.0"
-                text="No se pudo conectar con la base de datos" textFill="RED" visible="false">
+                text="No se pudo conectar con la base de datos" textFill="RED">
             <font>
                <Font size="15.0"/>
             </font>
          </Label>
       </VBox>
    </HBox>
-   <TableView fx:id="tabla" fixedCellSize="20.0" layoutX="100.0" layoutY="28.0" pickOnBounds="false" prefHeight="671.0"
-              prefWidth="1000.0">
+   <TableView fx:id="tabla" fixedCellSize="20.0" layoutX="100.0" layoutY="40.0" pickOnBounds="false" prefHeight="671.0" prefWidth="1000.0">
       <columns>
-         <TableColumn fx:id="codigo" minWidth="-Infinity" prefWidth="150.0" text="Codigo"/>
-         <TableColumn fx:id="nombre" prefWidth="549.0" text="Nombre"/>
-         <TableColumn fx:id="costo" minWidth="0.0" prefWidth="150.0" text="Costo"/>
-         <TableColumn fx:id="precio" prefWidth="150.0" resizable="false" text="Precio"/>
+         <TableColumn fx:id="codigo" minWidth="-Infinity" prefWidth="150.0" resizable="false" text="Codigo" />
+         <TableColumn fx:id="nombre" prefWidth="549.0" resizable="false" text="Nombre" />
+         <TableColumn fx:id="costo" minWidth="0.0" prefWidth="150.0" resizable="false" text="Costo" />
+         <TableColumn fx:id="precio" prefWidth="150.0" resizable="false" text="Precio" />
       </columns>
    </TableView>
+   <MenuBar prefWidth="1200.0">
+      <Menu mnemonicParsing="false" text="Opciones">
+         <MenuItem fx:id="opcionCerrar" mnemonicParsing="false" onAction="#cerrarApp" text="Cerrar"/>
+      </Menu>
+   </MenuBar>
 </AnchorPane>

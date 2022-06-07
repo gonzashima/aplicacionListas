@@ -18,7 +18,7 @@ public class NoVacia implements Estado {
             int codigo;
             int costo;
             int precio;
-            StringBuilder queryCosto = new StringBuilder("UPDATE productos SET costo = CASE ");
+            StringBuilder queryCosto = new StringBuilder("UPDATE duravit SET costo = CASE ");
             StringBuilder queryPrecio = new StringBuilder("precio = CASE ");
 
             for (Producto producto : productos) {

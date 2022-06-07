@@ -4,9 +4,9 @@ package controladores;
  * Este record es necesario para la biblioteca de JavaFX
  * */
 
-public record ModeloTabla(String codigo, String nombre, int costo, int precio) {
+public record ModeloTabla(int codigo, String nombre, int costo, int precio) {
 
-    public String getCodigo() {
+    public int getCodigo() {
         return codigo;
     }
 

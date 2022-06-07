@@ -18,6 +18,13 @@ public class Producto {
         this.costo = costo;
     }
 
+    public Producto (int codigo, String nombre, int costo, int precio){
+        this.codigo = codigo;
+        this.nombre = nombre;
+        this.costo = costo;
+        this.precio = precio;
+    }
+
     public void calcularPrecio(){
         ManejadorPrecios manejador = new ManejadorPrecios();
         int parcial = costo * 2;

@@ -19,7 +19,7 @@ public class Vacia implements Estado {
             String nombre;
             int costo;
             int precio;
-            StringBuilder query = new StringBuilder("INSERT INTO productos(codigo, nombre, costo, precio) VALUES ");
+            StringBuilder query = new StringBuilder("INSERT INTO duravit(codigo, nombre, costo, precio) VALUES ");
 
             for (int i = 0; i < productos.size(); i++) {
                 codigo = productos.get(i).getCodigo();

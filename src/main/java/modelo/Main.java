@@ -16,6 +16,8 @@ import java.util.Optional;
 
 public class Main extends Application{
 
+    //TODO revisar que es lo de github actions para java y maven
+
     @Override
     public void start(Stage stage) throws IOException {
         URL url = new File("src/main/java/interfaz/PantallaPrincipal.fxml").toURI().toURL();
@@ -35,11 +37,14 @@ public class Main extends Application{
     private void cerrarPrograma(Stage ventana) {
         Alert.AlertType tipo = Alert.AlertType.CONFIRMATION;
         Alert alerta = new Alert(tipo, "");
+
         alerta.initModality(Modality.APPLICATION_MODAL);
         alerta.initOwner(ventana);
-        alerta.getDialogPane().setContentText("Desea Cerrar?");
+        alerta.getDialogPane().setContentText("Seguro que desea salir?");
         alerta.getDialogPane().setHeaderText("SALIR");
+
         Optional<ButtonType> resultado = alerta.showAndWait();
+
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) { ventana.close();}
     }
 }

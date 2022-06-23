@@ -11,11 +11,13 @@ public class Producto {
     private final int codigo;
     private int precio;
     private final int costo;
+    private int porcentaje;
 
     public Producto(String nombre, int codigo, int costo){
         this.codigo = codigo;
         this.nombre = nombre;
         this.costo = costo;
+        this.porcentaje = 100;
     }
 
     public Producto (int codigo, String nombre, int costo, int precio){
@@ -23,11 +25,12 @@ public class Producto {
         this.nombre = nombre;
         this.costo = costo;
         this.precio = precio;
+        this.porcentaje = 100;
     }
 
     public void calcularPrecio(){
         ManejadorPrecios manejador = new ManejadorPrecios();
-        int parcial = costo * 2;
+        int parcial = costo + (costo * porcentaje) / 100;
         this.precio = manejador.redondearPrecio(parcial);
     }
 
@@ -45,6 +48,14 @@ public class Producto {
 
     public int getCosto(){
         return costo;
+    }
+
+    public int getPorcentaje() {
+        return porcentaje;
+    }
+
+    public void setPorcentaje(int porcentaje) {
+        this.porcentaje = porcentaje;
     }
 
 

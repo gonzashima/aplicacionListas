@@ -4,7 +4,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
@@ -14,6 +16,8 @@ import modelo.Aplicacion;
 import modelo.Productos.Producto;
 import modelo.Utils.ConectorDB;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -37,8 +41,6 @@ public class PantallaPrincipalControl implements Initializable {
 
     @FXML private TextField textoBuscado;
 
-    @FXML private MenuItem opcionCerrar;
-
     private final String[] listas = {"Duravit"};
 
     private final ObservableList<ModeloTabla> listaOb = FXCollections.observableArrayList();
@@ -60,6 +62,9 @@ public class PantallaPrincipalControl implements Initializable {
      * Muestra toda la informacion de la tabla pedida, exceptuando a aquellos productos cuyo precio sea 0
      * */
     public void mostrarDatos(ActionEvent e) throws SQLException {
+        if (advertenciaBuscar.isVisible())
+            advertenciaBuscar.setVisible(false);
+
         String nombreLista = opcionesListas.getValue();
         Aplicacion app = Aplicacion.getInstance();
 
@@ -104,8 +109,8 @@ public class PantallaPrincipalControl implements Initializable {
             }
         }
     }
-
-    public void buscarProducto(ActionEvent e){
+//TODO hacer la advertencia de buscar invisible una vez que ya se mostro la lista
+    public void buscarProducto(ActionEvent e) {
         String tabla = opcionesListas.getValue();
         String nombreBuscado = textoBuscado.getText();
         Aplicacion app = Aplicacion.getInstance();
@@ -138,5 +143,16 @@ public class PantallaPrincipalControl implements Initializable {
         Optional<ButtonType> resultado = alerta.showAndWait();
 
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) { ventana.close();}
+    }
+
+    public void cambiarAPantallaArchivos(ActionEvent e) throws IOException {
+        Stage stage = (Stage) contenedorPrincipal.getScene().getWindow();
+
+        URL url = new File("src/main/java/interfaz/PantallaLeerArchivos.fxml").toURI().toURL();
+        AnchorPane root = FXMLLoader.load(url);
+
+        Scene escenaArchivos = new Scene(root);
+        stage.setScene(escenaArchivos);
+        stage.show();
     }
 }

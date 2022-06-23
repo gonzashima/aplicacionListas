@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class NoVacia implements Estado {
+
     @Override
     public void insertarABaseDeDatos(ArrayList<Producto> productos) throws SQLException {
         Connection connection = ConectorDB.getConnection();

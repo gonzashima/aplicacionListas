@@ -1,6 +1,7 @@
-package modelo.Utils;
+package modelo.Lectores;
 
 import modelo.Productos.Producto;
+import modelo.Utils.ParserTextoAProducto;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
@@ -10,12 +11,11 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class LectorArchivos {
+public class LectorDuravit implements LectorArchivos{
+
     private static final String PATRON_DURAVIT = "(\\w*[+/.]*\\s*)* (\\d{5})(\\s*) ((\\d*)\\.\\d{2})";
 
-    /**
-     * Lee el archivo pdf y parsea a productos, con sus respectivos nombres, codigos y costos
-     * */
+    @Override
     public void leerArchivo(File archivo, ArrayList<Producto> listaProductos) throws IOException{
         PDDocument pdf = PDDocument.load(archivo);
         PDFTextStripper textStripper = new PDFTextStripper();
@@ -39,6 +39,4 @@ public class LectorArchivos {
         }
         pdf.close();
     }
-
-
 }

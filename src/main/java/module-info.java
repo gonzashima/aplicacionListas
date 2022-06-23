@@ -13,4 +13,5 @@ module aplicacionListas {
     opens modelo.Utils;
     opens modelo.Productos;
     opens controladores to javafx.fxml, javafx.base;
+    opens modelo.Lectores;
 }

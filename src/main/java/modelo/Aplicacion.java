@@ -3,13 +3,17 @@ package modelo;
 import modelo.Estado.Estado;
 import modelo.Estado.NoVacia;
 import modelo.Estado.Vacia;
+import modelo.Lectores.LectorArchivos;
+import modelo.Lectores.LectorDuravit;
 import modelo.Productos.Producto;
 import modelo.Utils.ConectorDB;
-import modelo.Utils.LectorArchivos;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -39,13 +43,23 @@ public class Aplicacion {
         return instance;
     }
 
-    public void leerArchivo(File archivo, String nombre) throws IOException, SQLException {
-        LectorArchivos lectorArchivos = new LectorArchivos();
+    /**
+     * Lee el archivo e inserta la informacion a la base de datos
+     * */
+    public void leerArchivo(File archivo) throws IOException, SQLException {
+        String nombre = archivo.getName();
+        nombre = nombre.substring(0, nombre.lastIndexOf("."));
+        nombre = nombre.toLowerCase();
+
+        LectorArchivos lectorArchivos = determinarLector(nombre);
         lectorArchivos.leerArchivo(archivo, productos);
         determinarEstadoTabla(nombre);
         estado.insertarABaseDeDatos(productos);
     }
 
+    /**
+     * Se fija si en la DB si la tabla con el nombre pasado por parametro esta vacia o tiene info
+     * */
     private void determinarEstadoTabla(String nombreTabla) throws SQLException {
         Connection connection = ConectorDB.getConnection();
 
@@ -65,10 +79,16 @@ public class Aplicacion {
             System.out.println("No se pudo conectar con la base de datos");
     }
 
+    /**
+     * Agrega una lista al mapa con todas las listas
+     * */
     public void agregarListaDeProductos(String nombreTabla, ArrayList<Producto> lista) {
         datos.put(nombreTabla, lista);
     }
 
+    /**
+     * Busca el producto buscado en la lista elegida
+     * */
     public ArrayList<Producto> buscarProducto(String key, String buscado) {
         key = key.toLowerCase();
         buscado = buscado.toUpperCase();
@@ -83,6 +103,9 @@ public class Aplicacion {
         return filtrados;
     }
 
+    /**
+     * Determina si la lista esta vacia
+     * */
     public boolean estaVacia(String nombreTabla) {
         nombreTabla = nombreTabla.toLowerCase();
         ArrayList<Producto> productos = datos.get(nombreTabla);
@@ -95,5 +118,21 @@ public class Aplicacion {
 
     public ArrayList<Producto> obtenerLista(String nombreTabla) {
         return datos.get(nombreTabla);
+    }
+
+
+    /**
+     * Determina el lector a instanciar segun el nombre del archivo
+     * */
+    private LectorArchivos determinarLector(String nombre) {
+        LectorArchivos lector = null;
+
+        switch (nombre) {
+            case "duravit":
+                lector = new LectorDuravit();
+                break;
+        }
+
+        return lector;
     }
 }

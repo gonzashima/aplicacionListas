@@ -18,6 +18,8 @@ public class Main extends Application{
 
     //TODO revisar que es lo de github actions para java y maven
 
+    //TODO ver si se puede hacer lo de cerrar la app singleton o algo asi para todos
+
     @Override
     public void start(Stage stage) throws IOException {
         URL url = new File("src/main/java/interfaz/PantallaPrincipal.fxml").toURI().toURL();
@@ -46,5 +48,9 @@ public class Main extends Application{
         Optional<ButtonType> resultado = alerta.showAndWait();
 
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) { ventana.close();}
+    }
+
+    public static void main(String[] args){
+        launch(args);
     }
 }

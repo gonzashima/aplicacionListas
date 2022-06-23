@@ -20,40 +20,36 @@
          <HBox alignment="CENTER" layoutX="98.0" layoutY="48.0" prefHeight="51.0" prefWidth="394.0" spacing="15.0">
             <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="68.0" text="Buscar:">
                <font>
-                  <Font size="18.0"/>
+                  <Font size="18.0" />
                </font>
             </Label>
-            <TextField fx:id="textoBuscado" alignment="CENTER" promptText="Nombre del producto"/>
-            <Button mnemonicParsing="false" onAction="#buscarProducto" text="Buscar"/>
+            <TextField fx:id="textoBuscado" alignment="CENTER" promptText="Nombre del producto" />
+            <Button mnemonicParsing="false" onAction="#buscarProducto" text="Buscar" />
          </HBox>
          <HBox alignment="CENTER" layoutX="57.0" prefHeight="48.0" prefWidth="400.0" spacing="15.0">
-            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="150.0"
-                   text="Lista a mostrar:">
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="150.0" text="Lista a mostrar:">
                <font>
-                  <Font size="18.0"/>
+                  <Font size="18.0" />
                </font>
             </Label>
-            <ChoiceBox fx:id="opcionesListas" prefWidth="150.0"/>
-            <Button mnemonicParsing="false" onAction="#mostrarDatos" text="Mostrar"/>
+            <ChoiceBox fx:id="opcionesListas" prefWidth="150.0" />
+            <Button mnemonicParsing="false" onAction="#mostrarDatos" text="Mostrar" />
          </HBox>
       </AnchorPane>
       <VBox alignment="CENTER" prefHeight="115.0" prefWidth="476.0">
-         <Label fx:id="advertencia" alignment="CENTER" prefHeight="45.0" prefWidth="400.0" text="Selecciona una lista"
-                textFill="RED">
+         <Label fx:id="advertencia" alignment="CENTER" prefHeight="45.0" prefWidth="400.0" text="Selecciona una lista" textFill="RED">
             <font>
-               <Font size="16.0"/>
+               <Font size="16.0" />
             </font>
          </Label>
-         <Label fx:id="advertenciaBuscar" alignment="CENTER" prefHeight="35.0" prefWidth="307.0"
-                text="Primero hay que mostrar la lista deseada" textFill="RED">
+         <Label fx:id="advertenciaBuscar" alignment="CENTER" prefHeight="35.0" prefWidth="307.0" text="Primero hay que mostrar la lista deseada" textFill="RED">
             <font>
-               <Font size="15.0"/>
+               <Font size="15.0" />
             </font>
          </Label>
-         <Label fx:id="advertenciaDB" alignment="CENTER" prefHeight="48.0" prefWidth="300.0"
-                text="No se pudo conectar con la base de datos" textFill="RED">
+         <Label fx:id="advertenciaDB" alignment="CENTER" prefHeight="48.0" prefWidth="300.0" text="No se pudo conectar con la base de datos" textFill="RED">
             <font>
-               <Font size="15.0"/>
+               <Font size="15.0" />
             </font>
          </Label>
       </VBox>
@@ -68,7 +64,8 @@
    </TableView>
    <MenuBar prefWidth="1200.0">
       <Menu mnemonicParsing="false" text="Opciones">
-         <MenuItem fx:id="opcionCerrar" mnemonicParsing="false" onAction="#cerrarApp" text="Cerrar"/>
+         <MenuItem fx:id="opcionArchivos" mnemonicParsing="false" onAction="#cambiarAPantallaArchivos" text="Leer archivo" />
+         <MenuItem fx:id="opcionCerrar" mnemonicParsing="false" onAction="#cerrarApp" text="Cerrar" />
       </Menu>
    </MenuBar>
 </AnchorPane>

@@ -35,6 +35,7 @@
             <ChoiceBox fx:id="opcionesListas" prefWidth="150.0" />
             <Button mnemonicParsing="false" onAction="#mostrarDatos" text="Mostrar" />
          </HBox>
+         <Button layoutX="229.0" layoutY="114.0" mnemonicParsing="false" onAction="#modificarPorcentaje" prefHeight="25.0" prefWidth="150.0" text="Cambiar porcentaje" />
       </AnchorPane>
       <VBox alignment="CENTER" prefHeight="115.0" prefWidth="476.0">
          <Label fx:id="advertencia" alignment="CENTER" prefHeight="45.0" prefWidth="400.0" text="Selecciona una lista" textFill="RED">
@@ -52,20 +53,26 @@
                <Font size="15.0" />
             </font>
          </Label>
+         <Label fx:id="advertenciaModificacion" text="Ningun elemento seleccionado" textFill="RED">
+            <font>
+               <Font size="15.0" />
+            </font>
+         </Label>
       </VBox>
    </HBox>
    <TableView fx:id="tabla" fixedCellSize="20.0" layoutX="100.0" layoutY="40.0" pickOnBounds="false" prefHeight="671.0" prefWidth="1000.0">
       <columns>
          <TableColumn fx:id="codigo" minWidth="-Infinity" prefWidth="150.0" resizable="false" text="Codigo" />
-         <TableColumn fx:id="nombre" prefWidth="549.0" resizable="false" text="Nombre" />
-         <TableColumn fx:id="costo" minWidth="0.0" prefWidth="150.0" resizable="false" text="Costo" />
-         <TableColumn fx:id="precio" prefWidth="150.0" resizable="false" text="Precio" />
+         <TableColumn fx:id="nombre" prefWidth="350.0" resizable="false" text="Nombre" />
+         <TableColumn fx:id="costo" minWidth="0.0" prefWidth="175.0" resizable="false" text="Costo" />
+         <TableColumn fx:id="precio" prefWidth="190.0" resizable="false" text="Precio" />
+         <TableColumn fx:id="porcentaje" prefWidth="134.0" text="Porcentaje" />
       </columns>
    </TableView>
    <MenuBar prefWidth="1200.0">
       <Menu mnemonicParsing="false" text="Opciones">
-         <MenuItem fx:id="opcionArchivos" mnemonicParsing="false" onAction="#cambiarAPantallaArchivos" text="Leer archivo" />
-         <MenuItem fx:id="opcionCerrar" mnemonicParsing="false" onAction="#cerrarApp" text="Cerrar" />
+         <MenuItem mnemonicParsing="false" onAction="#cambiarAPantallaArchivos" text="Leer archivo" />
+         <MenuItem mnemonicParsing="false" onAction="#cerrarApp" text="Cerrar" />
       </Menu>
    </MenuBar>
 </AnchorPane>

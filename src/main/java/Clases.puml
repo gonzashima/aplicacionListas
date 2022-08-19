@@ -1,0 +1,30 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Aplicacion(singleton){
+    Estado estado
+    Arraylist<Productos> productos
+    HashMap<String, ArrayList<Productos>> datos
+
+    void leerArchivo(File file)
+    void agregarListaDePrductos(String nombreTabla, ArrayList productos)
+    ArrayList buscarProducto(String key, String buscado)
+    boolean estaVacia(String nombreLista)
+    LectorArchivos determinarLector(String nombre)
+}
+
+interface LectorArchivos {
+    void leerArchivo(File file, ArrayList<Productos> listaDeProductos)
+}
+
+class Producto{
+    String nombre
+    int codigo
+    int costo
+    int precio
+    int porcentaje
+
+    void calcularPrecio()
+}
+
+@enduml

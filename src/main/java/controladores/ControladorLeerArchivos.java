@@ -1,6 +1,5 @@
 package controladores;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -26,7 +25,7 @@ public class ControladorLeerArchivos {
 
     @FXML Button botonBuscar;
 
-    public void cerrarApp(ActionEvent e){
+    public void cerrarApp(){
         Stage ventana = (Stage) contenedorPrincipal.getScene().getWindow();
         Alert.AlertType tipo = Alert.AlertType.CONFIRMATION;
         Alert alerta = new Alert(tipo, "");
@@ -41,7 +40,7 @@ public class ControladorLeerArchivos {
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) { ventana.close();}
     }
 
-    public void cambiarAPantallaListas(ActionEvent e) throws IOException {
+    public void cambiarAPantallaListas() throws IOException {
         Stage stage = (Stage) contenedorPrincipal.getScene().getWindow();
 
         URL url = new File("src/main/java/interfaz/PantallaPrincipal.fxml").toURI().toURL();
@@ -55,7 +54,7 @@ public class ControladorLeerArchivos {
     /**
      * Lee el archivo seleccionado en el buscador
      * */
-    public void buscarArchivo(ActionEvent e) {
+    public void buscarArchivo() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PDFs (*.pdf)", "*.pdf"));
 
@@ -65,13 +64,13 @@ public class ControladorLeerArchivos {
         try {
             mensaje = archivo.getName();
             mensaje = mensaje.substring(0, mensaje.lastIndexOf("."));
-            mensaje = mensaje + "se pudo leer correctamente";
+            mensaje = mensaje + " se pudo leer correctamente";
 
             Aplicacion app = Aplicacion.getInstance();
             app.leerArchivo(archivo);
 
         } catch (Exception ex) {
-            mensaje = "Este archivo no se puedo abrir";
+            mensaje = "Este archivo no se pudo abrir o no es de una lista";
         }
         lista.getItems().add(mensaje);
     }

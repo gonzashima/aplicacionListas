@@ -20,12 +20,12 @@ public class Producto {
         this.porcentaje = 100;
     }
 
-    public Producto (int codigo, String nombre, int costo, int precio){
+    public Producto (int codigo, String nombre, int costo, int precio, int porcentaje){
         this.codigo = codigo;
         this.nombre = nombre;
         this.costo = costo;
         this.precio = precio;
-        this.porcentaje = 100;
+        this.porcentaje = porcentaje;
     }
 
     public void calcularPrecio(){

@@ -27,10 +27,6 @@ public class Aplicacion {
 
     private HashMap<String, ArrayList<Producto>> datos;
 
-    //TODO tener todos los resultset guardados aca cuando se muestran las tablas por primera vez, para no tener que hacer muchas queries a la DB
-
-    //TODO inicializar la conexion a la base de datos al principio, que es la que mas tiempo tarda
-
     private Aplicacion(){
         productos = new ArrayList<>();
         datos = new HashMap<>();
@@ -106,9 +102,9 @@ public class Aplicacion {
     /**
      * Determina si la lista esta vacia
      * */
-    public boolean estaVacia(String nombreTabla) {
-        nombreTabla = nombreTabla.toLowerCase();
-        ArrayList<Producto> productos = datos.get(nombreTabla);
+    public boolean estaVacia(String nombreLista) {
+        nombreLista = nombreLista.toLowerCase();
+        ArrayList<Producto> productos = datos.get(nombreLista);
 
         if (productos == null)
             return true;

@@ -2,7 +2,6 @@ package controladores;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -33,17 +32,17 @@ public class PantallaPrincipalControl implements Initializable {
 
     @FXML private ChoiceBox<String> opcionesListas;
 
-    @FXML private Label advertencia, advertenciaDB, advertenciaBuscar;
+    @FXML private Label advertencia, advertenciaDB, advertenciaBuscar, advertenciaModificacion;
 
-    @FXML private TableView<ModeloTabla> tabla;
+    @FXML private TableView<Producto> tabla;
 
-    @FXML private TableColumn<ModeloTabla, String> codigo, nombre, costo, precio;
+    @FXML private TableColumn<Producto, String> codigo, nombre, costo, precio, porcentaje;
 
     @FXML private TextField textoBuscado;
 
     private final String[] listas = {"Duravit"};
 
-    private final ObservableList<ModeloTabla> listaOb = FXCollections.observableArrayList();
+    private final ObservableList<Producto> listaOb = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -51,17 +50,19 @@ public class PantallaPrincipalControl implements Initializable {
         advertencia.setVisible(false);
         advertenciaDB.setVisible(false);
         advertenciaBuscar.setVisible(false);
+        advertenciaModificacion.setVisible(false);
 
         codigo.setCellValueFactory(new PropertyValueFactory<>("codigo"));
         nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         costo.setCellValueFactory(new PropertyValueFactory<>("costo"));
         precio.setCellValueFactory(new PropertyValueFactory<>("precio"));
+        porcentaje.setCellValueFactory(new PropertyValueFactory<>("porcentaje"));
     }
 
     /**
      * Muestra toda la informacion de la tabla pedida, exceptuando a aquellos productos cuyo precio sea 0
      * */
-    public void mostrarDatos(ActionEvent e) throws SQLException {
+    public void mostrarDatos() throws SQLException {
         if (advertenciaBuscar.isVisible())
             advertenciaBuscar.setVisible(false);
 
@@ -93,24 +94,31 @@ public class PantallaPrincipalControl implements Initializable {
                     String nombre = rs.getString("nombre");
                     int costo = rs.getInt("costo");
                     int precio = rs.getInt("precio");
+                    int porcentaje = rs.getInt("porcentaje");
 
-                    listaOb.add(new ModeloTabla(codigo, nombre, costo, precio));
-                    productos.add(new Producto(codigo, nombre, costo, precio));
+                    Producto producto = new Producto(codigo, nombre, costo, precio, porcentaje);
+                    listaOb.add(producto);
+                    productos.add(producto);
                 }
                 app.agregarListaDeProductos(nombreLista, productos);
                 tabla.setItems(listaOb);
+
             } else if (connection == null)
                 advertenciaDB.setVisible(true);
+
             else {
                 ArrayList<Producto> productos = app.obtenerLista(nombreLista);
                 listaOb.clear();
-                for (Producto p : productos)
-                    listaOb.add(new ModeloTabla(p.getCodigo(), p.getNombre(), p.getCosto(), p.getPrecio()));
+                listaOb.addAll(productos);
+                tabla.setItems(listaOb);
             }
         }
     }
-//TODO hacer la advertencia de buscar invisible una vez que ya se mostro la lista
-    public void buscarProducto(ActionEvent e) {
+
+    /**
+     * Pide a Aplicacion que busque todos los productos que coinciden con la busqueda del usuario
+     * */
+    public void buscarProducto() {
         String tabla = opcionesListas.getValue();
         String nombreBuscado = textoBuscado.getText();
         Aplicacion app = Aplicacion.getInstance();
@@ -122,15 +130,24 @@ public class PantallaPrincipalControl implements Initializable {
         else {
             ArrayList<Producto> filtrados = app.buscarProducto(tabla, nombreBuscado);
             listaOb.clear();
-
-            for (Producto p : filtrados) {
-                listaOb.add(new ModeloTabla(p.getCodigo(), p.getNombre(), p.getCosto(), p.getPrecio()));
-            }
+            listaOb.addAll(filtrados);
             this.tabla.setItems(listaOb);
         }
     }
 
-    public void cerrarApp(ActionEvent e){
+    /**
+     * Modifica el porcentaje del producto seleccionado
+     * */
+    public void modificarPorcentaje() throws IOException {
+        Producto producto = tabla.getSelectionModel().getSelectedItem();
+
+        if (producto == null)
+            advertenciaModificacion.setVisible(true);
+        else {
+            VentanaPorcentaje.display(producto);
+        }
+    }
+    public void cerrarApp(){
         Stage ventana = (Stage) contenedorPrincipal.getScene().getWindow();
         Alert.AlertType tipo = Alert.AlertType.CONFIRMATION;
         Alert alerta = new Alert(tipo, "");
@@ -145,7 +162,7 @@ public class PantallaPrincipalControl implements Initializable {
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) { ventana.close();}
     }
 
-    public void cambiarAPantallaArchivos(ActionEvent e) throws IOException {
+    public void cambiarAPantallaArchivos() throws IOException {
         Stage stage = (Stage) contenedorPrincipal.getScene().getWindow();
 
         URL url = new File("src/main/java/interfaz/PantallaLeerArchivos.fxml").toURI().toURL();

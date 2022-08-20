@@ -1,12 +1,12 @@
-package modelo;
+package Modelo;
 
-import modelo.Estado.Estado;
-import modelo.Estado.NoVacia;
-import modelo.Estado.Vacia;
-import modelo.Lectores.LectorArchivos;
-import modelo.Lectores.LectorDuravit;
-import modelo.Productos.Producto;
-import modelo.Utils.ConectorDB;
+import Modelo.Estado.Estado;
+import Modelo.Estado.NoVacia;
+import Modelo.Estado.Vacia;
+import Modelo.Lectores.LectorArchivos;
+import Modelo.Lectores.LectorDuravit;
+import Modelo.Productos.Producto;
+import Modelo.Utils.ConectorDB;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,9 +27,12 @@ public class Aplicacion {
 
     private HashMap<String, ArrayList<Producto>> datos;
 
+    private HashMap<String, ArrayList<Producto>> modificaciones;
+
     private Aplicacion(){
         productos = new ArrayList<>();
         datos = new HashMap<>();
+        modificaciones = new HashMap<>();
         estado = null;
     }
 
@@ -78,8 +81,29 @@ public class Aplicacion {
     /**
      * Agrega una lista al mapa con todas las listas
      * */
-    public void agregarListaDeProductos(String nombreTabla, ArrayList<Producto> lista) {
-        datos.put(nombreTabla, lista);
+    public void agregarListaDeProductos(String nombreLista, ArrayList<Producto> listaProductos) {
+        datos.put(nombreLista, listaProductos);
+    }
+
+    /**
+     * Al producto que se le cambio el porcentaje, se lo agrega al map de modificaciones en la respectiva lista. El producto solo puede estar
+     * una vez en dicha lista. Solo se guarda la ultima modificacion
+     * */
+    public void agregarModificacion(String nombreLista, Producto producto) {
+        ArrayList<Producto> lista = modificaciones.get(nombreLista);
+
+        if (lista == null) {
+            lista = new ArrayList<>();
+            lista.add(producto);
+            modificaciones.put(nombreLista, lista);
+        }
+        else if (lista.contains(producto)) {
+            int indice = lista.indexOf(producto);
+            lista.set(indice, producto);
+        }
+        else {
+            lista.add(producto);
+        }
     }
 
     /**

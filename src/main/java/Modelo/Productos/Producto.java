@@ -1,6 +1,6 @@
-package modelo.Productos;
+package Modelo.Productos;
 
-import modelo.Utils.ManejadorPrecios;
+import Modelo.Utils.ManejadorPrecios;
 
 /**
  * TODO en un futuro la clase producto se deberia convertir en una clase abstracta o interfaz y que todos los productos de las diferentes

@@ -1,6 +1,6 @@
-package modelo.Estado;
+package Modelo.Estado;
 
-import modelo.Productos.Producto;
+import Modelo.Productos.Producto;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

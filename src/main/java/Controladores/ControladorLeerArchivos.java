@@ -1,4 +1,4 @@
-package controladores;
+package Controladores;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,7 +8,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import modelo.Aplicacion;
+import Modelo.Aplicacion;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,5 +1,5 @@
-import modelo.Utils.ParserTextoAProducto;
-import modelo.Productos.Producto;
+import Modelo.Utils.ParserTextoAProducto;
+import Modelo.Productos.Producto;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

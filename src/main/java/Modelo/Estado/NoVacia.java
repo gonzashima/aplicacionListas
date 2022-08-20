@@ -1,7 +1,7 @@
-package modelo.Estado;
+package Modelo.Estado;
 
-import modelo.Utils.ConectorDB;
-import modelo.Productos.Producto;
+import Modelo.Utils.ConectorDB;
+import Modelo.Productos.Producto;
 
 import java.sql.Connection;
 import java.sql.SQLException;

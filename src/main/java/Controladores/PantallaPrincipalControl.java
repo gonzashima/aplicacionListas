@@ -1,4 +1,4 @@
-package controladores;
+package Controladores;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,9 +11,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import modelo.Aplicacion;
-import modelo.Productos.Producto;
-import modelo.Utils.ConectorDB;
+import Modelo.Aplicacion;
+import Modelo.Productos.Producto;
+import Modelo.Utils.ConectorDB;
 
 import java.io.File;
 import java.io.IOException;
@@ -144,7 +144,18 @@ public class PantallaPrincipalControl implements Initializable {
         if (producto == null)
             advertenciaModificacion.setVisible(true);
         else {
-            VentanaPorcentaje.display(producto);
+            int precioAnterior = producto.getPrecio();
+            Producto modificado = VentanaPorcentaje.display(producto);
+            tabla.refresh();
+
+            if (precioAnterior != modificado.getPrecio()) {
+                Aplicacion app = Aplicacion.getInstance();
+
+                String nombreLista = opcionesListas.getValue();
+                nombreLista = nombreLista.toLowerCase();
+
+                app.agregarModificacion(nombreLista, producto);
+            }
         }
     }
     public void cerrarApp(){

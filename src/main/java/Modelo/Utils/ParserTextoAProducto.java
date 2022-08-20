@@ -1,6 +1,6 @@
-package modelo.Utils;
+package Modelo.Utils;
 
-import modelo.Productos.Producto;
+import Modelo.Productos.Producto;
 
 import java.util.ArrayList;
 import java.util.Arrays;

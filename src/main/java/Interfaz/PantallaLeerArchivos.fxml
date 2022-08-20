@@ -7,7 +7,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="contenedorPrincipal" prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.ControladorLeerArchivos">
+<AnchorPane fx:id="contenedorPrincipal" prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorLeerArchivos">
     <MenuBar prefHeight="25.0" prefWidth="1200.0">
         <Menu mnemonicParsing="false" text="Opciones">
             <MenuItem fx:id="irAListas" mnemonicParsing="false" onAction="#cambiarAPantallaListas"

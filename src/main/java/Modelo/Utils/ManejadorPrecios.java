@@ -1,4 +1,4 @@
-package modelo.Utils;
+package Modelo.Utils;
 
 public class ManejadorPrecios {
 

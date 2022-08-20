@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="contenedorPrincipal" prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.PantallaPrincipalControl">
+<AnchorPane fx:id="contenedorPrincipal" prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.PantallaPrincipalControl">
    <HBox alignment="CENTER_LEFT" layoutX="100.0" layoutY="726.0" prefHeight="115.0" prefWidth="1000.0">
       <AnchorPane prefHeight="115.0" prefWidth="500.0">
          <HBox alignment="CENTER" layoutX="98.0" layoutY="48.0" prefHeight="51.0" prefWidth="394.0" spacing="15.0">

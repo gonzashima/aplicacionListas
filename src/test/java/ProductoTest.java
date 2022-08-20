@@ -1,4 +1,4 @@
-import modelo.Productos.Producto;
+import Modelo.Productos.Producto;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

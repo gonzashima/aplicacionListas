@@ -1,6 +1,6 @@
-package modelo.Lectores;
+package Modelo.Lectores;
 
-import modelo.Productos.Producto;
+import Modelo.Productos.Producto;
 
 import java.io.File;
 import java.io.IOException;

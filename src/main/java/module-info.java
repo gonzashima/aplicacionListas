@@ -6,12 +6,12 @@ module aplicacionListas {
     requires org.apache.pdfbox;
     requires java.sql;
 
-    exports controladores to javafx.fxml;
+    exports Controladores to javafx.fxml;
 
-    opens modelo;
-    opens modelo.Estado;
-    opens modelo.Utils;
-    opens modelo.Productos;
-    opens controladores to javafx.fxml, javafx.base;
-    opens modelo.Lectores;
+    opens Modelo;
+    opens Modelo.Estado;
+    opens Modelo.Utils;
+    opens Modelo.Productos;
+    opens Controladores to javafx.fxml, javafx.base;
+    opens Modelo.Lectores;
 }

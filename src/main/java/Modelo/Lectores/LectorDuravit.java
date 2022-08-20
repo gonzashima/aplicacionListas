@@ -1,7 +1,7 @@
-package modelo.Lectores;
+package Modelo.Lectores;
 
-import modelo.Productos.Producto;
-import modelo.Utils.ParserTextoAProducto;
+import Modelo.Productos.Producto;
+import Modelo.Utils.ParserTextoAProducto;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 

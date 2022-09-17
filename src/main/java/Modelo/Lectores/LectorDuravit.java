@@ -28,14 +28,26 @@ public class LectorDuravit implements LectorArchivos{
         Pattern pattern = Pattern.compile(PATRON_DURAVIT);
         Matcher matcher;
 
-        for(String leida : lineasTexto){
-            Producto producto;
-            matcher = pattern.matcher(leida);
-            if(matcher.matches()) {
-                producto = parser.aProducto(leida);
-                producto.calcularPrecio();
-                listaProductos.add(producto);
+        if (listaProductos == null)
+            listaProductos = new ArrayList<>();
+
+        if (listaProductos.isEmpty()) {
+            for (String leida : lineasTexto) {
+                Producto producto;
+                matcher = pattern.matcher(leida);
+                if (matcher.matches()) {
+                    producto = parser.aProducto(leida);
+                    producto.calcularPrecio();
+                    listaProductos.add(producto);
+                }
             }
+        }
+        else {
+
+
+
+
+
         }
         pdf.close();
     }

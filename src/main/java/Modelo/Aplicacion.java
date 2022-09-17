@@ -10,18 +10,13 @@ import Modelo.Utils.ConectorDB;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Aplicacion {
 
     private static Aplicacion instance;
-
-    private final ArrayList<Producto> productos;
 
     private Estado estado;
 
@@ -30,7 +25,6 @@ public class Aplicacion {
     private HashMap<String, ArrayList<Producto>> modificaciones;
 
     private Aplicacion(){
-        productos = new ArrayList<>();
         datos = new HashMap<>();
         modificaciones = new HashMap<>();
         estado = null;
@@ -51,9 +45,11 @@ public class Aplicacion {
         nombre = nombre.toLowerCase();
 
         LectorArchivos lectorArchivos = determinarLector(nombre);
-        lectorArchivos.leerArchivo(archivo, productos);
+        ArrayList<Producto> listaProductos = datos.get(nombre);
+
+        lectorArchivos.leerArchivo(archivo, listaProductos);
         determinarEstadoTabla(nombre);
-        estado.insertarABaseDeDatos(productos);
+        estado.insertarABaseDeDatos(listaProductos);
     }
 
     /**
@@ -104,6 +100,32 @@ public class Aplicacion {
         else {
             lista.add(producto);
         }
+    }
+    /**
+     * Guarda todas las modificaciones a la base de datos
+     * */
+    public int guardarModificaciones() throws SQLException {
+        Connection connection = ConectorDB.getConnection();
+        int cambiosTotales = 0;
+
+        if (connection != null) {
+            for (String nombreLista : modificaciones.keySet()) {
+                String query = "UPDATE " + nombreLista + " SET precio=?, porcentaje=? WHERE codigo=?";
+                PreparedStatement statement = connection.prepareStatement(query);
+
+                ArrayList<Producto> lista = modificaciones.get(nombreLista);
+
+                for (Producto producto : lista) {
+                    statement.setInt(1, producto.getPrecio());
+                    statement.setInt(2, producto.getPorcentaje());
+                    statement.setInt(3, producto.getCodigo());
+                    statement.addBatch();
+                }
+                int totalParcial = statement.executeUpdate();
+                cambiosTotales += totalParcial;
+            }
+        }
+        return cambiosTotales;
     }
 
     /**

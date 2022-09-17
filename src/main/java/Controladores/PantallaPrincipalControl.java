@@ -18,10 +18,7 @@ import Modelo.Utils.ConectorDB;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -29,6 +26,8 @@ import java.util.ResourceBundle;
 public class PantallaPrincipalControl implements Initializable {
 
     @FXML private AnchorPane contenedorPrincipal;
+
+    @FXML private MenuItem guardarCambios;
 
     @FXML private ChoiceBox<String> opcionesListas;
 
@@ -51,6 +50,8 @@ public class PantallaPrincipalControl implements Initializable {
         advertenciaDB.setVisible(false);
         advertenciaBuscar.setVisible(false);
         advertenciaModificacion.setVisible(false);
+
+        guardarCambios.setDisable(true);
 
         codigo.setCellValueFactory(new PropertyValueFactory<>("codigo"));
         nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -83,9 +84,10 @@ public class PantallaPrincipalControl implements Initializable {
              * Si ya tengo la info, no hace falta ir a la DB.
              * */
             if (connection != null && app.estaVacia(nombreLista)) {
-                Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                String query = "SELECT * from " + nombreLista + " WHERE precio != 0";
+                PreparedStatement statement = connection.prepareStatement(query);
 
-                ResultSet rs = statement.executeQuery("SELECT * from " + nombreLista + " WHERE precio != 0");
+                ResultSet rs = statement.executeQuery();
 
                 ArrayList<Producto> productos = new ArrayList<>();
 
@@ -155,9 +157,23 @@ public class PantallaPrincipalControl implements Initializable {
                 nombreLista = nombreLista.toLowerCase();
 
                 app.agregarModificacion(nombreLista, producto);
+                guardarCambios.setDisable(false);
             }
         }
     }
+
+    public void guardarCambios() throws SQLException {
+        Aplicacion app = Aplicacion.getInstance();
+        int cambios = app.guardarModificaciones();
+        guardarCambios.setDisable(true);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Cambios realizados");
+        alert.setHeaderText("Se actualizaron " + cambios + " productos.");
+        alert.showAndWait();
+    }
+
+
     public void cerrarApp(){
         Stage ventana = (Stage) contenedorPrincipal.getScene().getWindow();
         Alert.AlertType tipo = Alert.AlertType.CONFIRMATION;

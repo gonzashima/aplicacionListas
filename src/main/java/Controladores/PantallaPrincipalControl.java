@@ -174,7 +174,7 @@ public class PantallaPrincipalControl implements Initializable {
     }
 
 
-    public void cerrarApp(){
+    public void cerrarApp() throws SQLException {
         Stage ventana = (Stage) contenedorPrincipal.getScene().getWindow();
         Alert.AlertType tipo = Alert.AlertType.CONFIRMATION;
         Alert alerta = new Alert(tipo, "");
@@ -186,7 +186,10 @@ public class PantallaPrincipalControl implements Initializable {
 
         Optional<ButtonType> resultado = alerta.showAndWait();
 
-        if (resultado.isPresent() && resultado.get() == ButtonType.OK) { ventana.close();}
+        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+            ConectorDB.close();
+            ventana.close();
+        }
     }
 
     public void cambiarAPantallaArchivos() throws IOException {

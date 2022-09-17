@@ -25,4 +25,9 @@ public class ConectorDB {
         return connection;
     }
 
+    public static void close() throws SQLException {
+        if (connection != null)
+            connection.close();
+    }
+
 }

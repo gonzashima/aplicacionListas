@@ -1,5 +1,6 @@
 package Controladores;
 
+import Modelo.Utils.ConectorDB;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -13,6 +14,7 @@ import Modelo.Aplicacion;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class ControladorLeerArchivos {
@@ -25,7 +27,7 @@ public class ControladorLeerArchivos {
 
     @FXML Button botonBuscar;
 
-    public void cerrarApp(){
+    public void cerrarApp() throws SQLException {
         Stage ventana = (Stage) contenedorPrincipal.getScene().getWindow();
         Alert.AlertType tipo = Alert.AlertType.CONFIRMATION;
         Alert alerta = new Alert(tipo, "");
@@ -37,7 +39,10 @@ public class ControladorLeerArchivos {
 
         Optional<ButtonType> resultado = alerta.showAndWait();
 
-        if (resultado.isPresent() && resultado.get() == ButtonType.OK) { ventana.close();}
+        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+            ConectorDB.close();
+            ventana.close();
+        }
     }
 
     public void cambiarAPantallaListas() throws IOException {

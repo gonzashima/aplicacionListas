@@ -147,6 +147,9 @@ public class PantallaPrincipalControl implements Initializable {
         if (producto == null)
             advertenciaModificacion.setVisible(true);
         else {
+            if (advertenciaModificacion.isVisible())
+                advertenciaModificacion.setVisible(false);
+
             int precioAnterior = producto.getPrecio();
             Producto modificado = VentanaPorcentaje.display(producto);
             tabla.refresh();
@@ -194,19 +197,6 @@ public class PantallaPrincipalControl implements Initializable {
     }
 
     public void cambiarAPantallaArchivos() throws IOException {
-        Stage stage = (Stage) contenedorPrincipal.getScene().getWindow();
-
-        URL url = new File("src/main/java/interfaz/PantallaLeerArchivos.fxml").toURI().toURL();
-        AnchorPane root = FXMLLoader.load(url);
-
-        Scene escenaArchivos = new Scene(root);
-        stage.setScene(escenaArchivos);
-
-        stage.setMaxHeight(750);
-        stage.setMaxWidth(1200);
-        stage.setMinHeight(750);
-        stage.setMinWidth(1200);
-
-        stage.show();
+        VentanaLeerArchivos.display();
     }
 }

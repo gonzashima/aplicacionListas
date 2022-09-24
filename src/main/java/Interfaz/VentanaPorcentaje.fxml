@@ -6,15 +6,15 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="750.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.VentanaPorcentaje">
-    <Label layoutX="95.0" layoutY="74.0" text="Ingresar nuevo porcentaje">
+<AnchorPane prefHeight="150.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.VentanaPorcentaje">
+    <Label layoutX="69.0" layoutY="24.0" text="Ingresar nuevo porcentaje">
         <font>
           <Font size="14.0" />
         </font>
     </Label>
-    <TextField fx:id="campoTexto" alignment="CENTER" layoutX="101.0" layoutY="113.0" promptText="Porcentaje" />
-    <Button fx:id="botonAceptar" layoutX="149.0" layoutY="155.0" mnemonicParsing="false" onAction="#cambiarPorcentaje" text="Aceptar" />
-    <Label fx:id="advertencia" layoutX="64.0" layoutY="198.0" text="Debe ser un numero entero positivo!" textFill="RED">
+    <TextField fx:id="campoTexto" alignment="CENTER" layoutX="74.0" layoutY="62.0" promptText="Porcentaje" />
+    <Button fx:id="botonAceptar" layoutX="121.0" layoutY="101.0" mnemonicParsing="false" onAction="#cambiarPorcentaje" text="Aceptar" />
+    <Label fx:id="advertencia" layoutX="36.0" layoutY="142.0" text="Debe ser un numero entero positivo!" textFill="RED">
         <font>
           <Font size="14.0" />
         </font>

@@ -50,7 +50,7 @@ public class ControladorLeerArchivos {
         Stage stage = (Stage) contenedorPrincipal.getScene().getWindow();
 
         URL url = new File("src/main/java/interfaz/PantallaPrincipal.fxml").toURI().toURL();
-        BorderPane root = FXMLLoader.load(url);
+        AnchorPane root = FXMLLoader.load(url);
 
         Scene escenaArchivos = new Scene(root);
         stage.setScene(escenaArchivos);

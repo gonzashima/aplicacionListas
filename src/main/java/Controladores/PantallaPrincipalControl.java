@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
 
 public class PantallaPrincipalControl implements Initializable {
 
-    @FXML private BorderPane contenedorPrincipal;
+    @FXML private AnchorPane contenedorPrincipal;
 
     @FXML private MenuItem guardarCambios;
 
@@ -201,6 +201,12 @@ public class PantallaPrincipalControl implements Initializable {
 
         Scene escenaArchivos = new Scene(root);
         stage.setScene(escenaArchivos);
+
+        stage.setMaxHeight(750);
+        stage.setMaxWidth(1200);
+        stage.setMinHeight(750);
+        stage.setMinWidth(1200);
+
         stage.show();
     }
 }

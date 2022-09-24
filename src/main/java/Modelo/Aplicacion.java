@@ -47,7 +47,7 @@ public class Aplicacion {
         LectorArchivos lectorArchivos = determinarLector(nombre);
         ArrayList<Producto> listaProductos = datos.get(nombre);
 
-        lectorArchivos.leerArchivo(archivo, listaProductos);
+        listaProductos = lectorArchivos.leerArchivo(archivo, listaProductos);
         determinarEstadoTabla(nombre);
         estado.insertarABaseDeDatos(listaProductos);
     }

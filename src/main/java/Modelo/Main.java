@@ -29,7 +29,9 @@ public class Main extends Application{
 
         stage.setTitle("Listas");
         stage.setScene(escenaPrincipal);
-        stage.setResizable(false);
+        stage.setResizable(true);
+
+        stage.setMaximized(true);
         stage.show();
 
         stage.setOnCloseRequest(e->{e.consume();

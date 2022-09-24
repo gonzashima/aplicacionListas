@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -49,7 +50,7 @@ public class ControladorLeerArchivos {
         Stage stage = (Stage) contenedorPrincipal.getScene().getWindow();
 
         URL url = new File("src/main/java/interfaz/PantallaPrincipal.fxml").toURI().toURL();
-        AnchorPane root = FXMLLoader.load(url);
+        BorderPane root = FXMLLoader.load(url);
 
         Scene escenaArchivos = new Scene(root);
         stage.setScene(escenaArchivos);

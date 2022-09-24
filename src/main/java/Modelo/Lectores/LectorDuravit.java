@@ -16,7 +16,7 @@ public class LectorDuravit implements LectorArchivos{
     private static final String PATRON_DURAVIT = "(\\w*[+/.]*\\s*)* (\\d{5})(\\s*) ((\\d*)\\.\\d{2})";
 
     @Override
-    public void leerArchivo(File archivo, ArrayList<Producto> listaProductos) throws IOException{
+    public ArrayList<Producto> leerArchivo(File archivo, ArrayList<Producto> listaProductos) throws IOException{
         PDDocument pdf = PDDocument.load(archivo);
         PDFTextStripper textStripper = new PDFTextStripper();
         ParserTextoAProducto parser = new ParserTextoAProducto();
@@ -50,5 +50,6 @@ public class LectorDuravit implements LectorArchivos{
 
         }
         pdf.close();
+        return listaProductos;
     }
 }

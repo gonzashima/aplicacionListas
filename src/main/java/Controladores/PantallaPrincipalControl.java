@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import Modelo.Aplicacion;
@@ -25,7 +26,7 @@ import java.util.ResourceBundle;
 
 public class PantallaPrincipalControl implements Initializable {
 
-    @FXML private AnchorPane contenedorPrincipal;
+    @FXML private BorderPane contenedorPrincipal;
 
     @FXML private MenuItem guardarCambios;
 

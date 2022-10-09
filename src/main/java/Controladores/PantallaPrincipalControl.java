@@ -23,6 +23,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -103,7 +104,7 @@ public class PantallaPrincipalControl implements Initializable {
                     String query = "SELECT * from " + nombreLista + " WHERE precio != 0";
                     ResultSet rs = ConectorDB.ejecutarQuery(query);
 
-                    ArrayList<Producto> productos = new ArrayList<>();
+                    HashMap<Integer, Producto> productos = new HashMap<>();
 
                     while (rs.next()) {
                         int codigo = rs.getInt("codigo");
@@ -114,15 +115,15 @@ public class PantallaPrincipalControl implements Initializable {
 
                         Producto producto = new Producto(codigo, nombre, costo, precio, porcentaje);
                         listaOb.add(producto);
-                        productos.add(producto);
+                        productos.put(producto.getCodigo(), producto);
                     }
                     app.agregarListaDeProductos(nombreLista, productos);
                     tabla.setItems(listaOb);
                 }
                 else if (!estaVacia && existeTabla){
-                    ArrayList<Producto> productos = app.obtenerLista(nombreLista);
+                    HashMap<Integer, Producto> productos = app.obtenerLista(nombreLista);
                     listaOb.clear();
-                    listaOb.addAll(productos);
+                    listaOb.addAll(productos.values());
                     tabla.setItems(listaOb);
                 }
                 else {

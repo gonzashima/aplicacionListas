@@ -10,7 +10,7 @@ public class Producto {
     private final String nombre;
     private final int codigo;
     private int precio;
-    private final int costo;
+    private int costo;
     private int porcentaje;
 
     public Producto(String nombre, int codigo, int costo){
@@ -56,6 +56,10 @@ public class Producto {
 
     public void setPorcentaje(int porcentaje) {
         this.porcentaje = porcentaje;
+    }
+
+    public void setCosto(int costo) {
+        this.costo = costo;
     }
 
 

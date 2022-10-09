@@ -1,8 +1,8 @@
 package Modelo;
 
 import Modelo.Estado.Estado;
+import Modelo.Estado.Inexistente;
 import Modelo.Estado.NoVacia;
-import Modelo.Estado.Vacia;
 import Modelo.Lectores.LectorArchivos;
 import Modelo.Lectores.LectorDuravit;
 import Modelo.Productos.Producto;
@@ -10,7 +10,10 @@ import Modelo.Utils.ConectorDB;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -22,7 +25,7 @@ public class Aplicacion {
 
     private HashMap<String, HashMap<Integer, Producto>> datos;
 
-    private HashMap<String, HashMap<Producto>> modificaciones;
+    private HashMap<String, ArrayList<Producto>> modificaciones;
 
     private Aplicacion(){
         datos = new HashMap<>();
@@ -45,11 +48,11 @@ public class Aplicacion {
         nombre = nombre.toLowerCase();
 
         LectorArchivos lectorArchivos = determinarLector(nombre);
-        ArrayList<Producto> listaProductos = datos.get(nombre);
+        HashMap<Integer, Producto> mapaProductos = datos.get(nombre);
 
-        listaProductos = lectorArchivos.leerArchivo(archivo, listaProductos);
+        mapaProductos = lectorArchivos.leerArchivo(archivo, mapaProductos);
         determinarEstadoTabla(nombre);
-        estado.insertarABaseDeDatos(listaProductos);
+        estado.insertarABaseDeDatos(mapaProductos, nombre);
     }
 
     /**
@@ -58,27 +61,21 @@ public class Aplicacion {
     private void determinarEstadoTabla(String nombreTabla) throws SQLException {
         Connection connection = ConectorDB.getConnection();
 
-        if(connection != null) {
-            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            ResultSet resultSet = statement.executeQuery("select count(*) from " + nombreTabla);
-            int cantidad = 0;
-            while (resultSet.next())
-                cantidad = resultSet.getInt(1);
-
-            if (cantidad == 0)
-                estado = new Vacia();
+        if(connection!= null) {
+            DatabaseMetaData md = connection.getMetaData();
+            ResultSet rs = md.getTables(null, null, nombreTabla, null);
+            if (!rs.next())
+                estado = new Inexistente();
             else
                 estado = new NoVacia();
         }
-        else
-            System.out.println("No se pudo conectar con la base de datos");
     }
 
     /**
      * Agrega una lista al mapa con todas las listas
      * */
-    public void agregarListaDeProductos(String nombreLista, ArrayList<Producto> listaProductos) {
-        datos.put(nombreLista, listaProductos);
+    public void agregarListaDeProductos(String nombreLista, HashMap<Integer, Producto> mapaProductos) {
+        datos.put(nombreLista, mapaProductos);
     }
 
     /**
@@ -110,19 +107,9 @@ public class Aplicacion {
 
         if (connection != null) {
             for (String nombreLista : modificaciones.keySet()) {
-                String query = "UPDATE " + nombreLista + " SET precio=?, porcentaje=? WHERE codigo=?";
-                PreparedStatement statement = connection.prepareStatement(query);
-
-                ArrayList<Producto> lista = modificaciones.get(nombreLista);
-
-                for (Producto producto : lista) {
-                    statement.setInt(1, producto.getPrecio());
-                    statement.setInt(2, producto.getPorcentaje());
-                    statement.setInt(3, producto.getCodigo());
-                    statement.addBatch();
-                }
-                int totalParcial = statement.executeUpdate();
-                cambiosTotales += totalParcial;
+                ArrayList<Producto> productos = modificaciones.get(nombreLista);
+                int parcial = ConectorDB.guardarCambios(productos, nombreLista);
+                cambiosTotales += parcial;
             }
         }
         return cambiosTotales;
@@ -131,17 +118,20 @@ public class Aplicacion {
     /**
      * Busca el producto buscado en la lista elegida
      * */
-    public ArrayList<Producto> buscarProducto(String key, String buscado) {
-        key = key.toLowerCase();
+    public ArrayList<Producto> buscarProducto(String clave, String buscado) {
+        clave = clave.toLowerCase();
         buscado = buscado.toUpperCase();
-        ArrayList<Producto> productos = datos.get(key);
+
+        HashMap<Integer, Producto> productos = datos.get(clave);
         ArrayList<Producto> filtrados = new ArrayList<>();
 
-        for (Producto p : productos) {
-            if (p.getNombre().contains(buscado)){
-                filtrados.add(p);
+        String finalBuscado = buscado;
+
+        productos.forEach((key, value) -> {
+            if (value.getNombre().contains(finalBuscado)) {
+                filtrados.add(value);
             }
-        }
+        });
         return filtrados;
     }
 
@@ -150,7 +140,7 @@ public class Aplicacion {
      * */
     public boolean estaVacia(String nombreLista) {
         nombreLista = nombreLista.toLowerCase();
-        ArrayList<Producto> productos = datos.get(nombreLista);
+        HashMap<Integer, Producto> productos = datos.get(nombreLista);
 
         if (productos == null)
             return true;
@@ -158,7 +148,7 @@ public class Aplicacion {
         return productos.isEmpty();
     }
 
-    public ArrayList<Producto> obtenerLista(String nombreTabla) {
+    public HashMap<Integer, Producto> obtenerLista(String nombreTabla) {
         return datos.get(nombreTabla);
     }
 

@@ -14,4 +14,6 @@ module aplicacionListas {
     opens Modelo.Productos;
     opens Controladores to javafx.fxml, javafx.base;
     opens Modelo.Lectores;
+    exports Controladores.Alertas to javafx.fxml;
+    opens Controladores.Alertas to javafx.base, javafx.fxml;
 }

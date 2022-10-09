@@ -1,25 +1,27 @@
 package Controladores;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import Controladores.Alertas.AlertaConexion;
+import Controladores.Alertas.AlertaDB;
+import Controladores.Alertas.AlertaTabla;
 import Modelo.Aplicacion;
 import Modelo.Productos.Producto;
 import Modelo.Utils.ConectorDB;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -32,7 +34,7 @@ public class PantallaPrincipalControl implements Initializable {
 
     @FXML private ChoiceBox<String> opcionesListas;
 
-    @FXML private Label advertencia, advertenciaDB, advertenciaBuscar, advertenciaModificacion;
+    @FXML private Label advertencia, advertenciaBuscar, advertenciaModificacion;
 
     @FXML private TableView<Producto> tabla;
 
@@ -48,7 +50,6 @@ public class PantallaPrincipalControl implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         opcionesListas.getItems().addAll(listas);
         advertencia.setVisible(false);
-        advertenciaDB.setVisible(false);
         advertenciaBuscar.setVisible(false);
         advertenciaModificacion.setVisible(false);
 
@@ -59,6 +60,13 @@ public class PantallaPrincipalControl implements Initializable {
         costo.setCellValueFactory(new PropertyValueFactory<>("costo"));
         precio.setCellValueFactory(new PropertyValueFactory<>("precio"));
         porcentaje.setCellValueFactory(new PropertyValueFactory<>("porcentaje"));
+    }
+
+    private boolean existeTabla(String nombre, Connection connection) throws SQLException {
+        DatabaseMetaData md = connection.getMetaData();
+        ResultSet rs = md.getTables(null, null, nombre, null);
+
+        return rs.next();
     }
 
     /**
@@ -80,40 +88,51 @@ public class PantallaPrincipalControl implements Initializable {
             Connection connection = ConectorDB.getConnection();
             nombreLista = nombreLista.toLowerCase();
 
-            /*
-             * Basicamente, si la conexion esta y todavia no tengo en memoria la info para mostrar, voy a la DB.
-             * Si ya tengo la info, no hace falta ir a la DB.
-             * */
-            if (connection != null && app.estaVacia(nombreLista)) {
-                String query = "SELECT * from " + nombreLista + " WHERE precio != 0";
-                PreparedStatement statement = connection.prepareStatement(query);
 
-                ResultSet rs = statement.executeQuery();
+            if (connection != null) {
+                boolean existeTabla, estaVacia;
 
-                ArrayList<Producto> productos = new ArrayList<>();
+                existeTabla = existeTabla(nombreLista, connection);
+                estaVacia = app.estaVacia(nombreLista);
 
-                while (rs.next()) {
-                    int codigo = rs.getInt("codigo");
-                    String nombre = rs.getString("nombre");
-                    int costo = rs.getInt("costo");
-                    int precio = rs.getInt("precio");
-                    int porcentaje = rs.getInt("porcentaje");
+                /*
+                 * Basicamente, si la conexion esta y todavia no tengo en memoria la info para mostrar, voy a la DB.
+                 * Si ya tengo la info, no hace falta ir a la DB.
+                 * */
+                if (estaVacia && existeTabla) {
+                    String query = "SELECT * from " + nombreLista + " WHERE precio != 0";
+                    ResultSet rs = ConectorDB.ejecutarQuery(query);
 
-                    Producto producto = new Producto(codigo, nombre, costo, precio, porcentaje);
-                    listaOb.add(producto);
-                    productos.add(producto);
+                    ArrayList<Producto> productos = new ArrayList<>();
+
+                    while (rs.next()) {
+                        int codigo = rs.getInt("codigo");
+                        String nombre = rs.getString("nombre");
+                        int costo = rs.getInt("costo");
+                        int precio = rs.getInt("precio");
+                        int porcentaje = rs.getInt("porcentaje");
+
+                        Producto producto = new Producto(codigo, nombre, costo, precio, porcentaje);
+                        listaOb.add(producto);
+                        productos.add(producto);
+                    }
+                    app.agregarListaDeProductos(nombreLista, productos);
+                    tabla.setItems(listaOb);
                 }
-                app.agregarListaDeProductos(nombreLista, productos);
-                tabla.setItems(listaOb);
-
-            } else if (connection == null)
-                advertenciaDB.setVisible(true);
-
+                else if (!estaVacia && existeTabla){
+                    ArrayList<Producto> productos = app.obtenerLista(nombreLista);
+                    listaOb.clear();
+                    listaOb.addAll(productos);
+                    tabla.setItems(listaOb);
+                }
+                else {
+                    AlertaDB alerta = new AlertaTabla();
+                    alerta.display();
+                }
+            }
             else {
-                ArrayList<Producto> productos = app.obtenerLista(nombreLista);
-                listaOb.clear();
-                listaOb.addAll(productos);
-                tabla.setItems(listaOb);
+                AlertaDB alerta = new AlertaConexion();
+                alerta.display();
             }
         }
     }

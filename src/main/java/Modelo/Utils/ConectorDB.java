@@ -1,8 +1,6 @@
 package Modelo.Utils;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * Se utiliza para obtener siempre la misma conexion a la base de datos y no perder tiempo intentando crear una nueva conexion cada vez que se necesita
@@ -28,6 +26,12 @@ public class ConectorDB {
     public static void close() throws SQLException {
         if (connection != null)
             connection.close();
+    }
+
+    public static ResultSet ejecutarQuery(String query) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        return statement.executeQuery();
     }
 
 }

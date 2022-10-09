@@ -13,4 +13,9 @@ public interface LectorArchivos {
      */
     HashMap<Integer, Producto> leerArchivo(File archivo, HashMap<Integer, Producto> listaProductos) throws IOException;
 
+    /**
+     * Devuelve el nombre de la tabla a la que se refiere este lector
+     * */
+    String nombreTabla();
+
 }

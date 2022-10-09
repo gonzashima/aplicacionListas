@@ -48,6 +48,7 @@ public class Aplicacion {
         nombre = nombre.toLowerCase();
 
         LectorArchivos lectorArchivos = determinarLector(nombre);
+        nombre = lectorArchivos.nombreTabla();
         HashMap<Integer, Producto> mapaProductos = datos.get(nombre);
 
         mapaProductos = lectorArchivos.leerArchivo(archivo, mapaProductos);
@@ -159,11 +160,8 @@ public class Aplicacion {
     private LectorArchivos determinarLector(String nombre) {
         LectorArchivos lector = null;
 
-        switch (nombre) {
-            case "duravit":
-                lector = new LectorDuravit();
-                break;
-        }
+        if (nombre.contains("duravit"))
+            lector = new LectorDuravit();
 
         return lector;
     }

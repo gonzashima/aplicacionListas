@@ -50,4 +50,9 @@ public class LectorDuravit implements LectorArchivos{
         pdf.close();
         return mapaProductos;
     }
+
+    @Override
+    public String nombreTabla() {
+        return "duravit";
+    }
 }

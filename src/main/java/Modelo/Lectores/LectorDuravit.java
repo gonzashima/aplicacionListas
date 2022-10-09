@@ -31,23 +31,22 @@ public class LectorDuravit implements LectorArchivos{
         if (listaProductos == null)
             listaProductos = new ArrayList<>();
 
-        if (listaProductos.isEmpty()) {
+        else {
+            Producto producto;
             for (String leida : lineasTexto) {
-                Producto producto;
                 matcher = pattern.matcher(leida);
                 if (matcher.matches()) {
                     producto = parser.aProducto(leida);
                     producto.calcularPrecio();
-                    listaProductos.add(producto);
+
+                    if (listaProductos.isEmpty())
+                        listaProductos.add(producto);
+
+                    else {
+
+                    }
                 }
             }
-        }
-        else {
-
-
-
-
-
         }
         pdf.close();
         return listaProductos;

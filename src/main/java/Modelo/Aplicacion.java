@@ -20,9 +20,9 @@ public class Aplicacion {
 
     private Estado estado;
 
-    private HashMap<String, ArrayList<Producto>> datos;
+    private HashMap<String, HashMap<Integer, Producto>> datos;
 
-    private HashMap<String, ArrayList<Producto>> modificaciones;
+    private HashMap<String, HashMap<Producto>> modificaciones;
 
     private Aplicacion(){
         datos = new HashMap<>();

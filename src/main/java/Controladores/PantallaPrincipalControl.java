@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -55,6 +56,11 @@ public class PantallaPrincipalControl implements Initializable {
         advertenciaModificacion.setVisible(false);
 
         guardarCambios.setDisable(true);
+
+        textoBuscado.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode().equals(KeyCode.ENTER))
+                buscarProducto();
+        });
 
         codigo.setCellValueFactory(new PropertyValueFactory<>("codigo"));
         nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));

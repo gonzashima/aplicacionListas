@@ -22,7 +22,7 @@ public class Main extends Application{
 
     @Override
     public void start(Stage stage) throws IOException {
-        URL url = new File("src/main/java/interfaz/PantallaPrincipal.fxml").toURI().toURL();
+        URL url = new File("src/main/java/Interfaz/PantallaPrincipal.fxml").toURI().toURL();
 
         Parent root = FXMLLoader.load(url);
         Scene escenaPrincipal = new Scene(root);

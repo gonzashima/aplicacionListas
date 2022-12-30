@@ -42,7 +42,7 @@ public class VentanaPorcentaje implements Initializable {
         ventana.initModality(Modality.APPLICATION_MODAL);
         ventana.setResizable(false);
 
-        URL url = new File("src/main/java/interfaz/VentanaPorcentaje.fxml").toURI().toURL();
+        URL url = new File("src/main/java/Interfaz/VentanaPorcentaje.fxml").toURI().toURL();
         AnchorPane root = FXMLLoader.load(url);
 
         Scene escena = new Scene(root);

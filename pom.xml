@@ -10,12 +10,17 @@
     <packaging>jar</packaging>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
         <javafx-version>17</javafx-version>
     </properties>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <targetPath>resources</targetPath>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.openjfx</groupId>
@@ -40,6 +45,7 @@
                 <version>3.4.1</version>
                 <executions>
                     <execution>
+                        <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>

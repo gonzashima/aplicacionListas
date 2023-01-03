@@ -9,9 +9,8 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Main extends Application{
@@ -22,9 +21,7 @@ public class Main extends Application{
 
     @Override
     public void start(Stage stage) throws IOException {
-        URL url = new File("src/main/java/Interfaz/PantallaPrincipal.fxml").toURI().toURL();
-
-        Parent root = FXMLLoader.load(url);
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/resources/fxml/PantallaPrincipal.fxml")));
         Scene escenaPrincipal = new Scene(root);
 
         stage.setTitle("Listas");

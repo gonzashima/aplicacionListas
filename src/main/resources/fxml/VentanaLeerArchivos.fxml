@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane fx:id="contenedorPrincipal" prefHeight="150.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/18"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.VentanaLeerArchivos">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.Ventanas.VentanaLeerArchivos">
    <Button fx:id="seleccionarArchivo" layoutX="62.0" layoutY="62.0" mnemonicParsing="false" onAction="#buscarArchivo"
            text="Seleccionar archivo..."/>
    <Button fx:id="botonCancelar" layoutX="174.0" layoutY="110.0" mnemonicParsing="false" onAction="#cerrarApp"

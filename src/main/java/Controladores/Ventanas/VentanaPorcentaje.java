@@ -1,4 +1,4 @@
-package Controladores;
+package Controladores.Ventanas;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,9 +14,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import Modelo.Productos.Producto;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class VentanaPorcentaje implements Initializable {
@@ -34,7 +34,7 @@ public class VentanaPorcentaje implements Initializable {
         advertencia.setVisible(false);
     }
 
-    public static Producto display(Producto input) throws IOException {
+    public Producto display(Producto input) throws IOException {
         Stage ventana = new Stage();
         producto = input;
 
@@ -42,8 +42,7 @@ public class VentanaPorcentaje implements Initializable {
         ventana.initModality(Modality.APPLICATION_MODAL);
         ventana.setResizable(false);
 
-        URL url = new File("src/main/java/Interfaz/VentanaPorcentaje.fxml").toURI().toURL();
-        AnchorPane root = FXMLLoader.load(url);
+        AnchorPane root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/resources/fxml/VentanaPorcentaje.fxml")));
 
         Scene escena = new Scene(root);
         ventana.setScene(escena);

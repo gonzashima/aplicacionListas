@@ -1,4 +1,4 @@
-package Controladores;
+package Controladores.Ventanas;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +12,7 @@ import Modelo.Aplicacion;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.util.Objects;
 
 public class VentanaLeerArchivos {
 
@@ -20,15 +20,14 @@ public class VentanaLeerArchivos {
 
     @FXML Button seleccionarArchivo, botonCancelar;
 
-    public static void display() throws IOException {
+    public void display() throws IOException {
         Stage ventana = new Stage();
 
         ventana.setTitle("Leer archivo");
         ventana.initModality(Modality.APPLICATION_MODAL);
         ventana.setResizable(false);
 
-        URL url = new File("src/main/java/Interfaz/VentanaLeerArchivos.fxml").toURI().toURL();
-        AnchorPane root = FXMLLoader.load(url);
+        AnchorPane root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/resources/fxml/VentanaLeerArchivos.fxml")));
 
         Scene escena = new Scene(root);
         ventana.setScene(escena);

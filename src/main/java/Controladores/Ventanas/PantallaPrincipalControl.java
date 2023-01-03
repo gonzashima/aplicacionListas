@@ -1,4 +1,4 @@
-package Controladores;
+package Controladores.Ventanas;
 
 import Controladores.Alertas.AlertaConexion;
 import Controladores.Alertas.AlertaDB;
@@ -177,7 +177,8 @@ public class PantallaPrincipalControl implements Initializable {
                 advertenciaModificacion.setVisible(false);
 
             int precioAnterior = producto.getPrecio();
-            Producto modificado = VentanaPorcentaje.display(producto);
+            VentanaPorcentaje ventanaPorcentaje = new VentanaPorcentaje();
+            Producto modificado = ventanaPorcentaje.display(producto);
             tabla.refresh();
 
             if (precioAnterior != modificado.getPrecio()) {
@@ -223,6 +224,7 @@ public class PantallaPrincipalControl implements Initializable {
     }
 
     public void cambiarAPantallaArchivos() throws IOException {
-        VentanaLeerArchivos.display();
+        VentanaLeerArchivos ventanaLeerArchivos = new VentanaLeerArchivos();
+        ventanaLeerArchivos.display();
     }
 }

@@ -5,6 +5,7 @@ import Controladores.Alertas.AlertaDB;
 import Controladores.Alertas.AlertaTabla;
 import Modelo.Aplicacion;
 import Modelo.Productos.Producto;
+import Modelo.Utils.Casas;
 import Modelo.Utils.ConectorDB;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,12 +30,13 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class PantallaPrincipalControl implements Initializable {
+    @FXML private Button botonMostrar;
 
     @FXML private AnchorPane contenedorPrincipal;
 
     @FXML private MenuItem guardarCambios;
 
-    @FXML private ChoiceBox<String> opcionesListas;
+    @FXML private ChoiceBox<String> opcionesListas, opcionesCasas;
 
     @FXML private Label advertencia, advertenciaBuscar, advertenciaModificacion;
 
@@ -44,13 +46,24 @@ public class PantallaPrincipalControl implements Initializable {
 
     @FXML private TextField textoBuscado;
 
-    private final String[] listas = {"Duravit"};
-
     private final ObservableList<Producto> listaOb = FXCollections.observableArrayList();
+
+
+    private ArrayList<String> casasAString() {
+        ArrayList<String> nombresCasas = new ArrayList<>();
+        Casas[] casas = Casas.values();
+
+        for (Casas casa : casas) {
+            nombresCasas.add(casa.toString());
+        }
+        return nombresCasas;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        opcionesListas.getItems().addAll(listas);
+        opcionesCasas.getItems().addAll(casasAString());
+        botonMostrar.setDisable(true);
+
         advertencia.setVisible(false);
         advertenciaBuscar.setVisible(false);
         advertenciaModificacion.setVisible(false);
@@ -75,6 +88,22 @@ public class PantallaPrincipalControl implements Initializable {
 
         return rs.next();
     }
+
+    /**
+     * De acuerdo con la casa seleccionada, muestra las listas correspondientes a esa casa en la choicebox de listas
+     * */
+    public void seleccionarCasa() {
+        String casa = opcionesCasas.getValue();
+        casa = casa.toUpperCase();
+        Casas casaEnum = Casas.valueOf(casa);
+        String[] listas = casaEnum.getListas();
+
+        opcionesListas.getItems().clear();
+        opcionesListas.getItems().addAll(listas);
+
+        botonMostrar.setDisable(false);
+    }
+
 
     /**
      * Muestra toda la informacion de la tabla pedida, exceptuando a aquellos productos cuyo precio sea 0

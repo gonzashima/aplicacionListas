@@ -72,6 +72,20 @@ public class Aplicacion {
         }
     }
 
+
+    /**
+     * Determina si la lista esta vacia
+     * */
+    public boolean estaVacia(String nombreLista) {
+        nombreLista = nombreLista.toLowerCase();
+        HashMap<Integer, Producto> productos = datos.get(nombreLista);
+
+        if (productos == null)
+            return true;
+
+        return productos.isEmpty();
+    }
+
     /**
      * Agrega una lista al mapa con todas las listas
      * */
@@ -134,19 +148,6 @@ public class Aplicacion {
             }
         });
         return filtrados;
-    }
-
-    /**
-     * Determina si la lista esta vacia
-     * */
-    public boolean estaVacia(String nombreLista) {
-        nombreLista = nombreLista.toLowerCase();
-        HashMap<Integer, Producto> productos = datos.get(nombreLista);
-
-        if (productos == null)
-            return true;
-
-        return productos.isEmpty();
     }
 
     public HashMap<Integer, Producto> obtenerLista(String nombreTabla) {

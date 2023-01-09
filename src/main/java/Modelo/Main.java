@@ -35,6 +35,7 @@ public class Main extends Application{
         stage.setMaxWidth(1200);
 
         stage.show();
+        root.requestFocus();   //hace que nada este seleccionado al iniciar la aplicacion
 
         stage.setOnCloseRequest(e->{e.consume();
             cerrarPrograma(stage);});

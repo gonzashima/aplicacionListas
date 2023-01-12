@@ -14,12 +14,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * Controlador de la ventana que se encarga de leer los archivos
+ * */
 public class VentanaLeerArchivos {
 
     @FXML AnchorPane contenedorPrincipal;
 
     @FXML Button seleccionarArchivo, botonCancelar;
 
+    /**
+     * Muestra por pantalla la ventana para leer archivos
+     * */
     public void display() throws IOException {
         Stage ventana = new Stage();
 
@@ -34,7 +40,10 @@ public class VentanaLeerArchivos {
         ventana.showAndWait();
     }
 
-    public void cerrarApp() {
+    /**
+     * Cierra la ventana
+     * */
+    public void cerrarVentana() {
         Stage ventana = (Stage) contenedorPrincipal.getScene().getWindow();
         ventana.close();
     }

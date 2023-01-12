@@ -5,6 +5,7 @@ import Modelo.Estado.Inexistente;
 import Modelo.Estado.NoVacia;
 import Modelo.Lectores.LectorArchivos;
 import Modelo.Lectores.LectorDuravit;
+import Modelo.Lectores.LectorMafersa;
 import Modelo.Productos.Producto;
 import Modelo.Utils.ConectorDB;
 
@@ -53,7 +54,7 @@ public class Aplicacion {
 
         mapaProductos = lectorArchivos.leerArchivo(archivo, mapaProductos);
         determinarEstadoTabla(nombre);
-        estado.insertarABaseDeDatos(mapaProductos, nombre);
+        this.estado.insertarABaseDeDatos(mapaProductos, nombre);
     }
 
     /**
@@ -66,9 +67,9 @@ public class Aplicacion {
             DatabaseMetaData md = connection.getMetaData();
             ResultSet rs = md.getTables(null, null, nombreTabla, null);
             if (!rs.next())
-                estado = new Inexistente();
+                this.estado = new Inexistente();
             else
-                estado = new NoVacia();
+                this.estado = new NoVacia();
         }
     }
 
@@ -163,6 +164,8 @@ public class Aplicacion {
 
         if (nombre.contains("duravit"))
             lector = new LectorDuravit();
+        if (nombre.contains("mafersa") || nombre.contains("MAFERSA"))
+            lector = new LectorMafersa();
 
         return lector;
     }

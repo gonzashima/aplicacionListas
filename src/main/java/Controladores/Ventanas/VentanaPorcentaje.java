@@ -19,6 +19,10 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+
+/**
+ * Controlador de la ventana para modificar porcentajes
+ */
 public class VentanaPorcentaje implements Initializable {
 
     @FXML TextField campoTexto;
@@ -27,16 +31,20 @@ public class VentanaPorcentaje implements Initializable {
 
     @FXML Label advertencia;
 
-    static Producto producto;
+    private static Producto producto;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         advertencia.setVisible(false);
     }
 
-    public Producto display(Producto input) throws IOException {
+
+    /**
+     * Muestra por pantalla la ventana para modificar porcentajes
+     * */
+    public Producto display(Producto producto) throws IOException {
         Stage ventana = new Stage();
-        producto = input;
+        VentanaPorcentaje.producto = producto;
 
         ventana.setTitle("Modificar porcantaje");
         ventana.initModality(Modality.APPLICATION_MODAL);
@@ -51,6 +59,9 @@ public class VentanaPorcentaje implements Initializable {
         return producto;
     }
 
+    /**
+     * Cambia el porcentaje
+     * */
     public void cambiarPorcentaje(ActionEvent event) {
         String texto = campoTexto.getText();
 

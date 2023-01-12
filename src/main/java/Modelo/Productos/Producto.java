@@ -3,8 +3,7 @@ package Modelo.Productos;
 import Modelo.Utils.ManejadorPrecios;
 
 /**
- * TODO en un futuro la clase producto se deberia convertir en una clase abstracta o interfaz y que todos los productos de las diferentes
- * TODO listas hereden de ella. Es una idea. Evaluar mas adelante
+ * Representacion de un producto generico
  * */
 public class Producto {
     private final String nombre;

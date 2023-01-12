@@ -29,6 +29,10 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+
+/**
+ * Es el controlador de la pantalla principal y maneja todas las accione que ocurren en ella.
+ * */
 public class PantallaPrincipalControl implements Initializable {
     @FXML private Button botonMostrar;
 
@@ -48,7 +52,9 @@ public class PantallaPrincipalControl implements Initializable {
 
     private final ObservableList<Producto> listaOb = FXCollections.observableArrayList();
 
-
+    /**
+     * Pasa todas las casas a string y las devuelve como array
+     * */
     private ArrayList<String> casasAString() {
         ArrayList<String> nombresCasas = new ArrayList<>();
         Casas[] casas = Casas.values();
@@ -82,6 +88,9 @@ public class PantallaPrincipalControl implements Initializable {
         porcentaje.setCellValueFactory(new PropertyValueFactory<>("porcentaje"));
     }
 
+    /**
+     * Determina si una tabla con cierto nombre existe o no
+     * */
     private boolean existeTabla(String nombre, Connection connection) throws SQLException {
         DatabaseMetaData md = connection.getMetaData();
         ResultSet rs = md.getTables(null, null, nombre, null);
@@ -114,6 +123,7 @@ public class PantallaPrincipalControl implements Initializable {
 
         String nombreLista = opcionesListas.getValue();
         Aplicacion app = Aplicacion.getInstance();
+        AlertaDB alerta = null;
 
         if (nombreLista == null)
             advertencia.setVisible(true);
@@ -162,12 +172,12 @@ public class PantallaPrincipalControl implements Initializable {
                     tabla.setItems(listaOb);
                 }
                 else {
-                    AlertaDB alerta = new AlertaTabla();
+                    alerta = new AlertaTabla();
                     alerta.display();
                 }
             }
             else {
-                AlertaDB alerta = new AlertaConexion();
+                alerta = new AlertaConexion();
                 alerta.display();
             }
         }
@@ -194,7 +204,7 @@ public class PantallaPrincipalControl implements Initializable {
     }
 
     /**
-     * Modifica el porcentaje del producto seleccionado
+     * Muestra una nueva ventana y modifica el porcentaje del producto seleccionado
      * */
     public void modificarPorcentaje() throws IOException {
         Producto producto = tabla.getSelectionModel().getSelectedItem();
@@ -222,6 +232,9 @@ public class PantallaPrincipalControl implements Initializable {
         }
     }
 
+    /**
+     * Indica a Aplicacion que debe guardar todos los cambios acumulados hasta el momento
+     * */
     public void guardarCambios() throws SQLException {
         Aplicacion app = Aplicacion.getInstance();
         int cambios = app.guardarModificaciones();
@@ -234,6 +247,9 @@ public class PantallaPrincipalControl implements Initializable {
     }
 
 
+    /**
+     * Cierra la aplicacion
+     * */
     public void cerrarApp() throws SQLException {
         Stage ventana = (Stage) contenedorPrincipal.getScene().getWindow();
         Alert.AlertType tipo = Alert.AlertType.CONFIRMATION;
@@ -241,7 +257,7 @@ public class PantallaPrincipalControl implements Initializable {
 
         alerta.initModality(Modality.APPLICATION_MODAL);
         alerta.initOwner(ventana);
-        alerta.getDialogPane().setContentText("Seguro que desea salir?");
+        alerta.getDialogPane().setContentText("Seguro que desea salir? Los cambios no guardados se perderan");
         alerta.getDialogPane().setHeaderText("SALIR");
 
         Optional<ButtonType> resultado = alerta.showAndWait();
@@ -252,7 +268,10 @@ public class PantallaPrincipalControl implements Initializable {
         }
     }
 
-    public void cambiarAPantallaArchivos() throws IOException {
+    /**
+     * Muestra por pantalla la ventana para leer archivos
+     * */
+    public void mostrarVentanaArchivos() throws IOException {
         VentanaLeerArchivos ventanaLeerArchivos = new VentanaLeerArchivos();
         ventanaLeerArchivos.display();
     }

@@ -8,12 +8,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
-public class Main extends Application{
+public class Main extends Application {
 
     //TODO revisar que es lo de github actions para java y maven
 
@@ -37,8 +36,10 @@ public class Main extends Application{
         stage.show();
         root.requestFocus();   //hace que nada este seleccionado al iniciar la aplicacion
 
-        stage.setOnCloseRequest(e->{e.consume();
-            cerrarPrograma(stage);});
+        stage.setOnCloseRequest(e -> {
+            e.consume();
+            cerrarPrograma(stage);
+        });
     }
 
     private void cerrarPrograma(Stage ventana) {
@@ -52,10 +53,14 @@ public class Main extends Application{
 
         Optional<ButtonType> resultado = alerta.showAndWait();
 
-        if (resultado.isPresent() && resultado.get() == ButtonType.OK) { ventana.close();}
+        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+            ventana.close();
+        }
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         launch(args);
+//        LectorMafersa lectorMafersa = new LectorMafersa();
+//        lectorMafersa.leerArchivo(null, null);
     }
 }

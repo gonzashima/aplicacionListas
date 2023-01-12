@@ -5,6 +5,8 @@ module aplicacionListas {
     requires java.desktop;
     requires org.apache.pdfbox;
     requires java.sql;
+    requires org.apache.poi.poi;
+    requires org.apache.poi.ooxml;
 
     exports Controladores.Ventanas to javafx.fxml;
 

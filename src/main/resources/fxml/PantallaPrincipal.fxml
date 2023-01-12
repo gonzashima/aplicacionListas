@@ -26,7 +26,7 @@
    <MenuBar prefWidth="1200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <Menu mnemonicParsing="false" text="Opciones">
          <MenuItem fx:id="guardarCambios" mnemonicParsing="false" onAction="#guardarCambios" text="Guardar cambios" />
-         <MenuItem mnemonicParsing="false" onAction="#cambiarAPantallaArchivos" text="Leer archivo" />
+         <MenuItem mnemonicParsing="false" onAction="#mostrarVentanaArchivos" text="Leer archivo" />
          <MenuItem mnemonicParsing="false" onAction="#cerrarApp" text="Cerrar" />
       </Menu>
    </MenuBar>

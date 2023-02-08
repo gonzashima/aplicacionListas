@@ -6,8 +6,12 @@ import Modelo.Estado.NoVacia;
 import Modelo.Lectores.LectorArchivos;
 import Modelo.Lectores.LectorDuravit;
 import Modelo.Lectores.LectorMafersa;
+import Modelo.Parsers.Parser;
+import Modelo.Parsers.ParserDuravit;
+import Modelo.Parsers.ParserMafersa;
 import Modelo.Productos.Producto;
 import Modelo.Utils.ConectorDB;
+import Modelo.Utils.Resultado;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,9 +28,9 @@ public class Aplicacion {
 
     private Estado estado;
 
-    private HashMap<String, HashMap<Integer, Producto>> datos;
+    private final HashMap<String, HashMap<Integer, Producto>> datos;
 
-    private HashMap<String, ArrayList<Producto>> modificaciones;
+    private final HashMap<String, ArrayList<Producto>> modificaciones;
 
     private Aplicacion(){
         datos = new HashMap<>();
@@ -48,11 +52,14 @@ public class Aplicacion {
         nombre = nombre.substring(0, nombre.lastIndexOf("."));
         nombre = nombre.toLowerCase();
 
-        LectorArchivos lectorArchivos = determinarLector(nombre);
-        nombre = lectorArchivos.nombreTabla();
+        Resultado utilidades = determinarUtilidades(nombre);
+        LectorArchivos lector = utilidades.lector();
+        Parser parser = utilidades.parser();
+
+        nombre = lector.nombreTabla();
         HashMap<Integer, Producto> mapaProductos = datos.get(nombre);
 
-        mapaProductos = lectorArchivos.leerArchivo(archivo, mapaProductos);
+        ArrayList<String> texto = lector.leerArchivo(archivo);
         determinarEstadoTabla(nombre);
         this.estado.insertarABaseDeDatos(mapaProductos, nombre);
     }
@@ -159,14 +166,14 @@ public class Aplicacion {
     /**
      * Determina el lector a instanciar segun el nombre del archivo
      * */
-    private LectorArchivos determinarLector(String nombre) {
-        LectorArchivos lector = null;
+    private Resultado determinarUtilidades(String nombre) {
+        Resultado resultado = null;
 
-        if (nombre.contains("duravit"))
-            lector = new LectorDuravit();
-        if (nombre.contains("mafersa") || nombre.contains("MAFERSA"))
-            lector = new LectorMafersa();
+        if (nombre.contains("duravit") || nombre.contains("DURAVIT"))
+            resultado = new Resultado(new LectorDuravit(), new ParserDuravit());
+        else if (nombre.contains("mafersa") || nombre.contains("MAFERSA"))
+            resultado = new Resultado(new LectorMafersa(), new ParserMafersa());
 
-        return lector;
+        return resultado;
     }
 }

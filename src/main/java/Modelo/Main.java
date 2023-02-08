@@ -1,22 +1,21 @@
 package Modelo;
 
+import Modelo.Lectores.LectorMafersa;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
 public class Main extends Application {
-
-    //TODO revisar que es lo de github actions para java y maven
-
-    //TODO ver si se puede hacer lo de cerrar la app singleton o algo asi para todos
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -32,6 +31,7 @@ public class Main extends Application {
 
         stage.setMaxHeight(750);
         stage.setMaxWidth(1200);
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/resources/icon.png"))));
 
         stage.show();
         root.requestFocus();   //hace que nada este seleccionado al iniciar la aplicacion
@@ -58,9 +58,12 @@ public class Main extends Application {
         }
     }
 
-    public static void main(String[] args) {
-        launch(args);
-//        LectorMafersa lectorMafersa = new LectorMafersa();
-//        lectorMafersa.leerArchivo(null, null);
+    public static void main(String[] args) throws IOException {
+//        launch(args);
+        LectorMafersa lectorMafersa = new LectorMafersa();
+        ArrayList<String> texto = lectorMafersa.leerArchivo(null);
+
+        for(String s: texto)
+            System.out.println(s);
     }
 }

@@ -100,4 +100,14 @@ public class ConectorDB {
 
         return statement.executeBatch().length;
     }
+
+    /**
+     * Determina si una tabla con cierto nombre existe o no
+     * */
+    public static boolean existeTabla(String nombre) throws SQLException {
+        DatabaseMetaData md = connection.getMetaData();
+        ResultSet rs = md.getTables(null, null, nombre, null);
+
+        return rs.next();
+    }
 }

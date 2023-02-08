@@ -21,7 +21,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -89,16 +88,6 @@ public class PantallaPrincipalControl implements Initializable {
     }
 
     /**
-     * Determina si una tabla con cierto nombre existe o no
-     * */
-    private boolean existeTabla(String nombre, Connection connection) throws SQLException {
-        DatabaseMetaData md = connection.getMetaData();
-        ResultSet rs = md.getTables(null, null, nombre, null);
-
-        return rs.next();
-    }
-
-    /**
      * De acuerdo con la casa seleccionada, muestra las listas correspondientes a esa casa en la choicebox de listas
      * */
     public void seleccionarCasa() {
@@ -123,7 +112,7 @@ public class PantallaPrincipalControl implements Initializable {
 
         String nombreLista = opcionesListas.getValue();
         Aplicacion app = Aplicacion.getInstance();
-        AlertaDB alerta = null;
+        AlertaDB alerta;
 
         if (nombreLista == null)
             advertencia.setVisible(true);
@@ -138,7 +127,7 @@ public class PantallaPrincipalControl implements Initializable {
             if (connection != null) {
                 boolean existeTabla, estaVacia;
 
-                existeTabla = existeTabla(nombreLista, connection);
+                existeTabla = ConectorDB.existeTabla(nombreLista);
                 estaVacia = app.estaVacia(nombreLista);
 
                 /*

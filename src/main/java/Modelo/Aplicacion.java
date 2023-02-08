@@ -57,10 +57,12 @@ public class Aplicacion {
         Parser parser = utilidades.parser();
 
         nombre = lector.nombreTabla();
-        HashMap<Integer, Producto> mapaProductos = datos.get(nombre);
 
-        ArrayList<String> texto = lector.leerArchivo(archivo);
+        ArrayList<String> lineas = lector.leerArchivo(archivo);
+        parser.parsearAProducto(lineas, datos);
         determinarEstadoTabla(nombre);
+
+        HashMap<Integer, Producto> mapaProductos = datos.get(nombre);
         this.estado.insertarABaseDeDatos(mapaProductos, nombre);
     }
 

@@ -21,7 +21,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -136,21 +135,9 @@ public class PantallaPrincipalControl implements Initializable {
                  * */
                 if (estaVacia && existeTabla) {
                     String query = "SELECT * from " + nombreLista + " WHERE precio != 0";
-                    ResultSet rs = ConectorDB.ejecutarQuery(query);
+                    HashMap<Integer, Producto> productos = ConectorDB.ejecutarQuery(query, nombreLista);
 
-                    HashMap<Integer, Producto> productos = new HashMap<>();
-
-                    while (rs.next()) {
-                        int codigo = rs.getInt("codigo");
-                        String nombre = rs.getString("nombre");
-                        int costo = rs.getInt("costo");
-                        int precio = rs.getInt("precio");
-                        int porcentaje = rs.getInt("porcentaje");
-
-                        Producto producto = new Producto(codigo, nombre, costo, precio, porcentaje);
-                        listaOb.add(producto);
-                        productos.put(producto.getCodigo(), producto);
-                    }
+                    listaOb.addAll(productos.values());
                     app.agregarListaDeProductos(nombreLista, productos);
                     tabla.setItems(listaOb);
                 }

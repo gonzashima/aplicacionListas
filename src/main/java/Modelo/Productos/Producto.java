@@ -1,16 +1,14 @@
 package Modelo.Productos;
 
-import Modelo.Utils.ManejadorPrecios;
-
 /**
  * Representacion de un producto generico
  * */
-public class Producto {
-    private final String nombre;
-    private final int codigo;
-    private int precio;
-    private int costo;
-    private int porcentaje;
+public abstract class Producto {
+    protected final String nombre;
+    protected final int codigo;
+    protected int precio;
+    protected int costo;
+    protected int porcentaje;
 
     public Producto(String nombre, int codigo, int costo){
         this.codigo = codigo;
@@ -27,11 +25,7 @@ public class Producto {
         this.porcentaje = porcentaje;
     }
 
-    public void calcularPrecio(){
-        ManejadorPrecios manejador = new ManejadorPrecios();
-        int parcial = costo + (costo * porcentaje) / 100;
-        this.precio = manejador.redondearPrecio(parcial);
-    }
+    public abstract void calcularPrecio();
 
     public int getPrecio(){
         return this.precio;

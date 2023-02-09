@@ -3,6 +3,9 @@ package Modelo.Utils;
 import Controladores.Alertas.AlertaCambios;
 import Controladores.Alertas.AlertaDB;
 import Modelo.Productos.Producto;
+import Modelo.Productos.ProductoDuravit;
+import Modelo.Productos.ProductoLumilagro;
+import Modelo.Productos.ProductoMafersa;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -34,10 +37,27 @@ public class ConectorDB {
             connection.close();
     }
 
-    public static ResultSet ejecutarQuery(String query) throws SQLException {
+    public static HashMap<Integer, Producto> ejecutarQuery(String query, String nombreTabla) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(query);
+        ResultSet rs = statement.executeQuery();
+        HashMap<Integer, Producto> productos = new HashMap<>();
 
-        return statement.executeQuery();
+        while (rs.next()) {
+            Producto producto;
+            int codigo = rs.getInt("codigo");
+            String nombre = rs.getString("nombre");
+            int costo = rs.getInt("costo");
+            int precio = rs.getInt("precio");
+            int porcentaje = rs.getInt("porcentaje");
+
+            switch (nombreTabla) {
+                case Constantes.DURAVIT -> producto = new ProductoDuravit(codigo, nombre, costo, precio, porcentaje);
+                case Constantes.LUMILAGRO -> producto = new ProductoLumilagro(codigo, nombre, costo, precio, porcentaje);
+                default -> producto = new ProductoMafersa(codigo, nombre, costo, precio, porcentaje);
+            }
+            productos.put(codigo, producto);
+        }
+        return productos;
     }
 
     public static void crearTabla(String nombre) throws SQLException {

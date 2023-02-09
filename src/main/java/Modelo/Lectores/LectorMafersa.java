@@ -92,7 +92,7 @@ public class LectorMafersa implements LectorArchivos{
         Field[] fields = getClass().getDeclaredFields(); //obtengo los atributos de la clase
 
         for (Field field : fields) {
-            if (Modifier.isStatic(field.getModifiers())) { //filtro los atributos que son static (que en este caso solo son las constantes)
+            if (Modifier.isStatic(field.getModifiers()) && field.getType().isAssignableFrom(String.class)) { //filtro los atributos que son static (que en este caso solo son las constantes)
                 try {
                     String nombre = field.getName();
                     String valor = (String) field.get(null);
@@ -148,7 +148,7 @@ public class LectorMafersa implements LectorArchivos{
         indicesLineas = resultado.get(1);
 
 
-        resultado = filtrarLineas(indicesRubros, indicesLineas, texto);
+        filtrarLineas(indicesRubros, indicesLineas, texto);
 
         return texto;
     }
@@ -200,7 +200,7 @@ public class LectorMafersa implements LectorArchivos{
     /**
      * Fitra y deja solo a las lineas que se trabajan
      * */
-    private ArrayList<ArrayList<Integer>> filtrarLineas(ArrayList<Integer> indicesRubros, ArrayList<Integer> indicesLineas, ArrayList<String> texto) {
+    private void filtrarLineas(ArrayList<Integer> indicesRubros, ArrayList<Integer> indicesLineas, ArrayList<String> texto) {
         for (int i = 0; i < indicesLineas.size(); i++) {
             int indice = indicesLineas.get(i);
             String leida = texto.get(indice);
@@ -232,7 +232,6 @@ public class LectorMafersa implements LectorArchivos{
                 i--;
             }
         }
-        return new ArrayList<>(Arrays.asList(indicesRubros, indicesLineas));
     }
 
     @Override

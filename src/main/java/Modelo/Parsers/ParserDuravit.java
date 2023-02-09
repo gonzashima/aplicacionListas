@@ -1,9 +1,10 @@
 package Modelo.Parsers;
 
 import Modelo.Productos.Producto;
+import Modelo.Productos.ProductoDuravit;
 import Modelo.Utils.ConectorDB;
+import Modelo.Utils.Constantes;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,25 +12,22 @@ import java.util.HashMap;
 
 public class ParserDuravit implements Parser {
 
-    private static final String NOMBRE = "duravit";
-
     @Override
     public void parsearAProducto(ArrayList<String> texto, HashMap<String, HashMap<Integer, Producto>> datos) throws SQLException {
         ConectorDB.getConnection();
-        boolean existeTabla = ConectorDB.existeTabla(NOMBRE);
+        boolean existeTabla = ConectorDB.existeTabla(Constantes.DURAVIT);
         HashMap<Integer, Producto> mapaDuravit;
 
-        if (existeTabla && datos.get(NOMBRE) == null) { //si la tabla existe pero no esta en memoria, la cargo en memoria
-            mapaDuravit = new HashMap<>();
-            cargarProductos(mapaDuravit);
-            datos.put(NOMBRE, mapaDuravit);
+        if (existeTabla && datos.get(Constantes.DURAVIT) == null) { //si la tabla existe pero no esta en memoria, la cargo en memoria
+            mapaDuravit = cargarProductos();
+            datos.put(Constantes.DURAVIT, mapaDuravit);
         } else if (!existeTabla) {                   //  si no existe creo una nueva
             mapaDuravit = new HashMap<>();
-            datos.put(NOMBRE, mapaDuravit);
+            datos.put(Constantes.DURAVIT, mapaDuravit);
         }
         //y si existe y esta en memoria uso esa
 
-        mapaDuravit = datos.get(NOMBRE);
+        mapaDuravit = datos.get(Constantes.DURAVIT);
 
         for (String linea : texto) {
             StringBuilder nombre = new StringBuilder();
@@ -38,12 +36,10 @@ public class ParserDuravit implements Parser {
 
             String[] lineaSeparada = linea.trim().split(" ");
             ArrayList<String> palabras = new ArrayList<>(Arrays.asList(lineaSeparada));
-
             boolean quedan = palabras.remove("");
 
             while (quedan)
                 quedan = palabras.remove("");
-
             int tamanio = palabras.size();
 
             for (int i = 0; i < tamanio - 2; i++) {
@@ -51,11 +47,10 @@ public class ParserDuravit implements Parser {
                 if (i != tamanio - 3)
                     nombre.append(" ");
             }
-
             codigo = Integer.parseInt(palabras.get(tamanio - 2));
             costo = (int) Math.round(Double.parseDouble(palabras.get(tamanio - 1)));
 
-            Producto producto = new Producto(nombre.toString(), codigo, costo);
+            Producto producto = new ProductoDuravit(nombre.toString(), codigo, costo);
             producto.calcularPrecio();
 
             if (mapaDuravit.isEmpty() || !mapaDuravit.containsKey(producto.getCodigo()))
@@ -68,19 +63,11 @@ public class ParserDuravit implements Parser {
         }
     }
 
-    private void cargarProductos(HashMap<Integer, Producto> mapaDuravit) throws SQLException {
-        String query = "SELECT * from " + NOMBRE + " WHERE precio != 0";
-        ResultSet rs = ConectorDB.ejecutarQuery(query);
-
-        while (rs.next()) {
-            int codigo = rs.getInt("codigo");
-            String nombre = rs.getString("nombre");
-            int costo = rs.getInt("costo");
-            int precio = rs.getInt("precio");
-            int porcentaje = rs.getInt("porcentaje");
-
-            Producto producto = new Producto(codigo, nombre, costo, precio, porcentaje);
-            mapaDuravit.put(producto.getCodigo(), producto);
-        }
+    /**
+     * Carga los productos de la base de datos al mapa
+     * */
+    private HashMap<Integer, Producto> cargarProductos() throws SQLException {
+        String query = "SELECT * from " + Constantes.DURAVIT + " WHERE precio != 0";
+        return ConectorDB.ejecutarQuery(query, Constantes.DURAVIT);
     }
 }

@@ -52,7 +52,7 @@ public class ConectorDB {
 
             switch (nombreTabla) {
                 case Constantes.DURAVIT -> producto = new ProductoDuravit(codigo, nombre, costo, precio, porcentaje);
-                case Constantes.LUMILAGRO -> producto = new ProductoLumilagro(codigo, nombre, costo, precio, porcentaje);
+                case Constantes.NOMBRE_LUMILAGRO -> producto = new ProductoLumilagro(codigo, nombre, costo, precio, porcentaje);
                 default -> producto = new ProductoMafersa(codigo, nombre, costo, precio, porcentaje);
             }
             productos.put(codigo, producto);

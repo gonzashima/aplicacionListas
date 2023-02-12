@@ -1,80 +1,92 @@
 package Modelo.Parsers;
 
 import Modelo.Productos.Producto;
+import Modelo.Productos.ProductoLumilagro;
+import Modelo.Productos.ProductoMafersa;
 import Modelo.Utils.ConectorDB;
+import Modelo.Utils.Constantes;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class ParserMafersa implements Parser{
-    private static final String CODIGO_ALMANDOZ = "02A -";
-    private static final String CODIGO_BELGIOCO = "02BG -";
-    private static final String CODIGO_NADIR = "03NA -";
-    private static final String CODIGO_TRAMONTINA = "03T -";
-    private static final String CODIGO_WHEATON = "03W -";
-    private static final String CODIGO_CAMPAGNA = "06C -";
-    private static final String CODIGO_CHEF = "10A -";
-    private static final String CODIGO_LOZAFER = "11 -";
-    private static final String CODIGO_KUFO = "11K -";
-    private static final String CODIGO_DAYSAL = "12D -";
-    private static final String CODIGO_GUADIX = "16B -";
-    private static final String CODIGO_LOEKEMEYER = "18L -";
-    private static final String CODIGO_LUMILAGRO = "21 -";
-    private static final String CODIGO_MANFER = "22 -";
-    private static final String CODIGO_MARINEX = "23M -";
-    private static final String CODIGO_COLORES = "24C -";
-    private static final String CODIGO_DATOMAX = "24C1 -";
-    private static final String CODIGO_DESES = "25D -";
-    private static final String CODIGO_PLASTIC_HOUSE = "30P -";
-    private static final String CODIGO_YESI = "35Y -";
-
     private final ArrayList<String> nombres;
 
     public ParserMafersa() {
-        nombres = new ArrayList<>();
+        nombres = Constantes.getNombresMafersa();
+    }
 
-        Field[] fields = getClass().getDeclaredFields();
+    @Override
+    public void parsearAProducto(ArrayList<String> texto, HashMap<String, HashMap<Integer, Producto>> datos) throws SQLException {
+        HashMap<String, ArrayList<String>> rubrosSeparados = separarRubros(texto);
+        ConectorDB.getConnection();
+        cargarTablas(datos);
+        ArrayList<String> distintos = Constantes.getDistintosLumilagro();
 
-        for (Field field : fields) {
-            if(Modifier.isStatic(field.getModifiers()) && !field.getName().contains("CODIGO_") && field.getType().isAssignableFrom(String.class)) {
-                try {
-                    String valor = (String) field.get(null);
-                    nombres.add(valor);
-                } catch (Exception e) {
-                    e.printStackTrace();
+        for (String nombreLista : nombres) {
+            HashMap<Integer, Producto> mapaActual = datos.get(nombreLista);
+            ArrayList<String> lista = rubrosSeparados.get(nombreLista);
+
+            for (String linea : lista) {
+                String[] lineaSeparada = linea.trim().split(" ");
+                ArrayList<String> partes = new ArrayList<>(Arrays.asList(lineaSeparada));
+                partes.remove(1);                   //saco el codigo del fabricante
+
+                int codigo = Integer.parseInt(partes.remove(0));
+                int costo = (int) Math.round(Double.parseDouble(partes.remove(partes.size() - 1)));
+                String nombre = String.join(" ", partes);
+                Producto producto;
+
+                if (distintos.stream().anyMatch(nombre::contains))
+                    producto = new ProductoLumilagro(nombre, codigo, costo);
+                else
+                    producto = new ProductoMafersa(nombre, codigo, costo);
+
+                producto.calcularPrecio();
+                if (mapaActual.isEmpty() || !mapaActual.containsKey(producto.getCodigo()))
+                    mapaActual.put(producto.getCodigo(), producto);
+                else {
+                    int porcentajeAnterior = mapaActual.get(producto.getCodigo()).getPorcentaje();
+                    producto.setPorcentaje(porcentajeAnterior);
+                    producto.calcularPrecio();
+                    mapaActual.put(producto.getCodigo(), producto);
                 }
             }
         }
     }
 
-    @Override
-    public void parsearAProducto(ArrayList<String> texto, HashMap<String, HashMap<Integer, Producto>> datos) {
-        ArrayList<ArrayList<String>> rubrosSeparados = separarRubros(texto);
-
-        ConectorDB.getConnection();
-
-
-
+    private void cargarTablas (HashMap<String, HashMap<Integer, Producto>> datos) throws SQLException {
+        for (String nombre : nombres) {
+            boolean existeTabla = ConectorDB.existeTabla(nombre);
+            if (existeTabla && datos.get(nombre) == null) {
+                String query = "SELECT * from " + nombre + " WHERE precio != 0";
+                datos.put(nombre, ConectorDB.ejecutarQuery(query, nombre));
+            }
+            else if (!existeTabla) {
+                HashMap<Integer, Producto> nuevoMapa = new HashMap<>();
+                datos.put(nombre, nuevoMapa);
+            }
+        }
     }
 
-//    private void cargarTablas (HashMap<String, HashMap<Integer, Producto>> datos) {
-//        for
-//    }
-
-    private ArrayList<ArrayList<String>> separarRubros(ArrayList<String> texto) {
-        ArrayList<ArrayList<String>> rubrosSeparados = new ArrayList<>();
+    private HashMap<String, ArrayList<String>> separarRubros(ArrayList<String> texto) {
+        HashMap<String, ArrayList<String>> rubrosSeparados = new HashMap<>();
         ArrayList<String> nuevaLista = null;
 
         for (String linea : texto) {
+            linea = linea.toLowerCase();
             if (linea.contains("RUBRO :") || linea.contains("rubro :")) {
                 nuevaLista = new ArrayList<>();
-                rubrosSeparados.add(nuevaLista);
+                Optional<String> nombreLista = nombres.stream().filter(linea :: contains).findFirst();
+                if (nombreLista.isPresent())                //siempre va a estar porque se filtro con esa intencion
+                    rubrosSeparados.put(nombreLista.get(), nuevaLista);
             }
-            if (!linea.contains("LINEA :") && !linea.contains("linea :")) {
+            else if (!linea.contains("LINEA :") && !linea.contains("linea :")) {
                 assert nuevaLista != null;
-                nuevaLista.add(linea);
+                nuevaLista.add(linea.toUpperCase());
             }
         }
         return rubrosSeparados;

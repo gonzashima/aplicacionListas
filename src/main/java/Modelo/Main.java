@@ -3,6 +3,7 @@ package Modelo;
 import Modelo.Lectores.LectorMafersa;
 import Modelo.Parsers.Parser;
 import Modelo.Parsers.ParserMafersa;
+import Modelo.Productos.Producto;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,6 +16,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -62,11 +64,13 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) throws IOException, SQLException {
-        launch(args);
-//        LectorMafersa lectorMafersa = new LectorMafersa();
-//        ArrayList<String> texto = lectorMafersa.leerArchivo(null);
-//
-//        Parser parser = new ParserMafersa();
-//        parser.parsearAProducto(texto, null);
+//        launch(args);
+        LectorMafersa lectorMafersa = new LectorMafersa();
+        ArrayList<String> texto = lectorMafersa.leerArchivo(null);
+
+        HashMap<String, HashMap<Integer, Producto>> datos = new HashMap<>();
+        Parser parser = new ParserMafersa();
+        parser.parsearAProducto(texto, datos);
+
     }
 }

@@ -56,9 +56,10 @@ public class ParserDuravit implements Parser {
             if (mapaDuravit.isEmpty() || !mapaDuravit.containsKey(producto.getCodigo()))
                 mapaDuravit.put(producto.getCodigo(), producto);
             else {
-                Producto anterior = mapaDuravit.get(producto.getCodigo());
-                anterior.setCosto(producto.getCosto());
-                anterior.calcularPrecio();
+                int porcentajeAnterior = mapaDuravit.get(producto.getCodigo()).getPorcentaje();
+                producto.setPorcentaje(porcentajeAnterior);
+                producto.calcularPrecio();
+                mapaDuravit.put(producto.getCodigo(), producto);                    //lo reemplazo porque puede pasar que el producto no se haga mas y hayan reasignado el codigo
             }
         }
     }

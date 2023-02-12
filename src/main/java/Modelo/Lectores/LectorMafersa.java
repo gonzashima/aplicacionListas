@@ -1,4 +1,5 @@
 package Modelo.Lectores;
+import Modelo.Utils.Constantes;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
@@ -16,27 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class LectorMafersa implements LectorArchivos{
-
-    private static final String CODIGO_ALMANDOZ = "02A -";
-    private static final String CODIGO_BELGIOCO = "02BG -";
-    private static final String CODIGO_NADIR = "03NA -";
-    private static final String CODIGO_TRAMONTINA = "03T -";
-    private static final String CODIGO_WHEATON = "03W -";
-    private static final String CODIGO_CAMPAGNA = "06C -";
-    private static final String CODIGO_CHEF = "10A -";
-    private static final String CODIGO_LOZAFER = "11 -";
-    private static final String CODIGO_KUFO = "11K -";
-    private static final String CODIGO_DAYSAL = "12D -";
-    private static final String CODIGO_GUADIX = "16B -";
-    private static final String CODIGO_LOEKEMEYER = "18L -";
-    private static final String CODIGO_LUMILAGRO = "21 -";
-    private static final String CODIGO_MANFER = "22 -";
-    private static final String CODIGO_MARINEX = "23M -";
-    private static final String CODIGO_COLORES = "24C -";
-    private static final String CODIGO_DATOMAX = "24C1 -";
-    private static final String CODIGO_DESES = "25D -";
-    private static final String CODIGO_PLASTIC_HOUSE = "30P -";
-    private static final String CODIGO_YESI = "35Y -";
 
     private static final String LINEA_ALMANDOZ_MOLDES = "051A -";
     private static final String LINEA_ALMANDOZ_GASTRON = "051G -";
@@ -86,7 +66,7 @@ public class LectorMafersa implements LectorArchivos{
      * Construye la instancia del lector. Inicializa todos los codigos de las listas que va a necesitar
      * */
     public LectorMafersa() {
-        codigos = new ArrayList<>();
+        codigos = Constantes.getCodigosMafersa();
         lineas = new ArrayList<>();
 
         Field[] fields = getClass().getDeclaredFields(); //obtengo los atributos de la clase
@@ -98,9 +78,6 @@ public class LectorMafersa implements LectorArchivos{
                     String valor = (String) field.get(null);
                     if (nombre.contains("LINEA"))
                         lineas.add(valor);
-                    else
-                        codigos.add(valor);
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

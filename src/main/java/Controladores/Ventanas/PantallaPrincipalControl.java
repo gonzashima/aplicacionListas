@@ -45,7 +45,7 @@ public class PantallaPrincipalControl implements Initializable {
 
     @FXML private TableView<Producto> tabla;
 
-    @FXML private TableColumn<Producto, String> codigo, nombre, costo, precio, porcentaje;
+    @FXML private TableColumn<Producto, String> codigo, nombre, costo, precio, porcentaje, costoDescontado;
 
     @FXML private TextField textoBuscado;
 
@@ -85,6 +85,7 @@ public class PantallaPrincipalControl implements Initializable {
         costo.setCellValueFactory(new PropertyValueFactory<>("costo"));
         precio.setCellValueFactory(new PropertyValueFactory<>("precio"));
         porcentaje.setCellValueFactory(new PropertyValueFactory<>("porcentaje"));
+        costoDescontado.setCellValueFactory(new PropertyValueFactory<>("costoDescontado"));
     }
 
     /**
@@ -138,6 +139,7 @@ public class PantallaPrincipalControl implements Initializable {
                     String query = "SELECT * from " + nombreLista + " WHERE precio != 0";
                     HashMap<Integer, Producto> productos = ConectorDB.ejecutarQuery(query, nombreLista);
 
+                    listaOb.clear();
                     listaOb.addAll(productos.values());
                     app.agregarListaDeProductos(nombreLista, productos);
                     tabla.setItems(listaOb);

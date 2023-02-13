@@ -37,7 +37,13 @@ public class ParserMafersa implements Parser{
                 partes.remove(1);                   //saco el codigo del fabricante
 
                 int codigo = Integer.parseInt(partes.remove(0));
-                int costo = (int) Math.round(Double.parseDouble(partes.remove(partes.size() - 1)));
+
+                String costoString = partes.get(partes.size() - 1);
+                if (costoString.contains(","))
+                    costoString = costoString.replace(",", ".");
+
+                int costo = (int) Math.round(Double.parseDouble(costoString));
+                partes.remove(partes.size() - 1);
                 String nombre = String.join(" ", partes);
                 Producto producto;
 

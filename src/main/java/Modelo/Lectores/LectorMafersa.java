@@ -87,7 +87,7 @@ public class LectorMafersa implements LectorArchivos{
 
     @Override
     public ArrayList<String> leerArchivo(File archivo) throws IOException {
-        FileInputStream file = new FileInputStream("src/main/resources/lista-precios-mafersa-06.01.23.xlsx");
+        FileInputStream file = new FileInputStream(archivo);
 
         XSSFWorkbook workbook = new XSSFWorkbook(file);         //creo todas las cosas necesarias
         XSSFSheet hoja = workbook.getSheetAt(0);

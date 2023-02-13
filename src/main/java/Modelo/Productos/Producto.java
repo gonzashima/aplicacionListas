@@ -9,6 +9,7 @@ public abstract class Producto {
     protected int precio;
     protected int costo;
     protected int porcentaje;
+    protected int costoDescontado;
 
     public Producto(String nombre, int codigo, int costo){
         this.codigo = codigo;
@@ -45,6 +46,10 @@ public abstract class Producto {
 
     public int getPorcentaje() {
         return porcentaje;
+    }
+
+    public int getCostoDescontado() {
+        return costoDescontado;
     }
 
     public void setPorcentaje(int porcentaje) {

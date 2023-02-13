@@ -14,13 +14,14 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="contenedorPrincipal" prefHeight="750.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.Ventanas.PantallaPrincipalControl">
-   <TableView fx:id="tabla" fixedCellSize="20.0" layoutX="100.0" layoutY="40.0" pickOnBounds="false" prefHeight="500.0" prefWidth="1000.0" AnchorPane.bottomAnchor="210.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="40.0">
+   <TableView fx:id="tabla" fixedCellSize="20.0" layoutX="52.0" layoutY="44.0" pickOnBounds="false" prefHeight="500.0" prefWidth="1100.0" AnchorPane.bottomAnchor="206.0" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="48.0" AnchorPane.topAnchor="44.0">
       <columns>
          <TableColumn fx:id="codigo" minWidth="-Infinity" prefWidth="150.0" resizable="false" text="Codigo" />
          <TableColumn fx:id="nombre" prefWidth="350.0" resizable="false" text="Nombre" />
-         <TableColumn fx:id="costo" minWidth="0.0" prefWidth="175.0" resizable="false" text="Costo" />
-         <TableColumn fx:id="precio" prefWidth="190.0" resizable="false" text="Precio" />
-         <TableColumn fx:id="porcentaje" prefWidth="134.0" text="Porcentaje" />
+         <TableColumn fx:id="costo" minWidth="0.0" prefWidth="146.0" resizable="false" text="Costo" />
+         <TableColumn fx:id="costoDescontado" prefWidth="142.0" text="Costo descontado" />
+         <TableColumn fx:id="precio" prefWidth="152.0" resizable="false" text="Precio" />
+         <TableColumn fx:id="porcentaje" prefWidth="152.0" text="Porcentaje" />
       </columns>
    </TableView>
    <MenuBar prefWidth="1200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -43,11 +44,11 @@
       <HBox alignment="CENTER" layoutX="39.0" layoutY="14.0" prefHeight="50.0" prefWidth="400.0" spacing="15.0">
          <Label alignment="CENTER" prefHeight="27.0" prefWidth="80.0" text="Casa:">
             <font>
-               <Font size="18.0"/>
+               <Font size="18.0" />
             </font>
          </Label>
-         <ChoiceBox fx:id="opcionesCasas" prefWidth="150.0"/>
-         <Button fx:id="botonCasas" mnemonicParsing="false" onAction="#seleccionarCasa" text="OK"/>
+         <ChoiceBox fx:id="opcionesCasas" prefWidth="150.0" />
+         <Button fx:id="botonCasas" mnemonicParsing="false" onAction="#seleccionarCasa" text="OK" />
       </HBox>
       <Label fx:id="advertencia" alignment="CENTER" layoutX="53.0" layoutY="108.0" prefHeight="45.0" prefWidth="400.0" text="Selecciona una lista" textFill="RED">
          <font>

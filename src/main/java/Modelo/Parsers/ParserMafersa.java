@@ -5,6 +5,7 @@ import Modelo.Productos.ProductoLumilagro;
 import Modelo.Productos.ProductoMafersa;
 import Modelo.Utils.ConectorDB;
 import Modelo.Utils.Constantes;
+import Modelo.Utils.UnificadorString;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -58,12 +59,18 @@ public class ParserMafersa implements Parser{
         }
     }
 
+    /**
+     * Carga en memoria las tablas con las que se trabajan. Si no existe, crea una nueva
+     * */
     private void cargarTablas (HashMap<String, HashMap<Integer, Producto>> datos) throws SQLException {
         for (String nombre : nombres) {
             boolean existeTabla = ConectorDB.existeTabla(nombre);
+            String nombreOriginal = nombre;
             if (existeTabla && datos.get(nombre) == null) {
+                nombre = UnificadorString.unirString(nombre);
+
                 String query = "SELECT * from " + nombre + " WHERE precio != 0";
-                datos.put(nombre, ConectorDB.ejecutarQuery(query, nombre));
+                datos.put(nombreOriginal, ConectorDB.ejecutarQuery(query, nombre));
             }
             else if (!existeTabla) {
                 HashMap<Integer, Producto> nuevoMapa = new HashMap<>();
@@ -72,6 +79,10 @@ public class ParserMafersa implements Parser{
         }
     }
 
+
+    /**
+     * Separa el texto y coloca a los diferentes rubros en diferentes listas
+     * */
     private HashMap<String, ArrayList<String>> separarRubros(ArrayList<String> texto) {
         HashMap<String, ArrayList<String>> rubrosSeparados = new HashMap<>();
         ArrayList<String> nuevaLista = null;

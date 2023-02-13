@@ -7,6 +7,7 @@ import Modelo.Aplicacion;
 import Modelo.Productos.Producto;
 import Modelo.Utils.Casas;
 import Modelo.Utils.ConectorDB;
+import Modelo.Utils.UnificadorString;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -122,7 +123,6 @@ public class PantallaPrincipalControl implements Initializable {
             Connection connection = ConectorDB.getConnection();
             nombreLista = nombreLista.toLowerCase();
 
-
             if (connection != null) {
                 boolean existeTabla, estaVacia;
 
@@ -134,6 +134,7 @@ public class PantallaPrincipalControl implements Initializable {
                  * Si ya tengo la info, no hace falta ir a la DB.
                  * */
                 if (estaVacia && existeTabla) {
+                    nombreLista = UnificadorString.unirString(nombreLista);
                     String query = "SELECT * from " + nombreLista + " WHERE precio != 0";
                     HashMap<Integer, Producto> productos = ConectorDB.ejecutarQuery(query, nombreLista);
 

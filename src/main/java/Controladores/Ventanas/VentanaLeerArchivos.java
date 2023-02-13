@@ -53,7 +53,8 @@ public class VentanaLeerArchivos {
      * */
     public void buscarArchivo() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PDFs (*.pdf)", "*.pdf"));
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PDFs (*.pdf)", "*.pdf"),
+                                                new FileChooser.ExtensionFilter("Excel (*xlsx)", "*.xlsx"));
 
         File archivo = fileChooser.showOpenDialog(null);
         String mensaje;

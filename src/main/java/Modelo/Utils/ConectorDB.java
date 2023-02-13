@@ -38,6 +38,7 @@ public class ConectorDB {
     }
 
     public static HashMap<Integer, Producto> ejecutarQuery(String query, String nombreTabla) throws SQLException {
+        nombreTabla = UnificadorString.unirString(nombreTabla);
         PreparedStatement statement = connection.prepareStatement(query);
         ResultSet rs = statement.executeQuery();
         HashMap<Integer, Producto> productos = new HashMap<>();
@@ -61,6 +62,7 @@ public class ConectorDB {
     }
 
     public static void crearTabla(String nombre) throws SQLException {
+        nombre = UnificadorString.unirString(nombre);
         String query = "CREATE TABLE " + nombre + " (codigo int, " +
                 "nombre varchar(50), costo int, precio int, porcentaje int, PRIMARY KEY (codigo))";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -68,6 +70,7 @@ public class ConectorDB {
     }
 
     public static void insertarProductos(HashMap<Integer, Producto> mapaProductos, String nombreTabla) throws SQLException {
+        nombreTabla = UnificadorString.unirString(nombreTabla);
         String query = "INSERT INTO " + nombreTabla + " (codigo, nombre, costo, precio, porcentaje) VALUES(?,?,?,?,?) ";
         PreparedStatement statement = connection.prepareStatement(query);
 
@@ -89,6 +92,7 @@ public class ConectorDB {
     }
 
     public static void actualizarProcuctos(HashMap<Integer, Producto> productos, String nombreTabla) throws SQLException {
+        nombreTabla = UnificadorString.unirString(nombreTabla);
         String query = "UPDATE " + nombreTabla + " SET costo=?, precio=?, porcentaje=? WHERE codigo=?";
         PreparedStatement statement = connection.prepareStatement(query);
 
@@ -108,6 +112,7 @@ public class ConectorDB {
     }
 
     public static int guardarCambios(ArrayList<Producto> productos, String nombreTabla) throws SQLException {
+        nombreTabla = UnificadorString.unirString(nombreTabla);
         String query = "UPDATE " + nombreTabla + " SET precio=?, porcentaje=? WHERE codigo=?";
         PreparedStatement statement = connection.prepareStatement(query);
 
@@ -125,6 +130,7 @@ public class ConectorDB {
      * Determina si una tabla con cierto nombre existe o no
      * */
     public static boolean existeTabla(String nombre) throws SQLException {
+        nombre = UnificadorString.unirString(nombre);
         DatabaseMetaData md = connection.getMetaData();
         ResultSet rs = md.getTables(null, null, nombre, null);
 

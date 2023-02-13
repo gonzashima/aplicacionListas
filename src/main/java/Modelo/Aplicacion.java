@@ -1,8 +1,8 @@
 package Modelo;
 
-import Modelo.Estado.Estado;
-import Modelo.Estado.Inexistente;
-import Modelo.Estado.NoVacia;
+import Modelo.Insertadores.Insertador;
+import Modelo.Insertadores.InsertadorDuravit;
+import Modelo.Insertadores.InsertadorMafersa;
 import Modelo.Lectores.LectorArchivos;
 import Modelo.Lectores.LectorDuravit;
 import Modelo.Lectores.LectorMafersa;
@@ -12,12 +12,11 @@ import Modelo.Parsers.ParserMafersa;
 import Modelo.Productos.Producto;
 import Modelo.Utils.ConectorDB;
 import Modelo.Utils.Resultado;
+import Modelo.Utils.UnificadorString;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,8 +25,6 @@ public class Aplicacion {
 
     private static Aplicacion instance;
 
-    private Estado estado;
-
     private final HashMap<String, HashMap<Integer, Producto>> datos;
 
     private final HashMap<String, ArrayList<Producto>> modificaciones;
@@ -35,7 +32,6 @@ public class Aplicacion {
     private Aplicacion(){
         datos = new HashMap<>();
         modificaciones = new HashMap<>();
-        estado = null;
     }
 
     public static Aplicacion getInstance() {
@@ -55,39 +51,19 @@ public class Aplicacion {
         Resultado utilidades = determinarUtilidades(nombre);
         LectorArchivos lector = utilidades.lector();
         Parser parser = utilidades.parser();
-
-        nombre = lector.nombreTabla();
+        Insertador insertador = utilidades.insertador();
 
         ArrayList<String> lineas = lector.leerArchivo(archivo);
         parser.parsearAProducto(lineas, datos);
-        determinarEstadoTabla(nombre);
-
-        HashMap<Integer, Producto> mapaProductos = datos.get(nombre);
-        this.estado.insertarABaseDeDatos(mapaProductos, nombre);
+        insertador.insertarABaseDeDatos(datos);
     }
-
-    /**
-     * Se fija si en la DB si la tabla con el nombre pasado por parametro esta vacia o tiene info
-     * */
-    private void determinarEstadoTabla(String nombreTabla) throws SQLException {
-        Connection connection = ConectorDB.getConnection();
-
-        if(connection!= null) {
-            DatabaseMetaData md = connection.getMetaData();
-            ResultSet rs = md.getTables(null, null, nombreTabla, null);
-            if (!rs.next())
-                this.estado = new Inexistente();
-            else
-                this.estado = new NoVacia();
-        }
-    }
-
-
     /**
      * Determina si la lista esta vacia
      * */
     public boolean estaVacia(String nombreLista) {
         nombreLista = nombreLista.toLowerCase();
+        nombreLista = UnificadorString.unirString(nombreLista);
+
         HashMap<Integer, Producto> productos = datos.get(nombreLista);
 
         if (productos == null)
@@ -172,9 +148,9 @@ public class Aplicacion {
         Resultado resultado = null;
 
         if (nombre.contains("duravit") || nombre.contains("DURAVIT"))
-            resultado = new Resultado(new LectorDuravit(), new ParserDuravit());
+            resultado = new Resultado(new LectorDuravit(), new ParserDuravit(), new InsertadorDuravit());
         else if (nombre.contains("mafersa") || nombre.contains("MAFERSA"))
-            resultado = new Resultado(new LectorMafersa(), new ParserMafersa());
+            resultado = new Resultado(new LectorMafersa(), new ParserMafersa(), new InsertadorMafersa());
 
         return resultado;
     }

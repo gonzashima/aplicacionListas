@@ -28,6 +28,7 @@ public class ParserMafersa implements Parser{
         ArrayList<String> distintos = Constantes.getDistintosLumilagro();
 
         for (String nombreLista : nombres) {
+            nombreLista = UnificadorString.unirString(nombreLista);
             HashMap<Integer, Producto> mapaActual = datos.get(nombreLista);
             ArrayList<String> lista = rubrosSeparados.get(nombreLista);
 
@@ -71,16 +72,14 @@ public class ParserMafersa implements Parser{
     private void cargarTablas (HashMap<String, HashMap<Integer, Producto>> datos) throws SQLException {
         for (String nombre : nombres) {
             boolean existeTabla = ConectorDB.existeTabla(nombre);
-            String nombreOriginal = nombre;
-            if (existeTabla && datos.get(nombre) == null) {
-                nombre = UnificadorString.unirString(nombre);
-
-                String query = "SELECT * from " + nombre + " WHERE precio != 0";
-                datos.put(nombreOriginal, ConectorDB.ejecutarQuery(query, nombre));
+            String nombreUnido = UnificadorString.unirString(nombre);
+            if (existeTabla && datos.get(nombreUnido) == null) {
+                String query = "SELECT * from " + nombreUnido + " WHERE precio != 0";
+                datos.put(nombreUnido, ConectorDB.ejecutarQuery(query, nombreUnido));
             }
             else if (!existeTabla) {
                 HashMap<Integer, Producto> nuevoMapa = new HashMap<>();
-                datos.put(nombre, nuevoMapa);
+                datos.put(nombreUnido, nuevoMapa);
             }
         }
     }
@@ -99,7 +98,7 @@ public class ParserMafersa implements Parser{
                 nuevaLista = new ArrayList<>();
                 Optional<String> nombreLista = nombres.stream().filter(linea :: contains).findFirst();
                 if (nombreLista.isPresent())                //siempre va a estar porque se filtro con esa intencion
-                    rubrosSeparados.put(nombreLista.get(), nuevaLista);
+                    rubrosSeparados.put(UnificadorString.unirString(nombreLista.get()), nuevaLista);
             }
             else if (!linea.contains("LINEA :") && !linea.contains("linea :")) {
                 assert nuevaLista != null;

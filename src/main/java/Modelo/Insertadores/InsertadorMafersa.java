@@ -2,6 +2,7 @@ package Modelo.Insertadores;
 
 import Modelo.Productos.Producto;
 import Modelo.Utils.Constantes;
+import Modelo.Utils.UnificadorString;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class InsertadorMafersa extends Insertador{
         ArrayList<String> nombresListas = Constantes.getNombresMafersa();
 
         for (String nombre : nombresListas) {
+            nombre = UnificadorString.unirString(nombre);
             estado = determinarEstadoTabla(nombre);
             HashMap<Integer, Producto> productos = datos.get(nombre);
             this.estado.insertarABaseDeDatos(productos, nombre);

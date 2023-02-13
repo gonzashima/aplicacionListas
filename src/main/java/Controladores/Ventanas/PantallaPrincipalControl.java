@@ -145,6 +145,7 @@ public class PantallaPrincipalControl implements Initializable {
                     tabla.setItems(listaOb);
                 }
                 else if (!estaVacia && existeTabla){
+                    nombreLista = UnificadorString.unirString(nombreLista);
                     HashMap<Integer, Producto> productos = app.obtenerLista(nombreLista);
                     listaOb.clear();
                     listaOb.addAll(productos.values());

@@ -93,15 +93,21 @@ public class ConectorDB {
 
     public static void actualizarProcuctos(HashMap<Integer, Producto> productos, String nombreTabla) throws SQLException {
         nombreTabla = UnificadorString.unirString(nombreTabla);
-        String query = "UPDATE " + nombreTabla + " SET costo=?, precio=?, porcentaje=? WHERE codigo=?";
+        String query = "INSERT INTO " + nombreTabla + " (codigo, nombre, costo, precio, porcentaje) VALUES(?,?,?,?,?) " +
+                        "ON DUPLICATE KEY UPDATE nombre=?, costo=?, precio=?, porcentaje=?";
         PreparedStatement statement = connection.prepareStatement(query);
 
         productos.forEach((key, value) -> {
             try {
-                statement.setInt(1, value.getCosto());
-                statement.setInt(2, value.getPrecio());
-                statement.setInt(3, value.getPorcentaje());
-                statement.setInt(4, value.getCodigo());
+                statement.setInt(1, value.getCodigo());
+                statement.setString(2, value.getNombre());
+                statement.setInt(3, value.getCosto());
+                statement.setInt(4, value.getPrecio());
+                statement.setInt(5, value.getPorcentaje());
+                statement.setString(6, value.getNombre());
+                statement.setInt(7, value.getCosto());
+                statement.setInt(8, value.getPrecio());
+                statement.setInt(9, value.getPorcentaje());
                 statement.addBatch();
             } catch (SQLException e) {
                 AlertaDB alertaDB = new AlertaCambios();

@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-public class NoVacia implements Estado {
+public class Existente implements Estado {
 
     @Override
     public void insertarABaseDeDatos(HashMap<Integer, Producto> productos, String nombreTabla) throws SQLException {

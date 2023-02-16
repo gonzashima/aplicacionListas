@@ -2,7 +2,7 @@ package Modelo.Insertadores;
 
 import Modelo.Estado.Estado;
 import Modelo.Estado.Inexistente;
-import Modelo.Estado.NoVacia;
+import Modelo.Estado.Existente;
 import Modelo.Productos.Producto;
 import Modelo.Utils.ConectorDB;
 import Modelo.Utils.UnificadorString;
@@ -24,7 +24,7 @@ public abstract class Insertador {
             ResultSet rs = md.getTables(null, null, nombreTabla, null);
             if (!rs.next())
                 return new Inexistente();
-            return new NoVacia();
+            return new Existente();
         }
         return null;
     }

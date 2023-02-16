@@ -19,7 +19,7 @@ public class ProductoLumilagro extends Producto{
     @Override
     public void calcularPrecio() {
         ManejadorPrecios manejadorPrecios = new ManejadorPrecios();
-        int parcial = costoDescontado + costoDescontado * porcentaje;
+        int parcial = costoDescontado + (costoDescontado * porcentaje) / 100;
 
         this.precio = manejadorPrecios.redondearPrecio(parcial);
     }

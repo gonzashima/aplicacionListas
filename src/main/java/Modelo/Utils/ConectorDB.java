@@ -10,6 +10,7 @@ import Modelo.Productos.ProductoMafersa;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 /**
  * Se utiliza para obtener siempre la misma conexion a la base de datos y no perder tiempo intentando crear una nueva conexion cada vez que se necesita
@@ -42,20 +43,25 @@ public class ConectorDB {
         PreparedStatement statement = connection.prepareStatement(query);
         ResultSet rs = statement.executeQuery();
         HashMap<Integer, Producto> productos = new HashMap<>();
+        ArrayList<String> nombresMafersa = Constantes.getNombresMafersa();
+        nombresMafersa = (ArrayList<String>) nombresMafersa.stream().map(UnificadorString::unirString).collect(Collectors.toList());
 
         while (rs.next()) {
-            Producto producto;
+            Producto producto = null;
             int codigo = rs.getInt("codigo");
             String nombre = rs.getString("nombre");
             int costo = rs.getInt("costo");
             int precio = rs.getInt("precio");
             int porcentaje = rs.getInt("porcentaje");
 
-            switch (nombreTabla) {
-                case Constantes.DURAVIT -> producto = new ProductoDuravit(codigo, nombre, costo, precio, porcentaje);
-                case Constantes.NOMBRE_LUMILAGRO -> producto = new ProductoLumilagro(codigo, nombre, costo, precio, porcentaje);
-                default -> producto = new ProductoMafersa(codigo, nombre, costo, precio, porcentaje);
-            }
+            if (nombreTabla.equals(Constantes.DURAVIT))
+                producto = new ProductoDuravit(codigo, nombre, costo, precio, porcentaje);
+            else if (nombresMafersa.stream().anyMatch(nombreTabla :: contains))
+                if (Constantes.getDistintosLumilagro().stream().anyMatch(nombre :: contains))
+                    producto = new ProductoLumilagro(codigo, nombre, costo, precio, porcentaje);
+                else
+                    producto = new ProductoMafersa(codigo, nombre, costo, precio, porcentaje);
+
             productos.put(codigo, producto);
         }
         return productos;

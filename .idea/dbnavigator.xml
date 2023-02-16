@@ -29,7 +29,7 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="7f6a1f4c-fed8-47e7-9a97-02ec206dc886">
-      <console name="Connection" type="STANDARD" schema="productos" session="Main"><![CDATA[select * from almandoz]]></console>
+      <console name="Connection" type="STANDARD" schema="productos" session="Main" />
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">

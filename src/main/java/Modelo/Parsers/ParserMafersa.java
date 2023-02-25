@@ -32,6 +32,8 @@ public class ParserMafersa implements Parser{
             HashMap<Integer, Producto> mapaActual = datos.get(nombreLista);
             ArrayList<String> lista = rubrosSeparados.get(nombreLista);
 
+            if (lista == null) //porque puede pasar que la lista venga por rubro, entonces la cantidad de rubros separados no va a ser la cantidad de nombres
+                continue;
             for (String linea : lista) {
                 String[] lineaSeparada = linea.trim().split(" ");
                 ArrayList<String> partes = new ArrayList<>(Arrays.asList(lineaSeparada));

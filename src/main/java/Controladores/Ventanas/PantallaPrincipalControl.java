@@ -1,8 +1,6 @@
 package Controladores.Ventanas;
 
-import Controladores.Alertas.AlertaConexion;
-import Controladores.Alertas.AlertaDB;
-import Controladores.Alertas.AlertaTabla;
+import Controladores.Alertas.*;
 import Modelo.Aplicacion;
 import Modelo.Productos.Producto;
 import Modelo.Utils.Casas;
@@ -41,8 +39,6 @@ public class PantallaPrincipalControl implements Initializable {
 
     @FXML private ChoiceBox<String> opcionesListas, opcionesCasas;
 
-    @FXML private Label advertencia, advertenciaBuscar, advertenciaModificacion;
-
     @FXML private TableView<Producto> tabla;
 
     @FXML private TableColumn<Producto, String> codigo, nombre, costo, precio, porcentaje, costoDescontado;
@@ -69,10 +65,6 @@ public class PantallaPrincipalControl implements Initializable {
         opcionesCasas.getItems().addAll(casasAString());
         botonMostrar.setDisable(true);
 
-        advertencia.setVisible(false);
-        advertenciaBuscar.setVisible(false);
-        advertenciaModificacion.setVisible(false);
-
         guardarCambios.setDisable(true);
 
         textoBuscado.setOnKeyPressed(keyEvent -> {
@@ -92,35 +84,32 @@ public class PantallaPrincipalControl implements Initializable {
      * De acuerdo con la casa seleccionada, muestra las listas correspondientes a esa casa en la choicebox de listas
      * */
     public void seleccionarCasa() {
-        String casa = opcionesCasas.getValue();
-        casa = casa.toUpperCase();
-        Casas casaEnum = Casas.valueOf(casa);
-        String[] listas = casaEnum.getListas();
+        try {
+            String casa = opcionesCasas.getValue();
+            casa = casa.toUpperCase();
+            Casas casaEnum = Casas.valueOf(casa);
+            String[] listas = casaEnum.getListas();
 
-        opcionesListas.getItems().clear();
-        opcionesListas.getItems().addAll(listas);
+            opcionesListas.getItems().clear();
+            opcionesListas.getItems().addAll(listas);
 
-        botonMostrar.setDisable(false);
+            botonMostrar.setDisable(false);
+        } catch (Exception e) {
+            Alerta alerta = new AlertaCasa();
+            alerta.display();
+        }
     }
 
 
     /**
      * Muestra toda la informacion de la tabla pedida, exceptuando a aquellos productos cuyo precio sea 0
      * */
-    public void mostrarDatos() throws SQLException {
-        if (advertenciaBuscar.isVisible())
-            advertenciaBuscar.setVisible(false);
-
+    public void mostrarDatos() {
         String nombreLista = opcionesListas.getValue();
         Aplicacion app = Aplicacion.getInstance();
-        AlertaDB alerta;
+        Alerta alerta;
 
-        if (nombreLista == null)
-            advertencia.setVisible(true);
-        else {
-            if (advertencia.isVisible())
-                advertencia.setVisible(false);
-
+        try {
             Connection connection = ConectorDB.getConnection();
             nombreLista = nombreLista.toLowerCase();
 
@@ -131,9 +120,9 @@ public class PantallaPrincipalControl implements Initializable {
                 estaVacia = app.estaVacia(nombreLista);
 
                 /*
-                 * Basicamente, si la conexion esta y todavia no tengo en memoria la info para mostrar, voy a la DB.
-                 * Si ya tengo la info, no hace falta ir a la DB.
-                 * */
+                    * Basicamente, si la conexion esta y todavia no tengo en memoria la info para mostrar, voy a la DB.
+                    * Si ya tengo la info, no hace falta ir a la DB.
+                    * */
                 if (estaVacia && existeTabla) {
                     nombreLista = UnificadorString.unirString(nombreLista);
                     String query = "SELECT * from " + nombreLista + " WHERE precio != 0";
@@ -143,23 +132,27 @@ public class PantallaPrincipalControl implements Initializable {
                     listaOb.addAll(productos.values());
                     app.agregarListaDeProductos(nombreLista, productos);
                     tabla.setItems(listaOb);
-                }
-                else if (!estaVacia && existeTabla){
+                } else if (!estaVacia && existeTabla) {
                     nombreLista = UnificadorString.unirString(nombreLista);
                     HashMap<Integer, Producto> productos = app.obtenerLista(nombreLista);
                     listaOb.clear();
                     listaOb.addAll(productos.values());
                     tabla.setItems(listaOb);
-                }
-                else {
+                } else {
                     alerta = new AlertaTabla();
                     alerta.display();
                 }
-            }
-            else {
+            } else {
                 alerta = new AlertaConexion();
                 alerta.display();
             }
+    } catch (NullPointerException e) {
+            alerta = new AlertaListaNoSeleccionada();
+            alerta.display();
+        }
+        catch (SQLException sqlException) {
+            alerta = new AlertaConexion();
+            alerta.display();
         }
     }
 
@@ -171,15 +164,14 @@ public class PantallaPrincipalControl implements Initializable {
         String nombreBuscado = textoBuscado.getText();
         Aplicacion app = Aplicacion.getInstance();
 
-        if (tabla == null || app.estaVacia(tabla)) {
-            advertenciaBuscar.setVisible(true);
-        }
-
-        else {
+        try {
             ArrayList<Producto> filtrados = app.buscarProducto(tabla, nombreBuscado);
             listaOb.clear();
             listaOb.addAll(filtrados);
             this.tabla.setItems(listaOb);
+        } catch (Exception e) {
+            Alerta alerta = new AlertaListaNoSeleccionada();
+            alerta.display();
         }
     }
 
@@ -189,12 +181,7 @@ public class PantallaPrincipalControl implements Initializable {
     public void modificarPorcentaje() throws IOException {
         Producto producto = tabla.getSelectionModel().getSelectedItem();
 
-        if (producto == null)
-            advertenciaModificacion.setVisible(true);
-        else {
-            if (advertenciaModificacion.isVisible())
-                advertenciaModificacion.setVisible(false);
-
+        try {
             int precioAnterior = producto.getPrecio();
             VentanaPorcentaje ventanaPorcentaje = new VentanaPorcentaje();
             Producto modificado = ventanaPorcentaje.display(producto);
@@ -202,13 +189,15 @@ public class PantallaPrincipalControl implements Initializable {
 
             if (precioAnterior != modificado.getPrecio()) {
                 Aplicacion app = Aplicacion.getInstance();
-
                 String nombreLista = opcionesListas.getValue();
                 nombreLista = nombreLista.toLowerCase();
 
                 app.agregarModificacion(nombreLista, producto);
                 guardarCambios.setDisable(false);
             }
+        } catch (NullPointerException e) {
+            Alerta alerta = new AlertaProductoSinSeleccionar();
+            alerta.display();
         }
     }
 

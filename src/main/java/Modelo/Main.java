@@ -22,13 +22,13 @@ public class Main extends Application {
 
         stage.setTitle("Listas");
         stage.setScene(escenaPrincipal);
-        stage.setResizable(false);
+        stage.setResizable(true);
 
-        stage.setMinHeight(750);
-        stage.setMinWidth(1200);
-
-        stage.setMaxHeight(750);
-        stage.setMaxWidth(1200);
+//        stage.setMinHeight(750);
+//        stage.setMinWidth(1200);
+//
+//        stage.setMaxHeight(750);
+//        stage.setMaxWidth(1200);
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/resources/icon.png"))));
 
         stage.show();
@@ -58,12 +58,5 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
-//        LectorMafersa lectorMafersa = new LectorMafersa();
-//        ArrayList<String> texto = lectorMafersa.leerArchivo(null);
-//
-//        HashMap<String, HashMap<Integer, Producto>> datos = new HashMap<>();
-//        Parser parser = new ParserMafersa();
-//        parser.parsearAProducto(texto, datos);
-
     }
 }

@@ -1,7 +1,7 @@
 package Modelo.Utils;
 
 import Controladores.Alertas.AlertaCambios;
-import Controladores.Alertas.AlertaDB;
+import Controladores.Alertas.Alerta;
 import Modelo.Productos.Producto;
 import Modelo.Productos.ProductoDuravit;
 import Modelo.Productos.ProductoLumilagro;
@@ -116,7 +116,7 @@ public class ConectorDB {
                 statement.setInt(9, value.getPorcentaje());
                 statement.addBatch();
             } catch (SQLException e) {
-                AlertaDB alertaDB = new AlertaCambios();
+                Alerta alertaDB = new AlertaCambios();
                 alertaDB.display();
             }
         });

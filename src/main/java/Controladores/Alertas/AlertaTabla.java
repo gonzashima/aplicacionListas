@@ -5,7 +5,7 @@ import javafx.scene.control.Alert;
 /**
  * Alerta que se muestra si la tabla buscada no existe
  * */
-public class AlertaTabla implements AlertaDB{
+public class AlertaTabla implements Alerta {
 
     @Override
     public void display() {

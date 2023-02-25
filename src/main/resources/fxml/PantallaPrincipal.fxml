@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="contenedorPrincipal" prefHeight="750.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.Ventanas.PantallaPrincipalControl">
+<AnchorPane fx:id="contenedorPrincipal" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.Ventanas.PantallaPrincipalControl">
    <TableView fx:id="tabla" fixedCellSize="20.0" layoutX="52.0" layoutY="44.0" pickOnBounds="false" prefHeight="500.0" prefWidth="1100.0" AnchorPane.bottomAnchor="206.0" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="52.0" AnchorPane.topAnchor="44.0">
       <columns>
          <TableColumn fx:id="codigo" minWidth="-Infinity" prefWidth="150.0" resizable="false" text="Codigo" />

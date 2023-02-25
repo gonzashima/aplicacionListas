@@ -22,13 +22,13 @@ public class Main extends Application {
 
         stage.setTitle("Listas");
         stage.setScene(escenaPrincipal);
-        stage.setResizable(true);
+        stage.setResizable(false);
 
-//        stage.setMinHeight(750);
-//        stage.setMinWidth(1200);
-//
-//        stage.setMaxHeight(750);
-//        stage.setMaxWidth(1200);
+        stage.setMinHeight(700);
+        stage.setMinWidth(1200);
+
+        stage.setMaxHeight(700);
+        stage.setMaxWidth(1200);
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/resources/icon.png"))));
 
         stage.show();

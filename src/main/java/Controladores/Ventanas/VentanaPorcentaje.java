@@ -1,14 +1,12 @@
 package Controladores.Ventanas;
-
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -27,6 +25,8 @@ public class VentanaPorcentaje implements Initializable {
 
     @FXML TextField campoTexto;
 
+    @FXML AnchorPane contenedorPrincipal;
+
     @FXML Button botonAceptar;
 
     @FXML Label advertencia;
@@ -36,6 +36,10 @@ public class VentanaPorcentaje implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         advertencia.setVisible(false);
+        campoTexto.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode().equals(KeyCode.ENTER))
+                cambiarPorcentaje();
+        });
     }
 
 
@@ -62,7 +66,7 @@ public class VentanaPorcentaje implements Initializable {
     /**
      * Cambia el porcentaje
      * */
-    public void cambiarPorcentaje(ActionEvent event) {
+    public void cambiarPorcentaje() {
         String texto = campoTexto.getText();
 
         try {
@@ -73,7 +77,7 @@ public class VentanaPorcentaje implements Initializable {
             advertencia.setVisible(true);
         }
 
-        Stage ventana = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage ventana = (Stage) contenedorPrincipal.getScene().getWindow();
         ventana.close();
     }
 

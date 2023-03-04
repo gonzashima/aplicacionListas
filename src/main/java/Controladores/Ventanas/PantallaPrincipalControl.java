@@ -182,12 +182,12 @@ public class PantallaPrincipalControl implements Initializable {
         Producto producto = tabla.getSelectionModel().getSelectedItem();
 
         try {
-            int precioAnterior = producto.getPrecio();
+            int porcentajeAnterior = producto.getPorcentaje();
             VentanaPorcentaje ventanaPorcentaje = new VentanaPorcentaje();
             Producto modificado = ventanaPorcentaje.display(producto);
             tabla.refresh();
 
-            if (precioAnterior != modificado.getPrecio()) {
+            if (porcentajeAnterior != modificado.getPorcentaje()) {
                 Aplicacion app = Aplicacion.getInstance();
                 String nombreLista = opcionesListas.getValue();
                 nombreLista = nombreLista.toLowerCase();

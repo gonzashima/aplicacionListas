@@ -5,6 +5,7 @@ import Modelo.Aplicacion;
 import Modelo.Productos.Producto;
 import Modelo.Utils.Casas;
 import Modelo.Utils.ConectorDB;
+import Modelo.Utils.CreadorExcel;
 import Modelo.Utils.UnificadorString;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,9 +14,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,17 +21,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 
 /**
- * Es el controlador de la pantalla principal y maneja todas las accione que ocurren en ella.
+ * Es el controlador de la pantalla principal y maneja todas las acciones que ocurren en ella.
  * */
 public class PantallaPrincipalControl implements Initializable {
-    @FXML private Button botonMostrar;
-
-    @FXML private AnchorPane contenedorPrincipal;
+    @FXML private Button botonMostrar, botonCrearExcel;
 
     @FXML private MenuItem guardarCambios;
 
@@ -44,6 +39,8 @@ public class PantallaPrincipalControl implements Initializable {
     @FXML private TableColumn<Producto, String> codigo, nombre, costo, precio, porcentaje, costoDescontado;
 
     @FXML private TextField textoBuscado;
+
+    @FXML private Label advertenciaGuardado;
 
     private final ObservableList<Producto> listaOb = FXCollections.observableArrayList();
 
@@ -64,8 +61,8 @@ public class PantallaPrincipalControl implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         opcionesCasas.getItems().addAll(casasAString());
         botonMostrar.setDisable(true);
-
         guardarCambios.setDisable(true);
+        advertenciaGuardado.setVisible(false);
 
         textoBuscado.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode().equals(KeyCode.ENTER))
@@ -194,6 +191,7 @@ public class PantallaPrincipalControl implements Initializable {
 
                 app.agregarModificacion(nombreLista, producto);
                 guardarCambios.setDisable(false);
+                advertenciaGuardado.setVisible(true);
             }
         } catch (NullPointerException e) {
             Alerta alerta = new AlertaProductoSinSeleccionar();
@@ -208,6 +206,7 @@ public class PantallaPrincipalControl implements Initializable {
         Aplicacion app = Aplicacion.getInstance();
         int cambios = app.guardarModificaciones();
         guardarCambios.setDisable(true);
+        advertenciaGuardado.setVisible(false);
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Cambios realizados");
@@ -215,27 +214,11 @@ public class PantallaPrincipalControl implements Initializable {
         alert.showAndWait();
     }
 
-
-    /**
-     * Cierra la aplicacion
-     * */
-    public void cerrarApp() throws SQLException {
-        Stage ventana = (Stage) contenedorPrincipal.getScene().getWindow();
-        Alert.AlertType tipo = Alert.AlertType.CONFIRMATION;
-        Alert alerta = new Alert(tipo, "");
-
-        alerta.initModality(Modality.APPLICATION_MODAL);
-        alerta.initOwner(ventana);
-        alerta.getDialogPane().setContentText("Seguro que desea salir? Los cambios no guardados se perderan");
-        alerta.getDialogPane().setHeaderText("SALIR");
-
-        Optional<ButtonType> resultado = alerta.showAndWait();
-
-        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
-            ConectorDB.close();
-            ventana.close();
-        }
+    public void crearExcel() throws IOException {
+//        VentanaExcel ventanaExcel = new VentanaExcel();
+//        ventanaExcel.display();
     }
+
 
     /**
      * Muestra por pantalla la ventana para leer archivos

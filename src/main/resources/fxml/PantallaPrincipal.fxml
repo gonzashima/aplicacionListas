@@ -32,7 +32,7 @@
       <Menu mnemonicParsing="false" text="Opciones">
          <MenuItem fx:id="guardarCambios" mnemonicParsing="false" onAction="#guardarCambios" text="Guardar cambios" />
          <MenuItem mnemonicParsing="false" onAction="#mostrarVentanaArchivos" text="Leer archivo" />
-         <MenuItem fx:id="botonCrearExcel" mnemonicParsing="false" onAction="#crearExcel" text="Pasar a excel" />
+         <MenuItem fx:id="crearExcel" mnemonicParsing="false" onAction="#crearExcel" text="Pasar a excel" />
       </Menu>
    </MenuBar>
    <AnchorPane layoutX="168.0" layoutY="554.0" prefHeight="182.0" prefWidth="795.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="165.0" AnchorPane.rightAnchor="165.0" AnchorPane.topAnchor="550.0">

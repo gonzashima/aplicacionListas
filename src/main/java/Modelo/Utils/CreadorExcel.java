@@ -11,4 +11,8 @@ public class CreadorExcel {
         sheet.createRow(0);
 
     }
+
+    public void crearCarteles() {
+
+    }
 }

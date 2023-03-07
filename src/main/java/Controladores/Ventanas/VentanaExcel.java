@@ -1,5 +1,6 @@
 package Controladores.Ventanas;
 
+import Modelo.Utils.CreadorExcel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -27,5 +28,15 @@ public class VentanaExcel {
         Scene escena = new Scene(root);
         ventana.setScene(escena);
         ventana.showAndWait();
+    }
+
+    public void crearLista() {
+        CreadorExcel creadorExcel = new CreadorExcel();
+        creadorExcel.crearLista();
+    }
+
+    public void crearCarteles() {
+        CreadorExcel creadorExcel = new CreadorExcel();
+        creadorExcel.crearCarteles();
     }
 }

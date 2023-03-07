@@ -1,10 +1,5 @@
 package Modelo;
 
-import Controladores.Ventanas.VentanaExcel;
-import Controladores.Ventanas.VentanaPorcentaje;
-import Modelo.Productos.Producto;
-import Modelo.Productos.ProductoDuravit;
-import Modelo.Productos.ProductoMafersa;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

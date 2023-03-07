@@ -5,7 +5,6 @@ import Modelo.Aplicacion;
 import Modelo.Productos.Producto;
 import Modelo.Utils.Casas;
 import Modelo.Utils.ConectorDB;
-import Modelo.Utils.CreadorExcel;
 import Modelo.Utils.UnificadorString;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +20,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.ResourceBundle;
 
 
@@ -215,8 +215,9 @@ public class PantallaPrincipalControl implements Initializable {
     }
 
     public void crearExcel() throws IOException {
-//        VentanaExcel ventanaExcel = new VentanaExcel();
-//        ventanaExcel.display();
+        List<Producto> productos = listaOb.stream().toList();
+        VentanaExcel ventanaExcel = new VentanaExcel();
+        ventanaExcel.display(productos);
     }
 
 

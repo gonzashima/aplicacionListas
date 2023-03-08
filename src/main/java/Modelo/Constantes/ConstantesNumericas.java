@@ -1,4 +1,4 @@
-package Modelo.Utils;
+package Modelo.Constantes;
 
 public class ConstantesNumericas {
 

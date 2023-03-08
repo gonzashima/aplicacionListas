@@ -1,6 +1,6 @@
 package Modelo.Productos;
 
-import Modelo.Utils.ConstantesNumericas;
+import Modelo.Constantes.ConstantesNumericas;
 import Modelo.Utils.ManejadorPrecios;
 
 public class ProductoMafersa extends Producto{

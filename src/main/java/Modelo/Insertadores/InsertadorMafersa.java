@@ -1,7 +1,7 @@
 package Modelo.Insertadores;
 
 import Modelo.Productos.Producto;
-import Modelo.Utils.StringsConstantes;
+import Modelo.Constantes.StringsConstantes;
 import Modelo.Utils.UnificadorString;
 
 import java.sql.SQLException;

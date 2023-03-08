@@ -18,10 +18,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 /**
@@ -106,17 +103,14 @@ public class PantallaPrincipalControl implements Initializable {
         String nombreLista = opcionesListas.getValue();
         Aplicacion app = Aplicacion.getInstance();
         Alerta alerta;
-
         try {
             Connection connection = ConectorDB.getConnection();
             nombreLista = nombreLista.toLowerCase();
 
             if (connection != null) {
                 boolean existeTabla, estaVacia;
-
                 existeTabla = ConectorDB.existeTabla(nombreLista);
                 estaVacia = app.estaVacia(nombreLista);
-
                 /*
                     * Basicamente, si la conexion esta y todavia no tengo en memoria la info para mostrar, voy a la DB.
                     * Si ya tengo la info, no hace falta ir a la DB.
@@ -128,6 +122,7 @@ public class PantallaPrincipalControl implements Initializable {
 
                     listaOb.clear();
                     listaOb.addAll(productos.values());
+                    listaOb.sort(Comparator.comparing(Producto::getNombre));
                     app.agregarListaDeProductos(nombreLista, productos);
                     tabla.setItems(listaOb);
                 } else if (!estaVacia && existeTabla) {
@@ -135,6 +130,7 @@ public class PantallaPrincipalControl implements Initializable {
                     HashMap<Integer, Producto> productos = app.obtenerLista(nombreLista);
                     listaOb.clear();
                     listaOb.addAll(productos.values());
+                    listaOb.sort(Comparator.comparing(Producto::getNombre));
                     tabla.setItems(listaOb);
                 } else {
                     alerta = new AlertaTabla();

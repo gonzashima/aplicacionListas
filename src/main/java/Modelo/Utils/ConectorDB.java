@@ -2,6 +2,7 @@ package Modelo.Utils;
 
 import Controladores.Alertas.AlertaCambios;
 import Controladores.Alertas.Alerta;
+import Modelo.Constantes.StringsConstantes;
 import Modelo.Productos.Producto;
 import Modelo.Productos.ProductoDuravit;
 import Modelo.Productos.ProductoLumilagro;

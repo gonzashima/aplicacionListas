@@ -3,7 +3,7 @@ package Modelo.Parsers;
 import Modelo.Productos.Producto;
 import Modelo.Productos.ProductoDuravit;
 import Modelo.Utils.ConectorDB;
-import Modelo.Utils.StringsConstantes;
+import Modelo.Constantes.StringsConstantes;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package Modelo.Utils;
+package Modelo.Constantes;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

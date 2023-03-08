@@ -1,5 +1,5 @@
 package Modelo.Lectores;
-import Modelo.Utils.Constantes;
+import Modelo.Utils.StringsConstantes;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
@@ -66,7 +66,7 @@ public class LectorMafersa implements LectorArchivos{
      * Construye la instancia del lector. Inicializa todos los codigos de las listas que va a necesitar
      * */
     public LectorMafersa() {
-        codigos = Constantes.getCodigosMafersa();
+        codigos = StringsConstantes.getCodigosMafersa();
         lineas = new ArrayList<>();
 
         Field[] fields = getClass().getDeclaredFields(); //obtengo los atributos de la clase

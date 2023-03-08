@@ -3,7 +3,7 @@ package Modelo.Parsers;
 import Modelo.Productos.Producto;
 import Modelo.Productos.ProductoDuravit;
 import Modelo.Utils.ConectorDB;
-import Modelo.Utils.Constantes;
+import Modelo.Utils.StringsConstantes;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,19 +15,19 @@ public class ParserDuravit implements Parser {
     @Override
     public void parsearAProducto(ArrayList<String> texto, HashMap<String, HashMap<Integer, Producto>> datos) throws SQLException {
         ConectorDB.getConnection();
-        boolean existeTabla = ConectorDB.existeTabla(Constantes.DURAVIT);
+        boolean existeTabla = ConectorDB.existeTabla(StringsConstantes.DURAVIT);
         HashMap<Integer, Producto> mapaDuravit;
 
-        if (existeTabla && datos.get(Constantes.DURAVIT) == null) { //si la tabla existe pero no esta en memoria, la cargo en memoria
+        if (existeTabla && datos.get(StringsConstantes.DURAVIT) == null) { //si la tabla existe pero no esta en memoria, la cargo en memoria
             mapaDuravit = cargarProductos();
-            datos.put(Constantes.DURAVIT, mapaDuravit);
+            datos.put(StringsConstantes.DURAVIT, mapaDuravit);
         } else if (!existeTabla) {                   //  si no existe creo una nueva
             mapaDuravit = new HashMap<>();
-            datos.put(Constantes.DURAVIT, mapaDuravit);
+            datos.put(StringsConstantes.DURAVIT, mapaDuravit);
         }
         //y si existe y esta en memoria uso esa
 
-        mapaDuravit = datos.get(Constantes.DURAVIT);
+        mapaDuravit = datos.get(StringsConstantes.DURAVIT);
 
         for (String linea : texto) {
             StringBuilder nombre = new StringBuilder();
@@ -68,7 +68,7 @@ public class ParserDuravit implements Parser {
      * Carga los productos de la base de datos al mapa
      * */
     private HashMap<Integer, Producto> cargarProductos() throws SQLException {
-        String query = "SELECT * from " + Constantes.DURAVIT + " WHERE precio != 0";
-        return ConectorDB.ejecutarQuery(query, Constantes.DURAVIT);
+        String query = "SELECT * from " + StringsConstantes.DURAVIT + " WHERE precio != 0";
+        return ConectorDB.ejecutarQuery(query, StringsConstantes.DURAVIT);
     }
 }

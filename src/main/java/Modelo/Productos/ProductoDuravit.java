@@ -1,8 +1,11 @@
 package Modelo.Productos;
 
+import Modelo.Utils.ConstantesNumericas;
 import Modelo.Utils.ManejadorPrecios;
 
 public class ProductoDuravit extends Producto{
+    public static final int CODIGO = ConstantesNumericas.CODIGO_DURAVIT;
+
     public ProductoDuravit(String nombre, int codigo, int costo) {
         super(nombre, codigo, costo);
         costoDescontado = costo;
@@ -17,5 +20,9 @@ public class ProductoDuravit extends Producto{
         ManejadorPrecios manejador = new ManejadorPrecios();
         int parcial = costo + (costo * porcentaje) / 100;
         this.precio = manejador.redondearPrecio(parcial);
+    }
+
+    public int codigoCasa() {
+        return CODIGO;
     }
 }

@@ -28,6 +28,8 @@ public abstract class Producto {
 
     public abstract void calcularPrecio();
 
+    public abstract int codigoCasa();
+
     public int getPrecio(){
         return this.precio;
     }

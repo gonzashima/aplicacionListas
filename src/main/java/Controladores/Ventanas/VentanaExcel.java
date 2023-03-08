@@ -53,7 +53,17 @@ public class VentanaExcel {
     }
 
     public void crearCarteles() {
-        CreadorExcel creadorExcel = new CreadorExcel();
-        creadorExcel.crearCarteles();
+        try {
+            CreadorExcel creadorExcel = new CreadorExcel();
+            creadorExcel.crearCarteles(productos);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("El archivo pudo crearse correctamente");
+            alert.show();
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Hubo un error al crear el excel");
+            alert.show();
+        }
+
     }
 }

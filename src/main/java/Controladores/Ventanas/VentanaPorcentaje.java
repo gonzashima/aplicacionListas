@@ -14,6 +14,7 @@ import Modelo.Productos.Producto;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -31,7 +32,7 @@ public class VentanaPorcentaje implements Initializable {
 
     @FXML Label advertencia;
 
-    private static Producto producto;
+    private static List<Producto> productos;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -46,9 +47,9 @@ public class VentanaPorcentaje implements Initializable {
     /**
      * Muestra por pantalla la ventana para modificar porcentajes
      * */
-    public Producto display(Producto producto) throws IOException {
+    public List<Producto> display(List<Producto> productos) throws IOException {
         Stage ventana = new Stage();
-        VentanaPorcentaje.producto = producto;
+        VentanaPorcentaje.productos = productos;
 
         ventana.setTitle("Modificar porcantaje");
         ventana.initModality(Modality.APPLICATION_MODAL);
@@ -60,7 +61,7 @@ public class VentanaPorcentaje implements Initializable {
         ventana.setScene(escena);
         ventana.showAndWait();
 
-        return producto;
+        return productos;
     }
 
     /**
@@ -71,8 +72,10 @@ public class VentanaPorcentaje implements Initializable {
 
         try {
             int numero = Integer.parseInt(texto);
-            producto.setPorcentaje(numero);
-            producto.calcularPrecio();
+            for(Producto p : productos) {
+                p.setPorcentaje(numero);
+                p.calcularPrecio();
+            }
         } catch (Exception e) {
             advertencia.setVisible(true);
         }

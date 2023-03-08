@@ -28,7 +28,7 @@ import java.util.ResourceBundle;
  * Es el controlador de la pantalla principal y maneja todas las acciones que ocurren en ella.
  * */
 public class PantallaPrincipalControl implements Initializable {
-    @FXML private Button botonMostrar, botonCrearExcel;
+    @FXML private Button botonMostrar;
 
     @FXML private MenuItem guardarCambios;
 
@@ -63,6 +63,7 @@ public class PantallaPrincipalControl implements Initializable {
         botonMostrar.setDisable(true);
         guardarCambios.setDisable(true);
         advertenciaGuardado.setVisible(false);
+        tabla.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         textoBuscado.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode().equals(KeyCode.ENTER))
@@ -176,22 +177,27 @@ public class PantallaPrincipalControl implements Initializable {
      * Muestra una nueva ventana y modifica el porcentaje del producto seleccionado
      * */
     public void modificarPorcentaje() throws IOException {
-        Producto producto = tabla.getSelectionModel().getSelectedItem();
+        List<Producto> productos = tabla.getSelectionModel().getSelectedItems();
 
         try {
-            int porcentajeAnterior = producto.getPorcentaje();
+            List<Integer> porcentajesAnteriores = new ArrayList<>();
+            for (Producto producto : productos)
+                porcentajesAnteriores.add(producto.getPorcentaje());
+
             VentanaPorcentaje ventanaPorcentaje = new VentanaPorcentaje();
-            Producto modificado = ventanaPorcentaje.display(producto);
+            List<Producto> modificados = ventanaPorcentaje.display(productos);
             tabla.refresh();
 
-            if (porcentajeAnterior != modificado.getPorcentaje()) {
-                Aplicacion app = Aplicacion.getInstance();
-                String nombreLista = opcionesListas.getValue();
-                nombreLista = nombreLista.toLowerCase();
+            for (int i = 0; i < modificados.size(); i++) {
+                if (porcentajesAnteriores.get(i) != modificados.get(i).getPorcentaje()) {
+                    Aplicacion app = Aplicacion.getInstance();
+                    String nombreLista = opcionesListas.getValue();
+                    nombreLista = nombreLista.toLowerCase();
 
-                app.agregarModificacion(nombreLista, producto);
-                guardarCambios.setDisable(false);
-                advertenciaGuardado.setVisible(true);
+                    app.agregarModificacion(nombreLista, modificados.get(i));
+                    guardarCambios.setDisable(false);
+                    advertenciaGuardado.setVisible(true);
+                }
             }
         } catch (NullPointerException e) {
             Alerta alerta = new AlertaProductoSinSeleccionar();

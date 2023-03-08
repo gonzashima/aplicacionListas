@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="150.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.Ventanas.VentanaPorcentaje">
+<AnchorPane fx:id="contenedorPrincipal" prefHeight="150.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.Ventanas.VentanaPorcentaje">
     <Label layoutX="69.0" layoutY="24.0" text="Ingresar nuevo porcentaje">
         <font>
           <Font size="14.0" />

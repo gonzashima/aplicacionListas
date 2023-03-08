@@ -43,7 +43,7 @@ public class ConectorDB {
         PreparedStatement statement = connection.prepareStatement(query);
         ResultSet rs = statement.executeQuery();
         HashMap<Integer, Producto> productos = new HashMap<>();
-        ArrayList<String> nombresMafersa = Constantes.getNombresMafersa();
+        ArrayList<String> nombresMafersa = StringsConstantes.getNombresMafersa();
         nombresMafersa = (ArrayList<String>) nombresMafersa.stream().map(UnificadorString::unirString).collect(Collectors.toList());
 
         while (rs.next()) {
@@ -54,10 +54,10 @@ public class ConectorDB {
             int precio = rs.getInt("precio");
             int porcentaje = rs.getInt("porcentaje");
 
-            if (nombreTabla.equals(Constantes.DURAVIT))
+            if (nombreTabla.equals(StringsConstantes.DURAVIT))
                 producto = new ProductoDuravit(codigo, nombre, costo, precio, porcentaje);
             else if (nombresMafersa.stream().anyMatch(nombreTabla :: contains))
-                if (Constantes.getDistintosLumilagro().stream().anyMatch(nombre :: contains))
+                if (StringsConstantes.getDistintosLumilagro().stream().anyMatch(nombre :: contains))
                     producto = new ProductoLumilagro(codigo, nombre, costo, precio, porcentaje);
                 else
                     producto = new ProductoMafersa(codigo, nombre, costo, precio, porcentaje);

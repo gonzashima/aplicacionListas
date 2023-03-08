@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
-public class Constantes {
+public class StringsConstantes {
     public static final String DURAVIT = "duravit";
 
 
@@ -62,7 +62,7 @@ public class Constantes {
 
     public static ArrayList<String> getCodigosMafersa() {
         ArrayList<String> codigos = new ArrayList<>();
-        Field[] fields = Constantes.class.getDeclaredFields();
+        Field[] fields = StringsConstantes.class.getDeclaredFields();
 
         for (Field field : fields) {
             if (Modifier.isStatic(field.getModifiers()) && field.getType().isAssignableFrom(String.class) && field.getName().contains("CODIGO_")) {
@@ -79,7 +79,7 @@ public class Constantes {
 
     public static ArrayList<String> getNombresMafersa() {
         ArrayList<String> nombres = new ArrayList<>();
-        Field[] fields = Constantes.class.getDeclaredFields();
+        Field[] fields = StringsConstantes.class.getDeclaredFields();
 
         for (Field field : fields) {
             if (Modifier.isStatic(field.getModifiers()) && field.getType().isAssignableFrom(String.class) && field.getName().contains("NOMBRE_")) {
@@ -96,7 +96,7 @@ public class Constantes {
 
     public static ArrayList<String> getDistintosLumilagro() {
         ArrayList<String> nombres = new ArrayList<>();
-        Field[] fields = Constantes.class.getDeclaredFields();
+        Field[] fields = StringsConstantes.class.getDeclaredFields();
 
         for (Field field : fields) {
             if (Modifier.isStatic(field.getModifiers()) && field.getType().isAssignableFrom(String.class) && field.getName().contains("LUMILAGRO_")) {

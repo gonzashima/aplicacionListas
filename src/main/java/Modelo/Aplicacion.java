@@ -137,6 +137,7 @@ public class Aplicacion {
     }
 
     public HashMap<Integer, Producto> obtenerLista(String nombreTabla) {
+        nombreTabla = nombreTabla.toLowerCase();
         return datos.get(nombreTabla);
     }
 

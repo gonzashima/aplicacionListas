@@ -159,14 +159,30 @@ public class PantallaPrincipalControl implements Initializable {
         Aplicacion app = Aplicacion.getInstance();
 
         try {
-            ArrayList<Producto> filtrados = app.buscarProducto(tabla, nombreBuscado);
-            listaOb.clear();
-            listaOb.addAll(filtrados);
-            this.tabla.setItems(listaOb);
-        } catch (Exception e) {
-            Alerta alerta = new AlertaListaNoSeleccionada();
-            alerta.display();
+            int codigoBuscado = Integer.parseInt(nombreBuscado);
+            Producto producto = app.obtenerLista(tabla).get(codigoBuscado);
+            if (producto != null) {
+                listaOb.clear();
+                listaOb.add(producto);
+                this.tabla.setItems(listaOb);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText("No hay producto con ese codigo");
+                alert.show();
+            }
+
+        } catch (NumberFormatException e) {
+            try {
+                ArrayList<Producto> filtrados = app.buscarProducto(tabla, nombreBuscado);
+                listaOb.clear();
+                listaOb.addAll(filtrados);
+                this.tabla.setItems(listaOb);
+            } catch (Exception ex) {
+                Alerta alerta = new AlertaListaNoSeleccionada();
+                alerta.display();
+            }
         }
+
     }
 
     /**

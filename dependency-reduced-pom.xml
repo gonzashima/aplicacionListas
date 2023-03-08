@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.example</groupId>
   <artifactId>Listas</artifactId>
-  <version>0.2.4-alpha</version>
+  <version>0.3.0-alpha</version>
   <build>
     <resources>
       <resource>

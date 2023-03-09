@@ -1,2 +1,2 @@
 # Aplicacion para las listas
-Aplicacion para controlar el inventario, leer listas y actualizar precios
+Aplicacion para leer listas y actualizar precios

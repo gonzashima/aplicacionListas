@@ -116,9 +116,9 @@ public class LectorMafersa implements LectorArchivos{
         workbook.close();
 
         int indicePrimerRubro = indicesRubros.get(0);
-        indicesLineas = (ArrayList<Integer>) indicesLineas.stream().map(x -> x - indicePrimerRubro).collect(Collectors.toList());
+        indicesLineas = indicesLineas.stream().map(x -> x - indicePrimerRubro).collect(Collectors.toList());
         texto.subList(0,indicePrimerRubro).clear();
-        indicesRubros = (ArrayList<Integer>) indicesRubros.stream().map(r -> r - indicePrimerRubro).collect(Collectors.toList());
+        indicesRubros = indicesRubros.stream().map(r -> r - indicePrimerRubro).collect(Collectors.toList());
 
         List<List<Integer>> resultado = filtrarRubros(indicesRubros, indicesLineas, texto);
         indicesRubros = resultado.get(0);

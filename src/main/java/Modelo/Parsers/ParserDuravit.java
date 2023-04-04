@@ -9,11 +9,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class ParserDuravit implements Parser {
 
     @Override
-    public void parsearAProducto(ArrayList<String> texto, HashMap<String, HashMap<Integer, Producto>> datos) throws SQLException {
+    public void parsearAProducto(List<String> texto, HashMap<String, HashMap<Integer, Producto>> datos) throws SQLException {
         ConectorDB.getConnection();
         boolean existeTabla = ConectorDB.existeTabla(StringsConstantes.DURAVIT);
         HashMap<Integer, Producto> mapaDuravit;
@@ -35,7 +36,7 @@ public class ParserDuravit implements Parser {
             int costo;
 
             String[] lineaSeparada = linea.trim().split(" ");
-            ArrayList<String> palabras = new ArrayList<>(Arrays.asList(lineaSeparada));
+            List<String> palabras = new ArrayList<>(Arrays.asList(lineaSeparada));
             boolean quedan = palabras.remove("");
 
             while (quedan)

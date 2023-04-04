@@ -59,8 +59,8 @@ public class LectorMafersa implements LectorArchivos{
     private static final String LINEA_YESI = "353 -";
 
 
-    private final ArrayList<String> codigos;
-    private final ArrayList<String> lineas;
+    private final List<String> codigos;
+    private final List<String> lineas;
 
     /**
      * Construye la instancia del lector. Inicializa todos los codigos de las listas que va a necesitar
@@ -86,16 +86,16 @@ public class LectorMafersa implements LectorArchivos{
     }
 
     @Override
-    public ArrayList<String> leerArchivo(File archivo) throws IOException {
+    public List<String> leerArchivo(File archivo) throws IOException {
         FileInputStream file = new FileInputStream(archivo);
 
         XSSFWorkbook workbook = new XSSFWorkbook(file);         //creo todas las cosas necesarias
         XSSFSheet hoja = workbook.getSheetAt(0);
         DataFormatter formatter = new DataFormatter();
-        ArrayList<String> texto = new ArrayList<>();
+        List<String> texto = new ArrayList<>();
 
-        ArrayList<Integer> indicesRubros = new ArrayList<>();   //aca se guardan los indices de TODOS los rubros en la lista
-        ArrayList<Integer> indicesLineas = new ArrayList<>();
+        List<Integer> indicesRubros = new ArrayList<>();   //aca se guardan los indices de TODOS los rubros en la lista
+        List<Integer> indicesLineas = new ArrayList<>();
 
         for (Row fila : hoja) {
             StringBuilder linea = new StringBuilder();
@@ -120,7 +120,7 @@ public class LectorMafersa implements LectorArchivos{
         texto.subList(0,indicePrimerRubro).clear();
         indicesRubros = (ArrayList<Integer>) indicesRubros.stream().map(r -> r - indicePrimerRubro).collect(Collectors.toList());
 
-        ArrayList<ArrayList<Integer>> resultado = filtrarRubros(indicesRubros, indicesLineas, texto);
+        List<List<Integer>> resultado = filtrarRubros(indicesRubros, indicesLineas, texto);
         indicesRubros = resultado.get(0);
         indicesLineas = resultado.get(1);
 
@@ -134,7 +134,7 @@ public class LectorMafersa implements LectorArchivos{
     /**
      * Saca del texto los articulos de los rubros que no se trabajan
      * */
-    private ArrayList<ArrayList<Integer>> filtrarRubros(ArrayList<Integer> indicesRubros, ArrayList<Integer> indicesLineas, ArrayList<String> texto) {
+    private List<List<Integer>> filtrarRubros(List<Integer> indicesRubros, List<Integer> indicesLineas, List<String> texto) {
         for (int i = 0; i < indicesRubros.size(); i++) {
             int indice = indicesRubros.get(i);                  //indice (en el texto) en el cual hay una linea que diga rubro
             String rubro = texto.get(indice);
@@ -142,12 +142,12 @@ public class LectorMafersa implements LectorArchivos{
 
             if (codigos.stream().noneMatch(rubro :: contains)) {    //si el rubro no se trabaja, se elimina el texto desde el mismo hasta el siguiente rubro
                 if ((i + 1) >= indicesRubros.size()) {
-                    indicesLineas = (ArrayList<Integer>) indicesLineas.stream().filter(x -> !(x >= indice && x < texto.size())).collect(Collectors.toList());
+                    indicesLineas = indicesLineas.stream().filter(x -> !(x >= indice && x < texto.size())).collect(Collectors.toList());
                     texto.subList(indice, texto.size()).clear();
                 }
                 else {
                     int finalDeSublista = indicesRubros.get(i + 1);
-                    indicesLineas = (ArrayList<Integer>) indicesLineas.stream().filter(x -> !(x >= indice && x < finalDeSublista)).collect(Collectors.toList());
+                    indicesLineas = indicesLineas.stream().filter(x -> !(x >= indice && x < finalDeSublista)).collect(Collectors.toList());
                     texto.subList(indice, finalDeSublista).clear();
                 }
             }
@@ -159,13 +159,13 @@ public class LectorMafersa implements LectorArchivos{
                 List<Integer> rubrosSalteados = indicesRubros.subList(0,i);
                 List<Integer> rubrosAModificar = indicesRubros.subList(i, indicesRubros.size());
 
-                ArrayList<Integer> rubrosResultantes = (ArrayList<Integer>) rubrosAModificar.stream().map(e -> e - diferencia).collect(Collectors.toList());
+                List<Integer> rubrosResultantes = rubrosAModificar.stream().map(e -> e - diferencia).collect(Collectors.toList());
 
                 rubrosResultantes.addAll(0, rubrosSalteados);
                 indicesRubros = rubrosResultantes;
 
                 if (i + 1 <= indicesRubros.size())
-                    indicesLineas = (ArrayList<Integer>) indicesLineas.stream().map(x -> (x > indice) ? (x - diferencia) : x).collect(Collectors.toList());
+                    indicesLineas = indicesLineas.stream().map(x -> (x > indice) ? (x - diferencia) : x).collect(Collectors.toList());
 
                 i--;
             }
@@ -177,7 +177,7 @@ public class LectorMafersa implements LectorArchivos{
     /**
      * Fitra y deja solo a las lineas que se trabajan
      * */
-    private void filtrarLineas(ArrayList<Integer> indicesRubros, ArrayList<Integer> indicesLineas, ArrayList<String> texto) {
+    private void filtrarLineas(List<Integer> indicesRubros, List<Integer> indicesLineas, List<String> texto) {
         for (int i = 0; i < indicesLineas.size(); i++) {
             int indice = indicesLineas.get(i);
             String leida = texto.get(indice);
@@ -199,20 +199,15 @@ public class LectorMafersa implements LectorArchivos{
                 List<Integer> elementosSalteados = indicesLineas.subList(0,i);
                 List<Integer> elementosAModificar = indicesLineas.subList(i, indicesLineas.size());
 
-                ArrayList<Integer> listaResultante = (ArrayList<Integer>) elementosAModificar.stream().map(e -> e - diferencia).collect(Collectors.toList());
+                List<Integer> listaResultante = elementosAModificar.stream().map(e -> e - diferencia).collect(Collectors.toList());
 
                 listaResultante.addAll(0, elementosSalteados);
                 indicesLineas = listaResultante;
 
-                indicesRubros = (ArrayList<Integer>) indicesRubros.stream().map(x -> x > indice ? (x - diferencia) : x).collect(Collectors.toList());
+                indicesRubros = indicesRubros.stream().map(x -> x > indice ? (x - diferencia) : x).collect(Collectors.toList());
 
                 i--;
             }
         }
-    }
-
-    @Override
-    public String nombreTabla() {
-        return "mafersa";
     }
 }

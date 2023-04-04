@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Aplicacion {
 
@@ -27,7 +28,7 @@ public class Aplicacion {
 
     private final HashMap<String, HashMap<Integer, Producto>> datos;
 
-    private final HashMap<String, ArrayList<Producto>> modificaciones;
+    private final HashMap<String, List<Producto>> modificaciones;
 
     private Aplicacion(){
         datos = new HashMap<>();
@@ -53,7 +54,7 @@ public class Aplicacion {
         Parser parser = utilidades.parser();
         Insertador insertador = utilidades.insertador();
 
-        ArrayList<String> lineas = lector.leerArchivo(archivo);
+        List<String> lineas = lector.leerArchivo(archivo);
         parser.parsearAProducto(lineas, datos);
         insertador.insertarABaseDeDatos(datos);
     }
@@ -84,7 +85,7 @@ public class Aplicacion {
      * una vez en dicha lista. Solo se guarda la ultima modificacion
      * */
     public void agregarModificacion(String nombreLista, Producto producto) {
-        ArrayList<Producto> lista = modificaciones.get(nombreLista);
+        List<Producto> lista = modificaciones.get(nombreLista);
 
         if (lista == null) {
             lista = new ArrayList<>();
@@ -108,7 +109,7 @@ public class Aplicacion {
 
         if (connection != null) {
             for (String nombreLista : modificaciones.keySet()) {
-                ArrayList<Producto> productos = modificaciones.get(nombreLista);
+                List<Producto> productos = modificaciones.get(nombreLista);
                 int parcial = ConectorDB.guardarCambios(productos, nombreLista);
                 cambiosTotales += parcial;
             }
@@ -121,6 +122,7 @@ public class Aplicacion {
      * */
     public ArrayList<Producto> buscarProducto(String clave, String buscado) {
         clave = clave.toLowerCase();
+        clave = UnificadorString.unirString(clave);
         buscado = buscado.toUpperCase();
 
         HashMap<Integer, Producto> productos = datos.get(clave);
@@ -138,6 +140,7 @@ public class Aplicacion {
 
     public HashMap<Integer, Producto> obtenerLista(String nombreTabla) {
         nombreTabla = nombreTabla.toLowerCase();
+        nombreTabla = UnificadorString.unirString(nombreTabla);
         return datos.get(nombreTabla);
     }
 

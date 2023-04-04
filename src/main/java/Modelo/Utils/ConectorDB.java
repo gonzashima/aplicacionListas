@@ -9,8 +9,8 @@ import Modelo.Productos.ProductoLumilagro;
 import Modelo.Productos.ProductoMafersa;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -44,8 +44,8 @@ public class ConectorDB {
         PreparedStatement statement = connection.prepareStatement(query);
         ResultSet rs = statement.executeQuery();
         HashMap<Integer, Producto> productos = new HashMap<>();
-        ArrayList<String> nombresMafersa = StringsConstantes.getNombresMafersa();
-        nombresMafersa = (ArrayList<String>) nombresMafersa.stream().map(UnificadorString::unirString).collect(Collectors.toList());
+        List<String> nombresMafersa = StringsConstantes.getNombresMafersa();
+        nombresMafersa = nombresMafersa.stream().map(UnificadorString::unirString).collect(Collectors.toList());
 
         while (rs.next()) {
             Producto producto = null;
@@ -124,7 +124,7 @@ public class ConectorDB {
         statement.executeBatch();
     }
 
-    public static int guardarCambios(ArrayList<Producto> productos, String nombreTabla) throws SQLException {
+    public static int guardarCambios(List<Producto> productos, String nombreTabla) throws SQLException {
         nombreTabla = UnificadorString.unirString(nombreTabla);
         String query = "UPDATE " + nombreTabla + " SET precio=?, porcentaje=? WHERE codigo=?";
         PreparedStatement statement = connection.prepareStatement(query);

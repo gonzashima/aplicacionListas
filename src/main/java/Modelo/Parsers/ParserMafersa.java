@@ -8,10 +8,7 @@ import Modelo.Constantes.StringsConstantes;
 import Modelo.Utils.UnificadorString;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 public class ParserMafersa implements Parser{
     private final ArrayList<String> nombres;
@@ -21,8 +18,8 @@ public class ParserMafersa implements Parser{
     }
 
     @Override
-    public void parsearAProducto(ArrayList<String> texto, HashMap<String, HashMap<Integer, Producto>> datos) throws SQLException {
-        HashMap<String, ArrayList<String>> rubrosSeparados = separarRubros(texto);
+    public void parsearAProducto(List<String> texto, HashMap<String, HashMap<Integer, Producto>> datos) throws SQLException {
+        HashMap<String, List<String>> rubrosSeparados = separarRubros(texto);
         ConectorDB.getConnection();
         cargarTablas(datos);
         ArrayList<String> distintos = StringsConstantes.getDistintosLumilagro();
@@ -30,13 +27,13 @@ public class ParserMafersa implements Parser{
         for (String nombreLista : nombres) {
             nombreLista = UnificadorString.unirString(nombreLista);
             HashMap<Integer, Producto> mapaActual = datos.get(nombreLista);
-            ArrayList<String> lista = rubrosSeparados.get(nombreLista);
+            List<String> lista = rubrosSeparados.get(nombreLista);
 
             if (lista == null) //porque puede pasar que la lista venga por rubro, entonces la cantidad de rubros separados no va a ser la cantidad de nombres
                 continue;
             for (String linea : lista) {
                 String[] lineaSeparada = linea.trim().split(" ");
-                ArrayList<String> partes = new ArrayList<>(Arrays.asList(lineaSeparada));
+                List<String> partes = new ArrayList<>(Arrays.asList(lineaSeparada));
                 partes.remove(1);                   //saco el codigo del fabricante
 
                 int codigo = Integer.parseInt(partes.remove(0));
@@ -90,8 +87,8 @@ public class ParserMafersa implements Parser{
     /**
      * Separa el texto y coloca a los diferentes rubros en diferentes listas
      * */
-    private HashMap<String, ArrayList<String>> separarRubros(ArrayList<String> texto) {
-        HashMap<String, ArrayList<String>> rubrosSeparados = new HashMap<>();
+    private HashMap<String, List<String>> separarRubros(List<String> texto) {
+        HashMap<String, List<String>> rubrosSeparados = new HashMap<>();
         ArrayList<String> nuevaLista = null;
 
         for (String linea : texto) {

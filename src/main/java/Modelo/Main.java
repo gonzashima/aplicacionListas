@@ -1,5 +1,6 @@
 package Modelo;
 
+import Modelo.Utils.ConectorDB;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -36,11 +38,15 @@ public class Main extends Application {
 
         stage.setOnCloseRequest(e -> {
             e.consume();
-            cerrarPrograma(stage);
+            try {
+                cerrarPrograma(stage);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         });
     }
 
-    private void cerrarPrograma(Stage ventana) {
+    private void cerrarPrograma(Stage ventana) throws SQLException {
         Alert.AlertType tipo = Alert.AlertType.CONFIRMATION;
         Alert alerta = new Alert(tipo, "");
 
@@ -53,10 +59,11 @@ public class Main extends Application {
 
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
             ventana.close();
+            ConectorDB.close();
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, SQLException {
         launch(args);
     }
 }

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 public class StringsConstantes {
     public static final String DURAVIT = "duravit";
+    public static final String MAFERSA = "mafersa";
+    public static final String RESPONTECH = "respontech";
 
 
     //COSAS QUE SE MARCAN DIFERENTE EN MAFERSA

@@ -7,6 +7,7 @@ module aplicacionListas {
     requires java.sql;
     requires org.apache.poi.poi;
     requires org.apache.poi.ooxml;
+    requires org.apache.commons.codec;
 
     exports Controladores.Ventanas to javafx.fxml;
 

@@ -3,10 +3,7 @@ package Modelo.Utils;
 import Controladores.Alertas.AlertaCambios;
 import Controladores.Alertas.Alerta;
 import Modelo.Constantes.StringsConstantes;
-import Modelo.Productos.Producto;
-import Modelo.Productos.ProductoDuravit;
-import Modelo.Productos.ProductoLumilagro;
-import Modelo.Productos.ProductoMafersa;
+import Modelo.Productos.*;
 
 import java.sql.*;
 import java.util.HashMap;
@@ -57,12 +54,15 @@ public class ConectorDB {
 
             if (nombreTabla.equals(StringsConstantes.DURAVIT))
                 producto = new ProductoDuravit(codigo, nombre, costo, precio, porcentaje);
-            else if (nombresMafersa.stream().anyMatch(nombreTabla :: contains))
-                if (StringsConstantes.getDistintosLumilagro().stream().anyMatch(nombre :: contains))
+
+            else if (nombresMafersa.stream().anyMatch(nombreTabla :: contains)) {
+                if (StringsConstantes.getDistintosLumilagro().stream().anyMatch(nombre::contains))
                     producto = new ProductoLumilagro(codigo, nombre, costo, precio, porcentaje);
                 else
                     producto = new ProductoMafersa(codigo, nombre, costo, precio, porcentaje);
-
+            }
+            else if (nombreTabla.equals(StringsConstantes.RESPONTECH))
+                producto = new ProductoRespontech(codigo, nombre, costo, precio, porcentaje);
             productos.put(codigo, producto);
         }
         return productos;
@@ -71,7 +71,7 @@ public class ConectorDB {
     public static void crearTabla(String nombre) throws SQLException {
         nombre = UnificadorString.unirString(nombre);
         String query = "CREATE TABLE " + nombre + " (codigo int, " +
-                "nombre varchar(50), costo int, precio int, porcentaje int, PRIMARY KEY (codigo))";
+                "nombre varchar(100), costo int, precio int, porcentaje int, PRIMARY KEY (codigo))";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.execute();
     }

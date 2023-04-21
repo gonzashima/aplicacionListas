@@ -1,14 +1,18 @@
 package Modelo;
 
+import Modelo.Constantes.StringsConstantes;
 import Modelo.Insertadores.Insertador;
 import Modelo.Insertadores.InsertadorDuravit;
 import Modelo.Insertadores.InsertadorMafersa;
+import Modelo.Insertadores.InsertadorRespontech;
 import Modelo.Lectores.LectorArchivos;
 import Modelo.Lectores.LectorDuravit;
 import Modelo.Lectores.LectorMafersa;
+import Modelo.Lectores.LectorRespontech;
 import Modelo.Parsers.Parser;
 import Modelo.Parsers.ParserDuravit;
 import Modelo.Parsers.ParserMafersa;
+import Modelo.Parsers.ParserRespontech;
 import Modelo.Productos.Producto;
 import Modelo.Utils.ConectorDB;
 import Modelo.Utils.Resultado;
@@ -151,10 +155,14 @@ public class Aplicacion {
     private Resultado determinarUtilidades(String nombre) {
         Resultado resultado = null;
 
-        if (nombre.contains("duravit") || nombre.contains("DURAVIT"))
+        if (nombre.contains(StringsConstantes.DURAVIT) || nombre.contains(StringsConstantes.DURAVIT.toUpperCase()))
             resultado = new Resultado(new LectorDuravit(), new ParserDuravit(), new InsertadorDuravit());
-        else if (nombre.contains("mafersa") || nombre.contains("MAFERSA"))
+
+        else if (nombre.contains(StringsConstantes.MAFERSA) || nombre.contains(StringsConstantes.MAFERSA.toUpperCase()))
             resultado = new Resultado(new LectorMafersa(), new ParserMafersa(), new InsertadorMafersa());
+
+        else if (nombre.contains(StringsConstantes.RESPONTECH) || nombre.contains(StringsConstantes.RESPONTECH.toUpperCase()))
+            resultado = new Resultado(new LectorRespontech(), new ParserRespontech(), new InsertadorRespontech());
 
         return resultado;
     }

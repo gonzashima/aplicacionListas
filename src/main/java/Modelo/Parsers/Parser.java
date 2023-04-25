@@ -11,5 +11,5 @@ public interface Parser {
     /**
      * Se encarga de pasar texto a productos y de cargarlos al mapa de datos
      * */
-    void parsearAProducto(List<String> texto, HashMap<String, HashMap<Integer, Producto>> datos) throws SQLException;
+    void parsearAProducto(List<String> texto, HashMap<Integer, HashMap<Integer, Producto>> datos) throws SQLException;
 }

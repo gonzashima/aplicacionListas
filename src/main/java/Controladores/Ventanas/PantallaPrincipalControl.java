@@ -117,8 +117,7 @@ public class PantallaPrincipalControl implements Initializable {
                     * */
                 if (estaVacia && existeTabla) {
                     nombreLista = UnificadorString.unirString(nombreLista);
-                    String query = "SELECT * from " + nombreLista + " WHERE precio != 0";
-                    HashMap<Integer, Producto> productos = ConectorDB.ejecutarQuery(query, nombreLista);
+                    HashMap<Integer, Producto> productos = ConectorDB.seleccionarProductos(nombreLista);
 
                     listaOb.clear();
                     listaOb.addAll(productos.values());

@@ -1,5 +1,6 @@
 package Modelo.Parsers;
 
+import Modelo.Constantes.ConstantesNumericas;
 import Modelo.Productos.Producto;
 import Modelo.Productos.ProductoLumilagro;
 import Modelo.Productos.ProductoMafersa;
@@ -18,7 +19,7 @@ public class ParserMafersa implements Parser{
     }
 
     @Override
-    public void parsearAProducto(List<String> texto, HashMap<String, HashMap<Integer, Producto>> datos) throws SQLException {
+    public void parsearAProducto(List<String> texto, HashMap<Integer, HashMap<Integer, Producto>> datos) throws SQLException {
         HashMap<String, List<String>> rubrosSeparados = separarRubros(texto);
         ConectorDB.getConnection();
         cargarTablas(datos);
@@ -26,7 +27,7 @@ public class ParserMafersa implements Parser{
 
         for (String nombreLista : nombres) {
             nombreLista = UnificadorString.unirString(nombreLista);
-            HashMap<Integer, Producto> mapaActual = datos.get(nombreLista);
+            HashMap<Integer, Producto> mapaActual = datos.get(ConstantesNumericas.codigoLista(nombreLista));
             List<String> lista = rubrosSeparados.get(nombreLista);
 
             if (lista == null) //porque puede pasar que la lista venga por rubro, entonces la cantidad de rubros separados no va a ser la cantidad de nombres
@@ -68,18 +69,16 @@ public class ParserMafersa implements Parser{
     /**
      * Carga en memoria las tablas con las que se trabajan. Si no existe, crea una nueva
      * */
-    private void cargarTablas (HashMap<String, HashMap<Integer, Producto>> datos) throws SQLException {
+    private void cargarTablas (HashMap<Integer, HashMap<Integer, Producto>> datos) throws SQLException {
         for (String nombre : nombres) {
-            boolean existeTabla = ConectorDB.existeTabla(nombre);
+//            boolean existeTabla = ConectorDB.existeTabla(nombre);
             String nombreUnido = UnificadorString.unirString(nombre);
-            if (existeTabla && datos.get(nombreUnido) == null) {
-                String query = "SELECT * from " + nombreUnido + " WHERE precio != 0";
-                datos.put(nombreUnido, ConectorDB.ejecutarQuery(query, nombreUnido));
-            }
-            else if (!existeTabla) {
-                HashMap<Integer, Producto> nuevoMapa = new HashMap<>();
-                datos.put(nombreUnido, nuevoMapa);
-            }
+            if (datos.get(ConstantesNumericas.codigoLista(nombreUnido)) == null)
+                datos.put(ConstantesNumericas.codigoLista(nombreUnido), ConectorDB.seleccionarProductos(nombreUnido));
+//            else {
+//                HashMap<Integer, Producto> nuevoMapa = new HashMap<>();
+//                datos.put(ConstantesNumericas.codigoLista(nombreUnido), nuevoMapa);
+//            }
         }
     }
 

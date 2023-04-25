@@ -65,8 +65,8 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) throws SQLException {
-//        launch(args);
-        ModificarDB modificarDB = new ModificarDB();
-        modificarDB.modificarDB();
+        launch(args);
+//        ModificarDB modificarDB = new ModificarDB();
+//        modificarDB.modificarDB();
     }
 }

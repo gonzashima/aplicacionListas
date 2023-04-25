@@ -17,9 +17,9 @@ public class ModificarDB {
                 todasLasListas.add(lista + "-" + casa);
         }
 
-//        ConectorDB.crearTablaListas();
-//        ConectorDB.insertarListas(todasLasListas);
-//        ConectorDB.crearTablaProductos();
+        ConectorDB.crearTablaListas();
+        ConectorDB.insertarListas(todasLasListas);
+        ConectorDB.crearTablaProductos();
         ConectorDB.insertarProductos(todasLasListas);
 
         System.out.println("listo");

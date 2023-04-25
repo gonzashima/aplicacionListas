@@ -37,9 +37,46 @@ public class ConectorDB {
             connection.close();
     }
 
+
+    @Deprecated
     public static HashMap<Integer, Producto> ejecutarQuery(String query, String nombreTabla) throws SQLException {
         nombreTabla = UnificadorString.unirString(nombreTabla);
         PreparedStatement statement = connection.prepareStatement(query);
+        ResultSet rs = statement.executeQuery();
+        HashMap<Integer, Producto> productos = new HashMap<>();
+        List<String> nombresMafersa = ConstantesStrings.getNombresMafersa();
+        nombresMafersa = nombresMafersa.stream().map(UnificadorString::unirString).collect(Collectors.toList());
+
+        while (rs.next()) {
+            Producto producto = null;
+            int codigo = rs.getInt("codigo");
+            String nombre = rs.getString("nombre");
+            int costo = rs.getInt("costo");
+            int precio = rs.getInt("precio");
+            int porcentaje = rs.getInt("porcentaje");
+
+            if (nombreTabla.equals(ConstantesStrings.DURAVIT))
+                producto = new ProductoDuravit(codigo, nombre, costo, precio, porcentaje);
+
+            else if (nombresMafersa.stream().anyMatch(nombreTabla :: contains)) {
+                if (ConstantesStrings.getDistintosLumilagro().stream().anyMatch(nombre::contains))
+                    producto = new ProductoLumilagro(codigo, nombre, costo, precio, porcentaje);
+                else
+                    producto = new ProductoMafersa(codigo, nombre, costo, precio, porcentaje);
+            }
+            else if (nombreTabla.equals(ConstantesStrings.RESPONTECH))
+                producto = new ProductoRespontech(codigo, nombre, costo, precio, porcentaje);
+            productos.put(codigo, producto);
+        }
+        return productos;
+    }
+
+    public static HashMap<Integer, Producto> seleccionarProductos(String nombreTabla) throws SQLException {
+        nombreTabla = UnificadorString.unirString(nombreTabla);
+        String query = "SELECT * from productos WHERE lista_id = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setInt(1, ConstantesNumericas.codigoLista(nombreTabla));
+
         ResultSet rs = statement.executeQuery();
         HashMap<Integer, Producto> productos = new HashMap<>();
         List<String> nombresMafersa = ConstantesStrings.getNombresMafersa();
@@ -77,33 +114,35 @@ public class ConectorDB {
         preparedStatement.execute();
     }
 
-    public static void insertarProductos(HashMap<Integer, Producto> mapaProductos, String nombreTabla) throws SQLException {
-        nombreTabla = UnificadorString.unirString(nombreTabla);
-        String query = "INSERT INTO " + nombreTabla + " (codigo, nombre, costo, precio, porcentaje) VALUES(?,?,?,?,?) ";
-        PreparedStatement statement = connection.prepareStatement(query);
+//    public static void insertarProductos(HashMap<Integer, Producto> mapaProductos, String nombreTabla) throws SQLException {
+//        nombreTabla = UnificadorString.unirString(nombreTabla);
+//        String query = "INSERT INTO productos (codigo, nombre, costo, precio, porcentaje) VALUES(?,?,?,?,?,?) ";
+//        PreparedStatement statement = connection.prepareStatement(query);
+//
+//        String finalNombreTabla = nombreTabla;
+//        mapaProductos.forEach((key, value) -> {
+//            try {
+//                statement.setInt(1, value.getCodigo());
+//                statement.setString(2, value.getNombre());
+//                statement.setInt(3, value.getCosto());
+//                statement.setInt(4, value.getPrecio());
+//                statement.setInt(5, value.getPorcentaje());
+//                statement.setInt(6, ConstantesNumericas.codigoLista(finalNombreTabla));
+//                statement.addBatch();
+//
+//            } catch (SQLException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
+//
+//        statement.executeBatch();
+//    }
 
-        mapaProductos.forEach((key, value) -> {
-            try {
-                statement.setInt(1, value.getCodigo());
-                statement.setString(2, value.getNombre());
-                statement.setInt(3, value.getCosto());
-                statement.setInt(4, value.getPrecio());
-                statement.setInt(5, value.getPorcentaje());
-                statement.addBatch();
-
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        statement.executeBatch();
-    }
-
-    public static void actualizarProcuctos(HashMap<Integer, Producto> productos, String nombreTabla) throws SQLException {
-        nombreTabla = UnificadorString.unirString(nombreTabla);
-        String query = "INSERT INTO " + nombreTabla + " (codigo, nombre, costo, precio, porcentaje) VALUES(?,?,?,?,?) " +
-                        "ON DUPLICATE KEY UPDATE nombre=?, costo=?, precio=?, porcentaje=?";
-        PreparedStatement statement = connection.prepareStatement(query);
+    public static void insertarProcuctos(HashMap<Integer, Producto> productos, int codigoLista) throws SQLException {
+        String query = "INSERT INTO productos (codigo, nombre, costo, precio, porcentaje, lista_id) VALUES(?,?,?,?,?,?) " +
+                        "ON CONFLICT(codigo) UPDATE nombre=?, costo=?, precio=?, porcentaje=? " +
+                        "WHERE lista_id = ?";
+                PreparedStatement statement = connection.prepareStatement(query);
 
         productos.forEach((key, value) -> {
             try {
@@ -112,10 +151,12 @@ public class ConectorDB {
                 statement.setInt(3, value.getCosto());
                 statement.setInt(4, value.getPrecio());
                 statement.setInt(5, value.getPorcentaje());
-                statement.setString(6, value.getNombre());
-                statement.setInt(7, value.getCosto());
-                statement.setInt(8, value.getPrecio());
-                statement.setInt(9, value.getPorcentaje());
+                statement.setInt(6, codigoLista);
+                statement.setInt(7, codigoLista);
+                statement.setString(8, value.getNombre());
+                statement.setInt(9, value.getCosto());
+                statement.setInt(10, value.getPrecio());
+                statement.setInt(11, value.getPorcentaje());
                 statement.addBatch();
             } catch (SQLException e) {
                 Alerta alertaDB = new AlertaCambios();
@@ -125,15 +166,15 @@ public class ConectorDB {
         statement.executeBatch();
     }
 
-    public static int guardarCambios(List<Producto> productos, String nombreTabla) throws SQLException {
-        nombreTabla = UnificadorString.unirString(nombreTabla);
-        String query = "UPDATE " + nombreTabla + " SET precio=?, porcentaje=? WHERE codigo=?";
+    public static int guardarCambios(List<Producto> productos, int codigoLista) throws SQLException {
+        String query = "UPDATE productos SET precio=?, porcentaje=? WHERE codigo=? AND lista_id=?";
         PreparedStatement statement = connection.prepareStatement(query);
 
         for (Producto producto: productos) {
             statement.setInt(1, producto.getPrecio());
             statement.setInt(2, producto.getPorcentaje());
             statement.setInt(3, producto.getCodigo());
+            statement.setInt(4, codigoLista);
             statement.addBatch();
         }
 

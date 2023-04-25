@@ -1,5 +1,6 @@
 package Modelo.Parsers;
 
+import Modelo.Constantes.ConstantesNumericas;
 import Modelo.Constantes.ConstantesStrings;
 import Modelo.Productos.Producto;
 import Modelo.Productos.ProductoRespontech;
@@ -15,22 +16,22 @@ import java.util.List;
 
 public class ParserRespontech implements Parser{
     @Override
-    public void parsearAProducto(List<String> texto, HashMap<String, HashMap<Integer, Producto>> datos) throws SQLException {
+    public void parsearAProducto(List<String> texto, HashMap<Integer, HashMap<Integer, Producto>> datos) throws SQLException {
         ConectorDB.getConnection();
-        boolean existeTabla = ConectorDB.existeTabla(ConstantesStrings.RESPONTECH);
+//        boolean existeTabla = ConectorDB.existeTabla(ConstantesStrings.RESPONTECH);
         HashMap<Integer, Producto> mapaRespontech;
         List<Triple<String, String, Integer>> sinCodigo = new ArrayList<>();
 
-        if (existeTabla && datos.get(ConstantesStrings.RESPONTECH) == null) { //si la tabla existe, pero no está en memoria, la cargo en memoria
+        if (datos.get(ConstantesNumericas.codigoLista(ConstantesStrings.RESPONTECH)) == null) { //si la tabla existe, pero no está en memoria, la cargo en memoria
             mapaRespontech = cargarProductos();
-            datos.put(ConstantesStrings.RESPONTECH, mapaRespontech);
-        } else if (!existeTabla) {                   //  si no existe creo una nueva
-            mapaRespontech = new HashMap<>();
-            datos.put(ConstantesStrings.RESPONTECH, mapaRespontech);
+            datos.put(ConstantesNumericas.codigoLista(ConstantesStrings.RESPONTECH), mapaRespontech);
+//        } else if (!existeTabla) {                   //  si no existe creo una nueva
+//            mapaRespontech = new HashMap<>();
+//            datos.put(ConstantesStrings.RESPONTECH, mapaRespontech);
         }
         //y si existe y está en memoria uso esa
 
-        mapaRespontech = datos.get(ConstantesStrings.RESPONTECH);
+        mapaRespontech = datos.get(ConstantesNumericas.codigoLista(ConstantesStrings.RESPONTECH));
 
         for (String linea : texto) {
             StringBuilder nombre = new StringBuilder();
@@ -76,8 +77,7 @@ public class ParserRespontech implements Parser{
      * Carga los productos de la base de datos al mapa
      * */
     private HashMap<Integer, Producto> cargarProductos() throws SQLException {
-        String query = "SELECT * from " + ConstantesStrings.RESPONTECH + " WHERE precio != 0";
-        return ConectorDB.ejecutarQuery(query, ConstantesStrings.RESPONTECH);
+        return ConectorDB.seleccionarProductos(ConstantesStrings.RESPONTECH);
     }
 
     private void asignarCodigos(List<Triple<String, String, Integer>> sinCodigos, HashMap<Integer, Producto> mapaRespontech) {

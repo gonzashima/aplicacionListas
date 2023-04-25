@@ -1,6 +1,6 @@
 package Modelo.Insertadores;
 
-import Modelo.Constantes.StringsConstantes;
+import Modelo.Constantes.ConstantesStrings;
 import Modelo.Productos.Producto;
 
 import java.sql.SQLException;
@@ -10,7 +10,7 @@ public class InsertadorDuravit extends Insertador{
 
     @Override
     public void insertarABaseDeDatos(HashMap<String, HashMap<Integer, Producto>> datos) throws SQLException {
-        estado = determinarEstadoTabla(StringsConstantes.DURAVIT);
-        estado.insertarABaseDeDatos(datos.get(StringsConstantes.DURAVIT), StringsConstantes.DURAVIT);
+        estado = determinarEstadoTabla(ConstantesStrings.DURAVIT);
+        estado.insertarABaseDeDatos(datos.get(ConstantesStrings.DURAVIT), ConstantesStrings.DURAVIT);
     }
 }

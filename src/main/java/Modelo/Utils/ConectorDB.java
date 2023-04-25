@@ -2,7 +2,8 @@ package Modelo.Utils;
 
 import Controladores.Alertas.AlertaCambios;
 import Controladores.Alertas.Alerta;
-import Modelo.Constantes.StringsConstantes;
+import Modelo.Constantes.ConstantesNumericas;
+import Modelo.Constantes.ConstantesStrings;
 import Modelo.Productos.*;
 
 import java.sql.*;
@@ -41,7 +42,7 @@ public class ConectorDB {
         PreparedStatement statement = connection.prepareStatement(query);
         ResultSet rs = statement.executeQuery();
         HashMap<Integer, Producto> productos = new HashMap<>();
-        List<String> nombresMafersa = StringsConstantes.getNombresMafersa();
+        List<String> nombresMafersa = ConstantesStrings.getNombresMafersa();
         nombresMafersa = nombresMafersa.stream().map(UnificadorString::unirString).collect(Collectors.toList());
 
         while (rs.next()) {
@@ -52,16 +53,16 @@ public class ConectorDB {
             int precio = rs.getInt("precio");
             int porcentaje = rs.getInt("porcentaje");
 
-            if (nombreTabla.equals(StringsConstantes.DURAVIT))
+            if (nombreTabla.equals(ConstantesStrings.DURAVIT))
                 producto = new ProductoDuravit(codigo, nombre, costo, precio, porcentaje);
 
             else if (nombresMafersa.stream().anyMatch(nombreTabla :: contains)) {
-                if (StringsConstantes.getDistintosLumilagro().stream().anyMatch(nombre::contains))
+                if (ConstantesStrings.getDistintosLumilagro().stream().anyMatch(nombre::contains))
                     producto = new ProductoLumilagro(codigo, nombre, costo, precio, porcentaje);
                 else
                     producto = new ProductoMafersa(codigo, nombre, costo, precio, porcentaje);
             }
-            else if (nombreTabla.equals(StringsConstantes.RESPONTECH))
+            else if (nombreTabla.equals(ConstantesStrings.RESPONTECH))
                 producto = new ProductoRespontech(codigo, nombre, costo, precio, porcentaje);
             productos.put(codigo, producto);
         }
@@ -148,5 +149,80 @@ public class ConectorDB {
         ResultSet rs = md.getTables(null, null, nombre, null);
 
         return rs.next();
+    }
+
+
+    public static void crearTablaProductos() throws SQLException {
+        String query = "CREATE TABLE productos (" +
+                "id INT AUTO_INCREMENT PRIMARY KEY," +
+                "codigo VARCHAR(50)," +
+                "nombre VARCHAR(255)," +
+                "costo INT," +
+                "precio INT," +
+                "porcentaje INT," +
+                "lista_id INT," +
+                "FOREIGN KEY (lista_id) REFERENCES listas(id)" +
+                ")";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.execute();
+    }
+
+    public static void crearTablaListas() throws SQLException {
+        String query = "CREATE TABLE listas (" +
+                "id INT PRIMARY KEY," +
+                "nombre VARCHAR(255), " +
+                "proveedor VARCHAR(255)" +
+                ")";
+
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.execute();
+    }
+
+    public static void insertarListas(List<String> listas) throws SQLException {
+        String query = "INSERT INTO listas (id, nombre, proveedor) VALUES (?,?,?) ";
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        for (String lista : listas) {
+            String[] separado = lista.split("-");
+            int codigo = Integer.parseInt(separado[0]);
+            String nombre = separado[1];
+            String proveedor = separado[2];
+
+            statement.setInt(1, codigo);
+            statement.setString(2, nombre);
+            statement.setString(3, proveedor);
+            statement.addBatch();
+        }
+        statement.executeBatch();
+    }
+
+    public static void insertarProductos(List<String> listas) throws SQLException {
+        HashMap<Integer, Producto> mapaProductos;
+        for(String lista : listas) {
+            String nombreLista = lista.split("-")[1].toLowerCase();
+            nombreLista = UnificadorString.unirString(nombreLista);
+            String select = "SELECT * from " + nombreLista;
+            mapaProductos = ejecutarQuery(select, nombreLista);
+
+            String query = "INSERT INTO productos (codigo, nombre, costo, precio, porcentaje, lista_id) VALUES(?,?,?,?,?,?) ";
+            PreparedStatement statement = connection.prepareStatement(query);
+            int numeroLista = ConstantesNumericas.codigoLista(nombreLista);
+
+            mapaProductos.forEach((key, value) -> {
+                try {
+                    statement.setInt(1, value.getCodigo());
+                    statement.setString(2, value.getNombre());
+                    statement.setInt(3, value.getCosto());
+                    statement.setInt(4, value.getPrecio());
+                    statement.setInt(5, value.getPorcentaje());
+                    statement.setInt(6, numeroLista);
+                    statement.addBatch();
+
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            statement.executeBatch();
+        }
     }
 }

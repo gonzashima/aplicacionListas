@@ -4,7 +4,7 @@ import Modelo.Productos.Producto;
 import Modelo.Productos.ProductoLumilagro;
 import Modelo.Productos.ProductoMafersa;
 import Modelo.Utils.ConectorDB;
-import Modelo.Constantes.StringsConstantes;
+import Modelo.Constantes.ConstantesStrings;
 import Modelo.Utils.UnificadorString;
 
 import java.sql.SQLException;
@@ -14,7 +14,7 @@ public class ParserMafersa implements Parser{
     private final ArrayList<String> nombres;
 
     public ParserMafersa() {
-        nombres = StringsConstantes.getNombresMafersa();
+        nombres = ConstantesStrings.getNombresMafersa();
     }
 
     @Override
@@ -22,7 +22,7 @@ public class ParserMafersa implements Parser{
         HashMap<String, List<String>> rubrosSeparados = separarRubros(texto);
         ConectorDB.getConnection();
         cargarTablas(datos);
-        ArrayList<String> distintos = StringsConstantes.getDistintosLumilagro();
+        ArrayList<String> distintos = ConstantesStrings.getDistintosLumilagro();
 
         for (String nombreLista : nombres) {
             nombreLista = UnificadorString.unirString(nombreLista);

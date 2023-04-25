@@ -4,7 +4,7 @@ import Modelo.Constantes.ConstantesNumericas;
 import Modelo.Utils.ManejadorPrecios;
 
 public class ProductoDuravit extends Producto{
-    public static final int CODIGO = ConstantesNumericas.CODIGO_DURAVIT;
+    public static final int CODIGO = ConstantesNumericas.CODIGO_TREBOL;
 
     public ProductoDuravit(String nombre, int codigo, int costo) {
         super(nombre, codigo, costo);

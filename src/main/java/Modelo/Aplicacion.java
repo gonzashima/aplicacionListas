@@ -1,6 +1,6 @@
 package Modelo;
 
-import Modelo.Constantes.StringsConstantes;
+import Modelo.Constantes.ConstantesStrings;
 import Modelo.Insertadores.Insertador;
 import Modelo.Insertadores.InsertadorDuravit;
 import Modelo.Insertadores.InsertadorMafersa;
@@ -150,18 +150,18 @@ public class Aplicacion {
 
 
     /**
-     * Determina el lector a instanciar segun el nombre del archivo
+     * Determina las utilidades a instanciar segun el nombre del archivo
      * */
     private Resultado determinarUtilidades(String nombre) {
         Resultado resultado = null;
 
-        if (nombre.contains(StringsConstantes.DURAVIT) || nombre.contains(StringsConstantes.DURAVIT.toUpperCase()))
+        if (nombre.contains(ConstantesStrings.DURAVIT) || nombre.contains(ConstantesStrings.DURAVIT.toUpperCase()))
             resultado = new Resultado(new LectorDuravit(), new ParserDuravit(), new InsertadorDuravit());
 
-        else if (nombre.contains(StringsConstantes.MAFERSA) || nombre.contains(StringsConstantes.MAFERSA.toUpperCase()))
+        else if (nombre.contains(ConstantesStrings.MAFERSA) || nombre.contains(ConstantesStrings.MAFERSA.toUpperCase()))
             resultado = new Resultado(new LectorMafersa(), new ParserMafersa(), new InsertadorMafersa());
 
-        else if (nombre.contains(StringsConstantes.RESPONTECH) || nombre.contains(StringsConstantes.RESPONTECH.toUpperCase()))
+        else if (nombre.contains(ConstantesStrings.RESPONTECH) || nombre.contains(ConstantesStrings.RESPONTECH.toUpperCase()))
             resultado = new Resultado(new LectorRespontech(), new ParserRespontech(), new InsertadorRespontech());
 
         return resultado;

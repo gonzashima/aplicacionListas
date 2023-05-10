@@ -106,64 +106,61 @@ public class ConectorDB {
         return productos;
     }
 
-    public static void crearTabla(String nombre) throws SQLException {
-        nombre = UnificadorString.unirString(nombre);
-        String query = "CREATE TABLE " + nombre + " (codigo int, " +
-                "nombre varchar(100), costo int, precio int, porcentaje int, PRIMARY KEY (codigo))";
-        PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.execute();
-    }
-
-//    public static void insertarProductos(HashMap<Integer, Producto> mapaProductos, String nombreTabla) throws SQLException {
-//        nombreTabla = UnificadorString.unirString(nombreTabla);
-//        String query = "INSERT INTO productos (codigo, nombre, costo, precio, porcentaje) VALUES(?,?,?,?,?,?) ";
-//        PreparedStatement statement = connection.prepareStatement(query);
-//
-//        String finalNombreTabla = nombreTabla;
-//        mapaProductos.forEach((key, value) -> {
-//            try {
-//                statement.setInt(1, value.getCodigo());
-//                statement.setString(2, value.getNombre());
-//                statement.setInt(3, value.getCosto());
-//                statement.setInt(4, value.getPrecio());
-//                statement.setInt(5, value.getPorcentaje());
-//                statement.setInt(6, ConstantesNumericas.codigoLista(finalNombreTabla));
-//                statement.addBatch();
-//
-//            } catch (SQLException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-//
-//        statement.executeBatch();
-//    }
 
     public static void insertarProcuctos(HashMap<Integer, Producto> productos, int codigoLista) throws SQLException {
-        String query = "INSERT INTO productos (codigo, nombre, costo, precio, porcentaje, lista_id) VALUES(?,?,?,?,?,?) " +
-                        "ON CONFLICT(codigo) UPDATE nombre=?, costo=?, precio=?, porcentaje=? " +
-                        "WHERE lista_id = ?";
-                PreparedStatement statement = connection.prepareStatement(query);
+        String crearTabla = "CREATE TEMPORARY TABLE IF NOT EXISTS tmp_productos " +
+                "SELECT id, codigo, nombre, costo, precio, porcentaje, lista_id " +
+                "FROM productos " +
+                "WHERE lista_id = ?";
+
+        PreparedStatement statementCrear = connection.prepareStatement(crearTabla);
+        statementCrear.setInt(1, codigoLista);
+        statementCrear.executeUpdate();
+
+        String setPrimaryKey = "ALTER TABLE tmp_productos ADD PRIMARY KEY(codigo);";
+        PreparedStatement ps2 = connection.prepareStatement(setPrimaryKey);
+        ps2.executeUpdate();
+
+        String alterTableSql = "ALTER TABLE tmp_productos MODIFY COLUMN id INT NULL;";
+        PreparedStatement stmtAlter = connection.prepareStatement(alterTableSql);
+        stmtAlter.executeUpdate();
+
+        String query = "INSERT INTO tmp_productos (id, codigo, nombre, costo, precio, porcentaje, lista_id) " +
+                "VALUES (NULL,?,?,?,?,?,?) " +
+                "ON DUPLICATE KEY UPDATE costo=VALUES(costo), nombre=VALUES(nombre), precio=VALUES(precio)";
+
+        PreparedStatement insertarTemp = connection.prepareStatement(query);
 
         productos.forEach((key, value) -> {
             try {
-                statement.setInt(1, value.getCodigo());
-                statement.setString(2, value.getNombre());
-                statement.setInt(3, value.getCosto());
-                statement.setInt(4, value.getPrecio());
-                statement.setInt(5, value.getPorcentaje());
-                statement.setInt(6, codigoLista);
-                statement.setInt(7, codigoLista);
-                statement.setString(8, value.getNombre());
-                statement.setInt(9, value.getCosto());
-                statement.setInt(10, value.getPrecio());
-                statement.setInt(11, value.getPorcentaje());
-                statement.addBatch();
+                insertarTemp.setInt(1, value.getCodigo());
+                insertarTemp.setString(2, value.getNombre());
+                insertarTemp.setInt(3, value.getCosto());
+                insertarTemp.setInt(4, value.getPrecio());
+                insertarTemp.setInt(5, value.getPorcentaje());
+                insertarTemp.setInt(6, codigoLista);
+                insertarTemp.addBatch();
             } catch (SQLException e) {
                 Alerta alertaDB = new AlertaCambios();
                 alertaDB.display();
             }
         });
-        statement.executeBatch();
+        insertarTemp.executeBatch();
+
+        String alterTable = "ALTER TABLE tmp_productos DROP PRIMARY KEY, ADD PRIMARY KEY (id)";
+        PreparedStatement psAlter = connection.prepareStatement(alterTable);
+        psAlter.executeUpdate();
+
+        String insertarEnOriginal = "INSERT INTO productos (id, codigo, nombre, costo, precio, porcentaje, lista_id) " +
+                "SELECT id, codigo, nombre, costo, precio, porcentaje, lista_id " +
+                "FROM tmp_productos t " +
+                "ON DUPLICATE KEY UPDATE nombre=t.nombre, costo=t.costo, precio=t.precio";
+
+        PreparedStatement reinsercion = connection.prepareStatement(insertarEnOriginal);
+        reinsercion.executeUpdate();
+
+        Statement drop = connection.createStatement();
+        drop.executeUpdate("DROP TEMPORARY TABLE IF EXISTS tmp_productos");
     }
 
     public static int guardarCambios(List<Producto> productos, int codigoLista) throws SQLException {

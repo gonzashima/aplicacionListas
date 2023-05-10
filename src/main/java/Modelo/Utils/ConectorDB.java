@@ -179,17 +179,8 @@ public class ConectorDB {
     }
 
     /**
-     * Determina si una tabla con cierto nombre existe o no
-     * */
-    public static boolean existeTabla(String nombre) throws SQLException {
-        nombre = UnificadorString.unirString(nombre);
-        DatabaseMetaData md = connection.getMetaData();
-        ResultSet rs = md.getTables(null, null, nombre, null);
-
-        return rs.next();
-    }
-
-
+     * Crea la tabla de productos
+    * */
     public static void crearTablaProductos() throws SQLException {
         String query = "CREATE TABLE productos (" +
                 "id INT AUTO_INCREMENT PRIMARY KEY," +

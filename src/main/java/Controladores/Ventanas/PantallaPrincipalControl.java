@@ -97,7 +97,7 @@ public class PantallaPrincipalControl implements Initializable {
 
 
     /**
-     * Muestra toda la informacion de la tabla pedida, exceptuando a aquellos productos cuyo precio sea 0
+     * Muestra toda la informacion de la tabla pedida
      * */
     public void mostrarDatos() {
         String nombreLista = opcionesListas.getValue();
@@ -108,33 +108,20 @@ public class PantallaPrincipalControl implements Initializable {
             nombreLista = nombreLista.toLowerCase();
 
             if (connection != null) {
-                boolean existeTabla, estaVacia;
-                existeTabla = ConectorDB.existeTabla(nombreLista);
+                boolean estaVacia;
                 estaVacia = app.estaVacia(nombreLista);
-                /*
-                    * Basicamente, si la conexion esta y todavia no tengo en memoria la info para mostrar, voy a la DB.
-                    * Si ya tengo la info, no hace falta ir a la DB.
-                    * */
-                if (estaVacia && existeTabla) {
-                    nombreLista = UnificadorString.unirString(nombreLista);
-                    HashMap<Integer, Producto> productos = ConectorDB.seleccionarProductos(nombreLista);
+                nombreLista = UnificadorString.unirString(nombreLista);
+                HashMap<Integer, Producto> productos;
+                listaOb.clear();
 
-                    listaOb.clear();
-                    listaOb.addAll(productos.values());
-                    listaOb.sort(Comparator.comparing(Producto::getNombre));
+                if (estaVacia) {
+                    productos = ConectorDB.seleccionarProductos(nombreLista);
                     app.agregarListaDeProductos(nombreLista, productos);
-                    tabla.setItems(listaOb);
-                } else if (!estaVacia && existeTabla) {
-                    nombreLista = UnificadorString.unirString(nombreLista);
-                    HashMap<Integer, Producto> productos = app.obtenerLista(nombreLista);
-                    listaOb.clear();
-                    listaOb.addAll(productos.values());
-                    listaOb.sort(Comparator.comparing(Producto::getNombre));
-                    tabla.setItems(listaOb);
-                } else {
-                    alerta = new AlertaTabla();
-                    alerta.display();
-                }
+                } else
+                    productos = app.obtenerLista(nombreLista);
+                listaOb.addAll(productos.values());
+                listaOb.sort(Comparator.comparing(Producto::getNombre));
+                tabla.setItems(listaOb);
             } else {
                 alerta = new AlertaConexion();
                 alerta.display();

@@ -252,6 +252,10 @@ public class ConectorDB {
                 }
             });
             statement.executeBatch();
+
+            String drop = "DROP TABLE " + nombreLista;
+            PreparedStatement dropLista = connection.prepareStatement(drop);
+            dropLista.executeUpdate();
         }
     }
 }

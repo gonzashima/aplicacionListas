@@ -1,8 +1,5 @@
 import Modelo.Constantes.ConstantesNumericas;
-import Modelo.Productos.Producto;
-import Modelo.Productos.ProductoDuravit;
-import Modelo.Productos.ProductoLumilagro;
-import Modelo.Productos.ProductoMafersa;
+import Modelo.Productos.*;
 import Modelo.Utils.ManejadorPrecios;
 import org.junit.Test;
 import org.junit.Assert;

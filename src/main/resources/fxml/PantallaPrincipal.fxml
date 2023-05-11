@@ -34,6 +34,9 @@
          <MenuItem mnemonicParsing="false" onAction="#mostrarVentanaArchivos" text="Leer archivo" />
          <MenuItem fx:id="crearExcel" mnemonicParsing="false" onAction="#crearExcel" text="Pasar a excel" />
       </Menu>
+      <Menu mnemonicParsing="false" text="Actualizacion">
+         <MenuItem fx:id="reformarDB" mnemonicParsing="false" onAction="#reformarDB" text="Reformar base de datos"/>
+      </Menu>
    </MenuBar>
    <AnchorPane layoutX="168.0" layoutY="554.0" prefHeight="182.0" prefWidth="795.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="165.0" AnchorPane.rightAnchor="165.0" AnchorPane.topAnchor="550.0">
       <HBox alignment="CENTER" layoutX="53.0" layoutY="58.0" prefHeight="50.0" prefWidth="400.0" spacing="15.0" AnchorPane.bottomAnchor="82.0" AnchorPane.leftAnchor="53.0" AnchorPane.rightAnchor="417.0" AnchorPane.topAnchor="58.0">

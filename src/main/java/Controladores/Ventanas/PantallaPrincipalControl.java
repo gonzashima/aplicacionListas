@@ -5,6 +5,7 @@ import Modelo.Aplicacion;
 import Modelo.Productos.Producto;
 import Modelo.Utils.Casas;
 import Modelo.Utils.ConectorDB;
+import Modelo.Utils.ModificarDB;
 import Modelo.Utils.UnificadorString;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -97,7 +98,7 @@ public class PantallaPrincipalControl implements Initializable {
 
 
     /**
-     * Muestra toda la informacion de la tabla pedida, exceptuando a aquellos productos cuyo precio sea 0
+     * Muestra toda la informacion de la tabla pedida
      * */
     public void mostrarDatos() {
         String nombreLista = opcionesListas.getValue();
@@ -108,34 +109,20 @@ public class PantallaPrincipalControl implements Initializable {
             nombreLista = nombreLista.toLowerCase();
 
             if (connection != null) {
-                boolean existeTabla, estaVacia;
-                existeTabla = ConectorDB.existeTabla(nombreLista);
+                boolean estaVacia;
                 estaVacia = app.estaVacia(nombreLista);
-                /*
-                    * Basicamente, si la conexion esta y todavia no tengo en memoria la info para mostrar, voy a la DB.
-                    * Si ya tengo la info, no hace falta ir a la DB.
-                    * */
-                if (estaVacia && existeTabla) {
-                    nombreLista = UnificadorString.unirString(nombreLista);
-                    String query = "SELECT * from " + nombreLista + " WHERE precio != 0";
-                    HashMap<Integer, Producto> productos = ConectorDB.ejecutarQuery(query, nombreLista);
+                nombreLista = UnificadorString.unirString(nombreLista);
+                HashMap<Integer, Producto> productos;
+                listaOb.clear();
 
-                    listaOb.clear();
-                    listaOb.addAll(productos.values());
-                    listaOb.sort(Comparator.comparing(Producto::getNombre));
+                if (estaVacia) {
+                    productos = ConectorDB.seleccionarProductos(nombreLista);
                     app.agregarListaDeProductos(nombreLista, productos);
-                    tabla.setItems(listaOb);
-                } else if (!estaVacia && existeTabla) {
-                    nombreLista = UnificadorString.unirString(nombreLista);
-                    HashMap<Integer, Producto> productos = app.obtenerLista(nombreLista);
-                    listaOb.clear();
-                    listaOb.addAll(productos.values());
-                    listaOb.sort(Comparator.comparing(Producto::getNombre));
-                    tabla.setItems(listaOb);
-                } else {
-                    alerta = new AlertaTabla();
-                    alerta.display();
-                }
+                } else
+                    productos = app.obtenerLista(nombreLista);
+                listaOb.addAll(productos.values());
+                listaOb.sort(Comparator.comparing(Producto::getNombre));
+                tabla.setItems(listaOb);
             } else {
                 alerta = new AlertaConexion();
                 alerta.display();
@@ -245,5 +232,28 @@ public class PantallaPrincipalControl implements Initializable {
     public void mostrarVentanaArchivos() throws IOException {
         VentanaLeerArchivos ventanaLeerArchivos = new VentanaLeerArchivos();
         ventanaLeerArchivos.display();
+    }
+
+
+    /**
+     * Reforma la base de datos. Pasa de una tabla para cada lista a una tabla con productos donde cada producto tiene
+     * un lista_id que identifica la lista a la que pertenece.
+     * */
+    public void reformarDB(){
+
+        try {
+            ModificarDB modificarDB = new ModificarDB();
+            modificarDB.modificarDB();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Se reformo la base de datos. No presione mas este boton");
+            alert.setTitle("Alerta");
+            alert.showAndWait();
+
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Ya apretaste, no toques mas este boton");
+            alert.setTitle("Alerta");
+            alert.showAndWait();
+        }
     }
 }

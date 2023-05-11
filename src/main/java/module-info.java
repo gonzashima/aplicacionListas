@@ -12,7 +12,6 @@ module aplicacionListas {
     exports Controladores.Ventanas to javafx.fxml;
 
     opens Modelo;
-    opens Modelo.Estado;
     opens Modelo.Utils;
     exports Modelo.Productos;
     opens Controladores.Ventanas to javafx.fxml, javafx.base;

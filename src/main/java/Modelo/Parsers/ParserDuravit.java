@@ -1,9 +1,10 @@
 package Modelo.Parsers;
 
+import Modelo.Constantes.ConstantesNumericas;
 import Modelo.Productos.Producto;
 import Modelo.Productos.ProductoDuravit;
 import Modelo.Utils.ConectorDB;
-import Modelo.Constantes.StringsConstantes;
+import Modelo.Constantes.ConstantesStrings;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,21 +15,21 @@ import java.util.List;
 public class ParserDuravit implements Parser {
 
     @Override
-    public void parsearAProducto(List<String> texto, HashMap<String, HashMap<Integer, Producto>> datos) throws SQLException {
+    public void parsearAProducto(List<String> texto, HashMap<Integer, HashMap<Integer, Producto>> datos) throws SQLException {
         ConectorDB.getConnection();
-        boolean existeTabla = ConectorDB.existeTabla(StringsConstantes.DURAVIT);
+        //boolean existeTabla = ConectorDB.existeTabla(ConstantesStrings.DURAVIT);
         HashMap<Integer, Producto> mapaDuravit;
 
-        if (existeTabla && datos.get(StringsConstantes.DURAVIT) == null) { //si la tabla existe pero no esta en memoria, la cargo en memoria
+        if (datos.get(ConstantesNumericas.codigoLista(ConstantesStrings.DURAVIT)) == null) { //si la tabla existe pero no esta en memoria, la cargo en memoria
             mapaDuravit = cargarProductos();
-            datos.put(StringsConstantes.DURAVIT, mapaDuravit);
-        } else if (!existeTabla) {                   //  si no existe creo una nueva
-            mapaDuravit = new HashMap<>();
-            datos.put(StringsConstantes.DURAVIT, mapaDuravit);
+            datos.put(ConstantesNumericas.codigoLista(ConstantesStrings.DURAVIT), mapaDuravit);
+//        } else if (!existeTabla) {                   //  si no existe creo una nueva
+//            mapaDuravit = new HashMap<>();
+//            datos.put(ConstantesStrings.DURAVIT, mapaDuravit);
         }
         //y si existe y esta en memoria uso esa
 
-        mapaDuravit = datos.get(StringsConstantes.DURAVIT);
+        mapaDuravit = datos.get(ConstantesNumericas.codigoLista(ConstantesStrings.DURAVIT));
 
         for (String linea : texto) {
             StringBuilder nombre = new StringBuilder();
@@ -69,7 +70,6 @@ public class ParserDuravit implements Parser {
      * Carga los productos de la base de datos al mapa
      * */
     private HashMap<Integer, Producto> cargarProductos() throws SQLException {
-        String query = "SELECT * from " + StringsConstantes.DURAVIT + " WHERE precio != 0";
-        return ConectorDB.ejecutarQuery(query, StringsConstantes.DURAVIT);
+        return ConectorDB.seleccionarProductos(ConstantesStrings.DURAVIT);
     }
 }

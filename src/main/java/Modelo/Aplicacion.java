@@ -1,6 +1,7 @@
 package Modelo;
 
-import Modelo.Constantes.StringsConstantes;
+import Modelo.Constantes.ConstantesNumericas;
+import Modelo.Constantes.ConstantesStrings;
 import Modelo.Insertadores.Insertador;
 import Modelo.Insertadores.InsertadorDuravit;
 import Modelo.Insertadores.InsertadorMafersa;
@@ -30,9 +31,9 @@ public class Aplicacion {
 
     private static Aplicacion instance;
 
-    private final HashMap<String, HashMap<Integer, Producto>> datos;
+    private final HashMap<Integer, HashMap<Integer, Producto>> datos;
 
-    private final HashMap<String, List<Producto>> modificaciones;
+    private final HashMap<Integer, List<Producto>> modificaciones;
 
     private Aplicacion(){
         datos = new HashMap<>();
@@ -69,7 +70,7 @@ public class Aplicacion {
         nombreLista = nombreLista.toLowerCase();
         nombreLista = UnificadorString.unirString(nombreLista);
 
-        HashMap<Integer, Producto> productos = datos.get(nombreLista);
+        HashMap<Integer, Producto> productos = datos.get(ConstantesNumericas.codigoLista(nombreLista));
 
         if (productos == null)
             return true;
@@ -81,20 +82,20 @@ public class Aplicacion {
      * Agrega una lista al mapa con todas las listas
      * */
     public void agregarListaDeProductos(String nombreLista, HashMap<Integer, Producto> mapaProductos) {
-        datos.put(nombreLista, mapaProductos);
+        datos.put(ConstantesNumericas.codigoLista(nombreLista), mapaProductos);
     }
 
     /**
-     * Al producto que se le cambio el porcentaje, se lo agrega al map de modificaciones en la respectiva lista. El producto solo puede estar
-     * una vez en dicha lista. Solo se guarda la ultima modificacion
+     * Al producto que se le cambió el porcentaje, se lo agrega al map de modificaciones en la respectiva lista. El producto solo puede estar
+     * una vez en dicha lista. Solo se guarda la última modificacion
      * */
     public void agregarModificacion(String nombreLista, Producto producto) {
-        List<Producto> lista = modificaciones.get(nombreLista);
+        List<Producto> lista = modificaciones.get(ConstantesNumericas.codigoLista(nombreLista));
 
         if (lista == null) {
             lista = new ArrayList<>();
             lista.add(producto);
-            modificaciones.put(nombreLista, lista);
+            modificaciones.put(ConstantesNumericas.codigoLista(nombreLista), lista);
         }
         else if (lista.contains(producto)) {
             int indice = lista.indexOf(producto);
@@ -112,9 +113,9 @@ public class Aplicacion {
         int cambiosTotales = 0;
 
         if (connection != null) {
-            for (String nombreLista : modificaciones.keySet()) {
-                List<Producto> productos = modificaciones.get(nombreLista);
-                int parcial = ConectorDB.guardarCambios(productos, nombreLista);
+            for (int codigoLista : modificaciones.keySet()) {
+                List<Producto> productos = modificaciones.get(codigoLista);
+                int parcial = ConectorDB.guardarCambios(productos, codigoLista);
                 cambiosTotales += parcial;
             }
         }
@@ -129,7 +130,7 @@ public class Aplicacion {
         clave = UnificadorString.unirString(clave);
         buscado = buscado.toUpperCase();
 
-        HashMap<Integer, Producto> productos = datos.get(clave);
+        HashMap<Integer, Producto> productos = datos.get(ConstantesNumericas.codigoLista(clave));
         ArrayList<Producto> filtrados = new ArrayList<>();
 
         String finalBuscado = buscado;
@@ -145,23 +146,23 @@ public class Aplicacion {
     public HashMap<Integer, Producto> obtenerLista(String nombreTabla) {
         nombreTabla = nombreTabla.toLowerCase();
         nombreTabla = UnificadorString.unirString(nombreTabla);
-        return datos.get(nombreTabla);
+        return datos.get(ConstantesNumericas.codigoLista(nombreTabla));
     }
 
 
     /**
-     * Determina el lector a instanciar segun el nombre del archivo
+     * Determina las utilidades a instanciar segun el nombre del archivo
      * */
     private Resultado determinarUtilidades(String nombre) {
         Resultado resultado = null;
 
-        if (nombre.contains(StringsConstantes.DURAVIT) || nombre.contains(StringsConstantes.DURAVIT.toUpperCase()))
+        if (nombre.contains(ConstantesStrings.DURAVIT) || nombre.contains(ConstantesStrings.DURAVIT.toUpperCase()))
             resultado = new Resultado(new LectorDuravit(), new ParserDuravit(), new InsertadorDuravit());
 
-        else if (nombre.contains(StringsConstantes.MAFERSA) || nombre.contains(StringsConstantes.MAFERSA.toUpperCase()))
+        else if (nombre.contains(ConstantesStrings.MAFERSA) || nombre.contains(ConstantesStrings.MAFERSA.toUpperCase()))
             resultado = new Resultado(new LectorMafersa(), new ParserMafersa(), new InsertadorMafersa());
 
-        else if (nombre.contains(StringsConstantes.RESPONTECH) || nombre.contains(StringsConstantes.RESPONTECH.toUpperCase()))
+        else if (nombre.contains(ConstantesStrings.RESPONTECH) || nombre.contains(ConstantesStrings.RESPONTECH.toUpperCase()))
             resultado = new Resultado(new LectorRespontech(), new ParserRespontech(), new InsertadorRespontech());
 
         return resultado;

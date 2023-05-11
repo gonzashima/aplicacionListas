@@ -11,7 +11,6 @@ public enum Casas {
     RESPONTECH(new String[]{"RESPONTECH"}, "RESPONTECH");
 
 
-
     private final String[] listas;
     private final String nombre;
 

@@ -28,7 +28,7 @@ import java.util.*;
 public class PantallaPrincipalControl implements Initializable {
     @FXML private Button botonMostrar;
 
-    @FXML private MenuItem guardarCambios, reformarDB;
+    @FXML private MenuItem guardarCambios;
 
     @FXML private ChoiceBox<String> opcionesListas, opcionesCasas;
 

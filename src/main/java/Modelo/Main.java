@@ -1,7 +1,6 @@
 package Modelo;
 
 import Modelo.Utils.ConectorDB;
-import Modelo.Utils.ModificarDB;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

@@ -213,9 +213,9 @@ public class ConectorDB {
 
         for (String lista : listas) {
             String[] separado = lista.split("-");
-            int codigo = Integer.parseInt(separado[0]);
-            String nombre = separado[1];
-            String proveedor = separado[2];
+            int codigo = ConstantesNumericas.codigoLista(UnificadorString.unirString(separado[0]).toLowerCase());
+            String nombre = separado[0];
+            String proveedor = separado[1];
 
             statement.setInt(1, codigo);
             statement.setString(2, nombre);
@@ -228,7 +228,7 @@ public class ConectorDB {
     public static void insertarProductos(List<String> listas) throws SQLException {
         HashMap<Integer, Producto> mapaProductos;
         for(String lista : listas) {
-            String nombreLista = lista.split("-")[1].toLowerCase();
+            String nombreLista = lista.split("-")[0].toLowerCase();
             nombreLista = UnificadorString.unirString(nombreLista);
             String select = "SELECT * from " + nombreLista;
             mapaProductos = ejecutarQuery(select, nombreLista);

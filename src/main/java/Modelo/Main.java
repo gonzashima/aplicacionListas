@@ -1,5 +1,12 @@
 package Modelo;
 
+import Modelo.Constantes.ConstantesNumericas;
+import Modelo.Constantes.ConstantesStrings;
+import Modelo.Lectores.LectorRigolleau;
+import Modelo.Parsers.Parser;
+import Modelo.Parsers.ParserRespontech;
+import Modelo.Parsers.ParserRigolleau;
+import Modelo.Productos.Producto;
 import Modelo.Utils.ConectorDB;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +19,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -63,7 +72,23 @@ public class Main extends Application {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, SQLException {
         launch(args);
+//        LectorRigolleau lectorRigolleau = new LectorRigolleau();
+//        List<String> texto  = lectorRigolleau.leerArchivo(null);
+//        Parser parserRigolleau = new ParserRigolleau();
+//
+//        HashMap<Integer, HashMap<Integer, Producto>> datos = new HashMap<>();
+//        parserRigolleau.parsearAProducto(texto, datos);
+//
+//        HashMap<Integer,Producto> rigolleau = datos.get(ConstantesNumericas.codigoLista(ConstantesStrings.RIGOLLEAU));
+//
+//        for (int codigo : rigolleau.keySet()) {
+//            System.out.println(codigo + " " + rigolleau.get(codigo));
+//        }
+//
+//        System.out.println(rigolleau.keySet().size());
+
+
     }
 }

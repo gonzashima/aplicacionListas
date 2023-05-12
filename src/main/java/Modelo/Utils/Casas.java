@@ -8,7 +8,8 @@ public enum Casas {
     MAFERSA(new String[]{"DESES PLAST", "ALMANDOZ", "BEL GIOCO", "NADIR", "TRAMONTINA",
     "WHEATON", "CAMPAGNA", "CHEF", "CHURRASQUERAS Y SARTENES", "KUFO", "DAYSAL", "GUADIX", "LOEKEMEYER", "LUMILAGRO",
     "MAN FER", "MARINEX", "COLORES", "DATOMAX", "PLASTIC HOUSE", "YESI"}, "MAFERSA"),
-    RESPONTECH(new String[]{"RESPONTECH"}, "RESPONTECH");
+    RESPONTECH(new String[]{"RESPONTECH"}, "RESPONTECH"),
+    RIGOLLEAU(new String[]{"RIGOLLEAU"}, "RIGOLLEAU");
 
 
     private final String[] listas;

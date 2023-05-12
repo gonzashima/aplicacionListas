@@ -38,6 +38,7 @@ public class ConstantesNumericas {
         codigosListas.put(UnificadorString.unirString(ConstantesStrings.NOMBRE_PLASTIC_HOUSE), 20);
         codigosListas.put(ConstantesStrings.NOMBRE_YESI, 21);
         codigosListas.put(ConstantesStrings.RESPONTECH, 22);
+        codigosListas.put(ConstantesStrings.RIGOLLEAU, 23);
     }
 
     private ConstantesNumericas() {}

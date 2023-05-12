@@ -8,6 +8,7 @@ public class ConstantesStrings {
     public static final String DURAVIT = "duravit";
     public static final String MAFERSA = "mafersa";
     public static final String RESPONTECH = "respontech";
+    public static final String RIGOLLEAU = "rigolleau";
 
 
     //COSAS QUE SE MARCAN DIFERENTE EN MAFERSA

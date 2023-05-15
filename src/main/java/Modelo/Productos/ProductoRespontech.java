@@ -1,8 +1,11 @@
 package Modelo.Productos;
 
+import Modelo.Constantes.ConstantesNumericas;
 import Modelo.Utils.ManejadorPrecios;
 
 public class ProductoRespontech extends Producto{
+    public static final int CODIGO = ConstantesNumericas.CODIGO_RESPONTECH;
+
     public ProductoRespontech(String nombre, int codigo, int costo) {
         super(nombre, codigo, costo);
         costoDescontado = costo;
@@ -22,6 +25,6 @@ public class ProductoRespontech extends Producto{
 
     @Override
     public int codigoCasa() {
-        return 0;
+        return CODIGO;
     }
 }

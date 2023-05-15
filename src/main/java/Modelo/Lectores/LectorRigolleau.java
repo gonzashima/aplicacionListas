@@ -16,13 +16,11 @@ public class LectorRigolleau implements LectorArchivos{
 
     @Override
     public List<String> leerArchivo(File archivo) throws IOException {
-        File file = new File("src/main/resources/Lista Rigolleau 34.xlsx");
-        FileInputStream fileInputStream = new FileInputStream(file);
+        FileInputStream fileInputStream = new FileInputStream(archivo);
         XSSFWorkbook  workbook = new XSSFWorkbook(fileInputStream);
         XSSFSheet hoja = workbook.getSheetAt(0);
         DataFormatter formatter = new DataFormatter();
         List<String> texto = new ArrayList<>();
-
 
         for (Row fila : hoja) {
             StringBuilder linea = new StringBuilder();

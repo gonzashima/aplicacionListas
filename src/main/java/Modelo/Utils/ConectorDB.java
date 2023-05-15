@@ -101,6 +101,9 @@ public class ConectorDB {
             }
             else if (nombreTabla.equals(ConstantesStrings.RESPONTECH))
                 producto = new ProductoRespontech(codigo, nombre, costo, precio, porcentaje);
+            else if (nombreTabla.equals(ConstantesStrings.RIGOLLEAU))
+                producto = new ProductoRigolleau(codigo, nombre, costo, precio, porcentaje);
+
             productos.put(codigo, producto);
         }
         return productos;
@@ -112,7 +115,6 @@ public class ConectorDB {
                 "SELECT id, codigo, nombre, costo, precio, porcentaje, lista_id " +
                 "FROM productos " +
                 "WHERE lista_id = ?";
-
         PreparedStatement statementCrear = connection.prepareStatement(crearTabla);
         statementCrear.setInt(1, codigoLista);
         statementCrear.executeUpdate();
@@ -193,6 +195,7 @@ public class ConectorDB {
                     alertaDB.display();
                 }
             });
+            insertarTemp.executeBatch();
         }
         Statement drop = connection.createStatement();
         drop.executeUpdate("DROP TEMPORARY TABLE IF EXISTS tmp_productos");

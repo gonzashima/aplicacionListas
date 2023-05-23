@@ -62,6 +62,7 @@ public class PantallaPrincipalControl implements Initializable {
         guardarCambios.setDisable(true);
         advertenciaGuardado.setVisible(false);
         tabla.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tabla.setStyle("-fx-selection-bar: black; -fx-selection-bar-non-focused: grey;");
 
         textoBuscado.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode().equals(KeyCode.ENTER))

@@ -220,6 +220,7 @@ public class ConectorDB {
     /**
      * Crea la tabla de productos
     * */
+    @Deprecated
     public static void crearTablaProductos() throws SQLException {
         String query = "CREATE TABLE productos (" +
                 "id INT AUTO_INCREMENT PRIMARY KEY," +
@@ -235,6 +236,7 @@ public class ConectorDB {
         statement.execute();
     }
 
+    @Deprecated
     public static void crearTablaListas() throws SQLException {
         String query = "CREATE TABLE listas (" +
                 "id INT PRIMARY KEY," +
@@ -246,6 +248,7 @@ public class ConectorDB {
         statement.execute();
     }
 
+    @Deprecated
     public static void insertarListas(List<String> listas) throws SQLException {
         String query = "INSERT INTO listas (id, nombre, proveedor) VALUES (?,?,?) ";
         PreparedStatement statement = connection.prepareStatement(query);
@@ -263,7 +266,7 @@ public class ConectorDB {
         }
         statement.executeBatch();
     }
-
+    @Deprecated
     public static void insertarProductos(List<String> listas) throws SQLException {
         HashMap<Integer, Producto> mapaProductos;
         for(String lista : listas) {
@@ -308,5 +311,12 @@ public class ConectorDB {
         statement.setString(2, nombre);
         statement.setString(3, nombre);
         statement.executeUpdate();
+    }
+
+    public static void modificarID() throws SQLException {
+        String query = "ALTER TABLE productos MODIFY COLUMN id INT AUTO_INCREMENT";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.executeUpdate();
+        statement.close();
     }
 }

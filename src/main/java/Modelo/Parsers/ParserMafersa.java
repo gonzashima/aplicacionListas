@@ -23,7 +23,7 @@ public class ParserMafersa implements Parser{
         HashMap<String, List<String>> rubrosSeparados = separarRubros(texto);
         ConectorDB.getConnection();
         cargarTablas(datos);
-        ArrayList<String> distintos = ConstantesStrings.getDistintosLumilagro();
+        List<String> distintos = ConstantesStrings.getDistintosLumilagro();
 
         for (String nombreLista : nombres) {
             nombreLista = UnificadorString.unirString(nombreLista);

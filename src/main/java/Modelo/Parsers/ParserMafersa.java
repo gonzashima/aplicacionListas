@@ -71,14 +71,9 @@ public class ParserMafersa implements Parser{
      * */
     private void cargarTablas (HashMap<Integer, HashMap<Integer, Producto>> datos) throws SQLException {
         for (String nombre : nombres) {
-//            boolean existeTabla = ConectorDB.existeTabla(nombre);
             String nombreUnido = UnificadorString.unirString(nombre);
             if (datos.get(ConstantesNumericas.codigoLista(nombreUnido)) == null)
                 datos.put(ConstantesNumericas.codigoLista(nombreUnido), ConectorDB.seleccionarProductos(nombreUnido));
-//            else {
-//                HashMap<Integer, Producto> nuevoMapa = new HashMap<>();
-//                datos.put(ConstantesNumericas.codigoLista(nombreUnido), nuevoMapa);
-//            }
         }
     }
 

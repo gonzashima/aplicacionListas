@@ -84,7 +84,7 @@ public class ConectorDB {
         PreparedStatement insertarTemp = connection.prepareStatement(query);
 
         productos.forEach((key, value) -> {
-            try {;
+            try {
                 insertarTemp.setInt(1, value.getCodigo());
                 insertarTemp.setString(2, value.getNombre());
                 insertarTemp.setInt(3, value.getCosto());

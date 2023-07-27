@@ -51,7 +51,7 @@ public class ParserRespontech implements Parser{
             palabras.remove(palabras.size() - 1);
 
             for (String palabra : palabras) {
-                if (nombre.length() > 0)
+                if (!nombre.isEmpty())
                     nombre.append(" ");
                 nombre.append(palabra);
             }

@@ -5,7 +5,6 @@ import Modelo.Aplicacion;
 import Modelo.Productos.Producto;
 import Modelo.Utils.Casas;
 import Modelo.Utils.ConectorDB;
-import Modelo.Utils.ModificarDB;
 import Modelo.Utils.UnificadorString;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -232,28 +231,5 @@ public class PantallaPrincipalControl implements Initializable {
     public void mostrarVentanaArchivos() throws IOException {
         VentanaLeerArchivos ventanaLeerArchivos = new VentanaLeerArchivos();
         ventanaLeerArchivos.display();
-    }
-
-
-    /**
-     * Reforma la base de datos. Pasa de una tabla para cada lista a una tabla con productos donde cada producto tiene
-     * un lista_id que identifica la lista a la que pertenece.
-     * */
-    public void reformarDB(){
-
-        try {
-            ModificarDB modificarDB = new ModificarDB();
-            modificarDB.modificarDB();
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText("Se reformo la base de datos. No presione mas este boton");
-            alert.setTitle("Alerta");
-            alert.showAndWait();
-
-        } catch (SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText("Ya apretaste, no toques mas este boton");
-            alert.setTitle("Alerta");
-            alert.showAndWait();
-        }
     }
 }

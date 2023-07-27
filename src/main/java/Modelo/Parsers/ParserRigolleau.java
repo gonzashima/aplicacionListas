@@ -51,8 +51,10 @@ public class ParserRigolleau implements Parser{
         if (mapa.isEmpty() || !mapa.containsKey(producto.getCodigo()))
             mapa.put(producto.getCodigo(), producto);
         else {
-            int porcentajeAnterior = mapa.get(producto.getCodigo()).getPorcentaje();
-            producto.setPorcentaje(porcentajeAnterior);
+            Producto anterior = mapa.get(producto.getCodigo());
+
+            producto.setPorcentaje(anterior.getPorcentaje());
+            producto.setId(producto.getId());
             producto.calcularPrecio();
             mapa.put(producto.getCodigo(), producto);           //lo reemplazo porque puede pasar que el producto no se haga mas y hayan reasignado el codigo
         }

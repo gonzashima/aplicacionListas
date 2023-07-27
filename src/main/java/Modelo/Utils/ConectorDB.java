@@ -128,10 +128,4 @@ public class ConectorDB {
         statement.executeUpdate();
     }
 
-    public static void modificarID() throws SQLException {
-        String query = "ALTER TABLE productos MODIFY COLUMN id INT AUTO_INCREMENT";
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.executeUpdate();
-        statement.close();
-    }
 }

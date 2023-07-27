@@ -9,6 +9,7 @@ import Modelo.Utils.UnificadorString;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InsertadorMafersa extends Insertador{
 
@@ -20,7 +21,22 @@ public class InsertadorMafersa extends Insertador{
             nombre = UnificadorString.unirString(nombre);
             int codigoLista = ConstantesNumericas.codigoLista(nombre);
             HashMap<Integer, Producto> productos = datos.get(codigoLista);
-            ConectorDB.insertarProcuctos(productos, codigoLista);
+
+            HashMap<Integer, Producto> productosActualizar = new HashMap<>();
+            HashMap<Integer, Producto> productosNuevos = new HashMap<>();
+
+            for (int key : productos.keySet()) {
+                Producto producto = productos.get(key);
+                if (producto.getId() == ConstantesNumericas.ID_NULO)
+                    productosNuevos.put(producto.getCodigo(), producto);
+                else
+                    productosActualizar.put(producto.getCodigo(), producto);
+            }
+
+            List<Producto> paraActualizar = new ArrayList<>(productosActualizar.values());
+
+            ConectorDB.guardarCambios(paraActualizar);
+            ConectorDB.insertarProcuctos(productosNuevos, codigoLista);
         }
     }
 }

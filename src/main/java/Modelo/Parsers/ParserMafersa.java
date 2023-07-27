@@ -57,8 +57,11 @@ public class ParserMafersa implements Parser{
                 if (mapaActual.isEmpty() || !mapaActual.containsKey(producto.getCodigo()))
                     mapaActual.put(producto.getCodigo(), producto);
                 else {
-                    int porcentajeAnterior = mapaActual.get(producto.getCodigo()).getPorcentaje();
+                    Producto anterior = mapaActual.get(producto.getCodigo());
+                    int porcentajeAnterior = anterior.getPorcentaje();
+
                     producto.setPorcentaje(porcentajeAnterior);
+                    producto.setId(anterior.getId());
                     producto.calcularPrecio();
                     mapaActual.put(producto.getCodigo(), producto);
                 }

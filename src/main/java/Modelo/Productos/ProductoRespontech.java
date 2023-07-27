@@ -11,8 +11,8 @@ public class ProductoRespontech extends Producto{
         costoDescontado = costo;
     }
 
-    public ProductoRespontech(int codigo, String nombre, int costo, int precio, int porcentaje) {
-        super(codigo, nombre, costo, precio, porcentaje);
+    public ProductoRespontech(int id, int codigo, String nombre, int costo, int precio, int porcentaje) {
+        super(id, codigo, nombre, costo, precio, porcentaje);
         costoDescontado = costo;
     }
 

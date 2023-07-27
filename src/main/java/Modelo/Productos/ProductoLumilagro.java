@@ -12,8 +12,8 @@ public class ProductoLumilagro extends Producto{
         costoDescontado = menosTreinta + (menosTreinta * ConstantesNumericas.IVA) / 100;
     }
 
-    public ProductoLumilagro(int codigo, String nombre, int costo, int precio, int porcentaje) {
-        super(codigo, nombre, costo, precio, porcentaje);
+    public ProductoLumilagro(int id, int codigo, String nombre, int costo, int precio, int porcentaje) {
+        super(id, codigo, nombre, costo, precio, porcentaje);
         int menosTreinta = costo - (costo * 30) / 100;
         costoDescontado = menosTreinta + (menosTreinta * ConstantesNumericas.IVA) / 100;
     }

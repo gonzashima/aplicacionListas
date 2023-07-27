@@ -12,8 +12,8 @@ public class ProductoRigolleau extends Producto{
         costoDescontado = menosDiez + (menosDiez * ConstantesNumericas.IVA) / 100;
     }
 
-    public ProductoRigolleau(int codigo, String nombre, int costo, int precio, int porcentaje) {
-        super(codigo, nombre, costo, precio, porcentaje);
+    public ProductoRigolleau(int id, int codigo, String nombre, int costo, int precio, int porcentaje) {
+        super(id, codigo, nombre, costo, precio, porcentaje);
         int menosDiez = costo - (costo * 10) / 100;
         costoDescontado = menosDiez + (menosDiez * ConstantesNumericas.IVA) / 100;
     }

@@ -9,6 +9,8 @@ public class ConstantesNumericas {
     public static final int IVA = 21;
     public static final double MEDIO_IVA = 10.5;
 
+    public static final int ID_NULO = -1;
+
     public static final int CODIGO_TREBOL = 247;
     public static final int CODIGO_MAFERSA = 380;
     public static final int CODIGO_RIGOLLEAU = 254;

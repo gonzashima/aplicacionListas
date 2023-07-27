@@ -17,17 +17,12 @@ public class ParserDuravit implements Parser {
     @Override
     public void parsearAProducto(List<String> texto, HashMap<Integer, HashMap<Integer, Producto>> datos) throws SQLException {
         ConectorDB.getConnection();
-        //boolean existeTabla = ConectorDB.existeTabla(ConstantesStrings.DURAVIT);
         HashMap<Integer, Producto> mapaDuravit;
 
         if (datos.get(ConstantesNumericas.codigoLista(ConstantesStrings.DURAVIT)) == null) { //si la tabla existe pero no esta en memoria, la cargo en memoria
             mapaDuravit = cargarProductos();
             datos.put(ConstantesNumericas.codigoLista(ConstantesStrings.DURAVIT), mapaDuravit);
-//        } else if (!existeTabla) {                   //  si no existe creo una nueva
-//            mapaDuravit = new HashMap<>();
-//            datos.put(ConstantesStrings.DURAVIT, mapaDuravit);
         }
-        //y si existe y esta en memoria uso esa
 
         mapaDuravit = datos.get(ConstantesNumericas.codigoLista(ConstantesStrings.DURAVIT));
 
@@ -58,8 +53,12 @@ public class ParserDuravit implements Parser {
             if (mapaDuravit.isEmpty() || !mapaDuravit.containsKey(producto.getCodigo()))
                 mapaDuravit.put(producto.getCodigo(), producto);
             else {
-                int porcentajeAnterior = mapaDuravit.get(producto.getCodigo()).getPorcentaje();
+                Producto anterior = mapaDuravit.get(producto.getCodigo());
+                int porcentajeAnterior = anterior.getPorcentaje();
+                int idAnterior = anterior.getId();
+
                 producto.setPorcentaje(porcentajeAnterior);
+                producto.setId(idAnterior);
                 producto.calcularPrecio();
                 mapaDuravit.put(producto.getCodigo(), producto);                    //lo reemplazo porque puede pasar que el producto no se haga mas y hayan reasignado el codigo
             }

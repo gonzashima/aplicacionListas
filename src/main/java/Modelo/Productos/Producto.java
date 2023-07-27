@@ -4,8 +4,13 @@ package Modelo.Productos;
  * Representacion de un producto generico
  * */
 public abstract class Producto {
-    protected final String nombre;
+    //Id unico del programa
+    protected int id;
+
+    //Codigo unico de la LISTA
     protected final int codigo;
+
+    protected final String nombre;
     protected int precio;
     protected int costo;
     protected int porcentaje;
@@ -16,9 +21,11 @@ public abstract class Producto {
         this.nombre = nombre;
         this.costo = costo;
         this.porcentaje = 100;
+        this.id = -1;
     }
 
-    public Producto (int codigo, String nombre, int costo, int precio, int porcentaje){
+    public Producto (int id, int codigo, String nombre, int costo, int precio, int porcentaje){
+        this.id = id;
         this.codigo = codigo;
         this.nombre = nombre;
         this.costo = costo;
@@ -29,6 +36,14 @@ public abstract class Producto {
     public abstract void calcularPrecio();
 
     public abstract int codigoCasa();
+
+    public int getId(){
+        return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
 
     public int getPrecio(){
         return this.precio;
@@ -64,6 +79,6 @@ public abstract class Producto {
 
     @Override
     public String toString() {
-        return codigo + " " + nombre + " " + costo + " " + precio;
+        return id + " " + codigo + " " + nombre + " " + costo + " " + precio;
     }
 }

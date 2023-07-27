@@ -11,8 +11,8 @@ public class ProductoDuravit extends Producto{
         costoDescontado = costo;
     }
 
-    public ProductoDuravit(int codigo, String nombre, int costo, int precio, int porcentaje) {
-        super(codigo, nombre, costo, precio, porcentaje);
+    public ProductoDuravit(int id, int codigo, String nombre, int costo, int precio, int porcentaje) {
+        super(id, codigo, nombre, costo, precio, porcentaje);
         costoDescontado = costo;
     }
 

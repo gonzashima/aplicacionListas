@@ -12,8 +12,8 @@ public class ProductoMafersa extends Producto{
         costoDescontado = (int) (menosTreinta + (menosTreinta * ConstantesNumericas.MEDIO_IVA) / 100);
     }
 
-    public ProductoMafersa(int codigo, String nombre, int costo, int precio, int porcentaje) {
-        super(codigo, nombre, costo, precio, porcentaje);
+    public ProductoMafersa(int id, int codigo, String nombre, int costo, int precio, int porcentaje) {
+        super(id, codigo, nombre, costo, precio, porcentaje);
         int menosTreinta = costo - (costo * 30) / 100;
         costoDescontado = (int) (menosTreinta + (menosTreinta * ConstantesNumericas.MEDIO_IVA) / 100);
     }

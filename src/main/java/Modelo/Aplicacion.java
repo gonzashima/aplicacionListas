@@ -106,7 +106,7 @@ public class Aplicacion {
         if (connection != null) {
             for (int codigoLista : modificaciones.keySet()) {
                 List<Producto> productos = modificaciones.get(codigoLista);
-                int parcial = ConectorDB.guardarCambios(productos, codigoLista);
+                int parcial = ConectorDB.guardarCambios(productos);
                 cambiosTotales += parcial;
             }
         }

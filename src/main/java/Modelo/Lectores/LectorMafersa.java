@@ -80,7 +80,7 @@ public class LectorMafersa implements LectorArchivos{
                     if (nombre.contains("LINEA"))
                         lineas.add(valor);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    System.out.println("Error al obtener los nombres de las lineas de mafersa");
                 }
             }
         }
@@ -101,7 +101,7 @@ public class LectorMafersa implements LectorArchivos{
         for (Row fila : hoja) {
             StringBuilder linea = new StringBuilder();
             for (Cell celda : fila){
-                if (linea.length() > 0)
+                if (!linea.isEmpty())
                     linea.append(" ");
                 linea.append(formatter.formatCellValue(celda));
             }

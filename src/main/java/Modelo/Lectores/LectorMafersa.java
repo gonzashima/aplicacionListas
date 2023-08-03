@@ -26,6 +26,7 @@ public class LectorMafersa implements LectorArchivos{
     private static final String LINEA_RIVOLI = "06A2B -";
     private static final String LINEA_ANTIAD_NEGRO_CAMP = "06A4 -";
     private static final String LINEA_CHAPA_CAMP = "06CH -";
+    private static final String LINEA_CHURRASQUERAS_JOVIFEL = "06CI -";
     private static final String LINEA_ENLOZADO_CAMP = "06E -";
     private static final String LINEA_HOJALATA_MOLDES_CAMP = "06E5 -";
     private static final String LINEA_PARRILLEROS_CAMP = "06E6 -";

@@ -70,8 +70,9 @@ public class ParserMafersa implements Parser{
     }
 
     /**
-     * Carga en memoria las tablas con las que se trabajan. Si no existe, crea una nueva
+     * Carga en memoria las listas de los rubros en caso de que no lo esten.
      * */
+    //TODO esto hay que verlo si en algun momento se agrega un rubro nuevo, porque no va a estar en la DB.
     private void cargarTablas (HashMap<Integer, HashMap<Integer, Producto>> datos) throws SQLException {
         for (String nombre : nombres) {
             String nombreUnido = UnificadorString.unirString(nombre);

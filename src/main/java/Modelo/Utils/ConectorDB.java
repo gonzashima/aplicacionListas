@@ -37,6 +37,9 @@ public class ConectorDB {
             connection.close();
     }
 
+    /**
+     * Selecciona los productos de la DB correspondientes al nombre ingresado
+     * */
     public static HashMap<Integer, Producto> seleccionarProductos(String nombreTabla) throws SQLException {
         nombreTabla = UnificadorString.unirString(nombreTabla);
         String query = "SELECT * from productos WHERE lista_id = ?";
@@ -77,6 +80,9 @@ public class ConectorDB {
     }
 
 
+    /**
+     * Inserta los productos recibidos a la tabla con el lista_id especificado
+     * */
     public static void insertarProcuctos(HashMap<Integer, Producto> productos, int codigoLista) throws SQLException {
         String query = "INSERT INTO productos (id, codigo, nombre, costo, precio, porcentaje, lista_id) " +
                 "VALUES (NULL,?,?,?,?,?,?)";
@@ -100,6 +106,9 @@ public class ConectorDB {
         insertarTemp.executeBatch();
     }
 
+    /**
+     * Actualiza los productos correspondientes en la DB
+     * */
     public static int guardarCambios(List<Producto> productos) throws SQLException {
         String query = "UPDATE productos SET nombre=?, precio=?, costo=?, porcentaje=? WHERE id=?";
         PreparedStatement statement = connection.prepareStatement(query);

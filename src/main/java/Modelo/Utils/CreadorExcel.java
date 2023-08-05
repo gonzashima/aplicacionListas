@@ -3,6 +3,7 @@ package Modelo.Utils;
 import Modelo.Productos.Producto;
 import javafx.stage.FileChooser;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreadorExcel {
+    private static final int MAXIMO_COLUMNAS = 5;
 
     public void crearLista(List<Producto> productos) throws IOException {
         XSSFWorkbook workbook = new XSSFWorkbook();
@@ -49,35 +51,50 @@ public class CreadorExcel {
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet();
 
-        Font font = workbook.createFont();
-        font.setFontHeight((short) 250);
-        font.setBold(true);
-        font.setUnderline((byte) 1);
+        Font font1 = workbook.createFont();
+        font1.setFontHeight((short) 250);
+        font1.setBold(true);
+
+        Font font2 = workbook.createFont();
+        font2.setFontHeight((short) 500);
+        font2.setBold(true);
 
         CellStyle style = workbook.createCellStyle();
         style.setFillBackgroundColor(IndexedColors.LIGHT_BLUE.getIndex());
         style.setAlignment(HorizontalAlignment.CENTER);
-        style.setFont(font);
+        style.setFont(font1);
 
-        for (int i = 0; i < productos.size(); i++) {
-            Producto producto = productos.get(i);
-            Row row = sheet.createRow(i);
-            row.setHeight((short) 700);
-            List<Cell> celdas = new ArrayList<>();
+        int j = 0;
+        int contadorFilas = 0;
+        
+        Row row = null;
 
-            for (int j = 0; j < 5; j++) {
-                Cell celda = row.createCell(j);
-                celda.setCellStyle(style);
-                celdas.add(celda);
+        for (Producto producto : productos) {
+            if (j == 0) {
+                row = sheet.createRow(contadorFilas);
+                row.setHeight((short) 2000);
             }
 
-            celdas.get(0).setCellValue(producto.getCodigo());
-            celdas.get(1).setCellValue(producto.getNombre());
-            celdas.get(2).setCellValue(producto.codigoCasa());
-            celdas.get(3).setCellValue("-" + producto.getCosto());
-            celdas.get(4).setCellValue("$" + producto.getPrecio());
+            String textoCompleto = producto.stringCartel() + producto.getPrecio();
+            RichTextString richTextString = workbook.getCreationHelper().createRichTextString(textoCompleto);
+            int ultimoIndice = textoCompleto.length();
+            int primerIndice = ultimoIndice - String.valueOf(producto.getPrecio()).length();
+
+            richTextString.applyFont(primerIndice, ultimoIndice, font2);
+
+            Cell celda = row.createCell(j);
+            celda.setCellValue(richTextString);
+            celda.setCellStyle(style);
+
+            j++;
+
+            if (j >= MAXIMO_COLUMNAS) {
+                j = 0;
+                contadorFilas++;
+            }
         }
-        sheet.setColumnWidth(1,18_000);
+        for (int i = 0; i < MAXIMO_COLUMNAS; i++)
+            sheet.setColumnWidth(i, 11_000);
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Guardar archivo");

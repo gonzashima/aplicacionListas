@@ -81,4 +81,9 @@ public abstract class Producto {
     public String toString() {
         return id + " " + codigo + " " + nombre + " " + costo + " " + precio;
     }
+
+    public String stringCartel() {
+        return codigo + " " + nombre + "\n"
+                + codigoCasa() + "-" + costo + "\n";
+    }
 }

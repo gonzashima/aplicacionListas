@@ -25,7 +25,7 @@ public class LectorRigolleau implements LectorArchivos{
         for (Row fila : hoja) {
             StringBuilder linea = new StringBuilder();
             for (Cell celda : fila) {
-                if (linea.length() > 0)
+                if (!linea.isEmpty())
                     linea.append(":");
                 linea.append(formatter.formatCellValue(celda).toUpperCase());
             }

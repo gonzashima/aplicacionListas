@@ -43,6 +43,7 @@ public class ConstantesNumericas {
         codigosListas.put(ConstantesStrings.NOMBRE_YESI, 21);
         codigosListas.put(ConstantesStrings.RESPONTECH, 22);
         codigosListas.put(ConstantesStrings.RIGOLLEAU, 23);
+        codigosListas.put(ConstantesStrings.LEMA, 24);
     }
 
     private ConstantesNumericas() {}

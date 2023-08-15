@@ -10,18 +10,20 @@ public class ProductoMafersa extends Producto{
         super(nombre, codigo, costo);
         int menosTreinta = costo - (costo * 30) / 100;
         costoDescontado = (int) (menosTreinta + (menosTreinta * ConstantesNumericas.MEDIO_IVA) / 100);
+        costoDescontado = costoDescontado + costoDescontado * 20 /100;
+
     }
 
     public ProductoMafersa(int id, int codigo, String nombre, int costo, int precio, int porcentaje) {
         super(id, codigo, nombre, costo, precio, porcentaje);
         int menosTreinta = costo - (costo * 30) / 100;
         costoDescontado = (int) (menosTreinta + (menosTreinta * ConstantesNumericas.MEDIO_IVA) / 100);
+        costoDescontado = costoDescontado + costoDescontado * 20 /100;
     }
 
     @Override
     public void calcularPrecio() {
         ManejadorPrecios manejadorPrecios = new ManejadorPrecios();
-
         int parcial = costoDescontado + (costoDescontado * porcentaje) / 100;
         this.precio = manejadorPrecios.redondearPrecio(parcial);
     }

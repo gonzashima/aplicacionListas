@@ -18,7 +18,7 @@ public class ProductoDuravit extends Producto{
 
     public void calcularPrecio(){
         ManejadorPrecios manejador = new ManejadorPrecios();
-        int parcial = costo + (costo * porcentaje) / 100;
+        int parcial = costoDescontado + (costoDescontado * porcentaje) / 100;
         this.precio = manejador.redondearPrecio(parcial);
     }
 

@@ -16,17 +16,12 @@ public class InsertadorRespontech extends Insertador{
     public void insertarABaseDeDatos(HashMap<Integer, HashMap<Integer, Producto>> datos) throws SQLException {
         ConectorDB.getConnection();
         int codigo = ConstantesNumericas.codigoLista(ConstantesStrings.RESPONTECH);
-        HashMap<Integer, Producto> productos = datos.get(codigo);
-        HashMap<Integer, Producto> productosActualizar = new HashMap<>();
-        HashMap<Integer, Producto> productosNuevos = new HashMap<>();
 
-        for (int key : productos.keySet()) {
-            Producto producto = productos.get(key);
-            if (producto.getId() == ConstantesNumericas.ID_NULO)
-                productosNuevos.put(producto.getCodigo(), producto);
-            else
-                productosActualizar.put(producto.getCodigo(), producto);
-        }
+        HashMap<Integer, Producto> productos = datos.get(codigo);
+        HashMap<Integer, HashMap<Integer, Producto>> resultado = separarProductos(productos);
+
+        HashMap<Integer, Producto> productosNuevos = resultado.get(CODIGO_NUEVOS);
+        HashMap<Integer, Producto> productosActualizar = resultado.get(CODIGO_ACTUALIZAR);
 
         List<Producto> paraActualizar = new ArrayList<>(productosActualizar.values());
 

@@ -49,6 +49,20 @@ public class ParserLema implements Parser{
                 nombre.append(palabra);
             }
             producto = new ProductoLema(nombre.toString().toUpperCase(), codigo, costo);
+            producto.calcularPrecio();
+
+            if (mapaLema.isEmpty() || !mapaLema.containsKey(producto.getCodigo()))
+                mapaLema.put(producto.getCodigo(), producto);
+            else {
+                Producto anterior = mapaLema.get(producto.getCodigo());
+                int porcentajeAnterior = anterior.getPorcentaje();
+                int idAnterior = anterior.getId();
+
+                producto.setPorcentaje(porcentajeAnterior);
+                producto.setId(idAnterior);
+                producto.calcularPrecio();
+                mapaLema.put(producto.getCodigo(), producto);
+            }
 
         }
     }

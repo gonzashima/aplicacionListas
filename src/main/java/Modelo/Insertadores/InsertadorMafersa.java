@@ -20,18 +20,12 @@ public class InsertadorMafersa extends Insertador{
         for (String nombre : nombresListas) {
             nombre = UnificadorString.unirString(nombre);
             int codigoLista = ConstantesNumericas.codigoLista(nombre);
+
             HashMap<Integer, Producto> productos = datos.get(codigoLista);
+            HashMap<Integer, HashMap<Integer, Producto>> resultado = separarProductos(productos);
 
-            HashMap<Integer, Producto> productosActualizar = new HashMap<>();
-            HashMap<Integer, Producto> productosNuevos = new HashMap<>();
-
-            for (int key : productos.keySet()) {
-                Producto producto = productos.get(key);
-                if (producto.getId() == ConstantesNumericas.ID_NULO)
-                    productosNuevos.put(producto.getCodigo(), producto);
-                else
-                    productosActualizar.put(producto.getCodigo(), producto);
-            }
+            HashMap<Integer, Producto> productosNuevos = resultado.get(CODIGO_NUEVOS);
+            HashMap<Integer, Producto> productosActualizar = resultado.get(CODIGO_ACTUALIZAR);
 
             List<Producto> paraActualizar = new ArrayList<>(productosActualizar.values());
 

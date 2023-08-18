@@ -71,8 +71,7 @@ public class Main extends Application {
         LectorArchivos lectorArchivos = new LectorLema();
         List<String> texto = lectorArchivos.leerArchivo(null);
 
-        for (int i = 0; i < texto.size(); i++)
-            System.out.println(texto.get(i) + "   " + i);
+        for (String s : texto) System.out.println(s);
 
         System.out.println(texto.size());
     }

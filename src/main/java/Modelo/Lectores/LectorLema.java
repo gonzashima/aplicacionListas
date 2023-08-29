@@ -139,8 +139,7 @@ public class LectorLema implements LectorArchivos{
 
     @Override
     public List<String> leerArchivo(File archivo) throws IOException {
-        File archivoLema = new File("src/main/resources/Lista-de-precios-CasaLema.xls");
-        FileInputStream fileInputStream = new FileInputStream(archivoLema);
+        FileInputStream fileInputStream = new FileInputStream(archivo);
 
         HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
         HSSFSheet hoja = workbook.getSheetAt(0);

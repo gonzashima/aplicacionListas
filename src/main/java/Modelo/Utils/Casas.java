@@ -9,7 +9,8 @@ public enum Casas {
     "WHEATON", "CAMPAGNA", "CHEF", "CHURRASQUERAS Y SARTENES", "KUFO", "DAYSAL", "GUADIX", "LOEKEMEYER", "LUMILAGRO",
     "MAN FER", "MARINEX", "COLORES", "DATOMAX", "PLASTIC HOUSE", "YESI"}, "MAFERSA"),
     RESPONTECH(new String[]{"RESPONTECH"}, "RESPONTECH"),
-    RIGOLLEAU(new String[]{"RIGOLLEAU"}, "RIGOLLEAU");
+    RIGOLLEAU(new String[]{"RIGOLLEAU"}, "RIGOLLEAU"),
+    LEMA(new String[]{"LEMA"}, "LEMA");
 
 
     private final String[] listas;

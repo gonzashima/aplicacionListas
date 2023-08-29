@@ -73,6 +73,8 @@ public class ConectorDB {
                 producto = new ProductoRespontech(id, codigo, nombre, costo, precio, porcentaje);
             else if (nombreTabla.equals(ConstantesStrings.RIGOLLEAU))
                 producto = new ProductoRigolleau(id, codigo, nombre, costo, precio, porcentaje);
+            else if (nombreTabla.equals(ConstantesStrings.LEMA))
+                producto = new ProductoLema(id, codigo, nombre, costo, precio, porcentaje);
 
             productos.put(codigo, producto);
         }

@@ -1,5 +1,7 @@
 package Modelo.Productos;
 
+import Modelo.Utils.ManejadorPrecios;
+
 /**
  * Representacion de un producto generico
  * */
@@ -33,7 +35,11 @@ public abstract class Producto {
         this.porcentaje = porcentaje;
     }
 
-    public abstract void calcularPrecio();
+    public void calcularPrecio() {
+        ManejadorPrecios manejador = new ManejadorPrecios();
+        int parcial = costoDescontado + (costoDescontado * porcentaje) / 100;
+        this.precio = manejador.redondearPrecio(parcial);
+    }
 
     public abstract int codigoCasa();
 

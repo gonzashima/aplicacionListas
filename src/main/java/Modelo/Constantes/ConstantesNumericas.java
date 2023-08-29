@@ -15,6 +15,7 @@ public class ConstantesNumericas {
     public static final int CODIGO_MAFERSA = 380;
     public static final int CODIGO_RIGOLLEAU = 254;
     public static final int CODIGO_RESPONTECH = 238;
+    public static final int CODIGO_LEMA = 4;
 
     private static final HashMap<String, Integer> codigosListas;
 
@@ -43,6 +44,7 @@ public class ConstantesNumericas {
         codigosListas.put(ConstantesStrings.NOMBRE_YESI, 21);
         codigosListas.put(ConstantesStrings.RESPONTECH, 22);
         codigosListas.put(ConstantesStrings.RIGOLLEAU, 23);
+        codigosListas.put(ConstantesStrings.LEMA, 24);
     }
 
     private ConstantesNumericas() {}

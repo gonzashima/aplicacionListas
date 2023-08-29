@@ -159,6 +159,9 @@ public class Aplicacion {
         else if (nombre.contains(ConstantesStrings.RIGOLLEAU))
             resultado = new Resultado(new LectorRigolleau(), new ParserRigolleau(), new InsertadorRigolleau());
 
+        else if (nombre.contains("casa lema") || nombre.contains("casalema"))
+            resultado = new Resultado(new LectorLema(), new ParserLema(), new InsertadorLema());
+
         return resultado;
     }
 }

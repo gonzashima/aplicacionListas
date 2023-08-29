@@ -18,16 +18,10 @@ public class InsertadorRigolleau extends Insertador{
         int codigo = ConstantesNumericas.codigoLista(ConstantesStrings.RIGOLLEAU);
 
         HashMap<Integer, Producto> productos = datos.get(codigo);
-        HashMap<Integer, Producto> productosActualizar = new HashMap<>();
-        HashMap<Integer, Producto> productosNuevos = new HashMap<>();
+        HashMap<Integer, HashMap<Integer, Producto>> resultado = separarProductos(productos);
 
-        for (int key : productos.keySet()) {
-            Producto producto = productos.get(key);
-            if (producto.getId() == ConstantesNumericas.ID_NULO)
-                productosNuevos.put(producto.getCodigo(), producto);
-            else
-                productosActualizar.put(producto.getCodigo(), producto);
-        }
+        HashMap<Integer, Producto> productosNuevos = resultado.get(CODIGO_NUEVOS);
+        HashMap<Integer, Producto> productosActualizar = resultado.get(CODIGO_ACTUALIZAR);
 
         List<Producto> paraActualizar = new ArrayList<>(productosActualizar.values());
 

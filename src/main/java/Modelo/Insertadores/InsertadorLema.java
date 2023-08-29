@@ -10,11 +10,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class InsertadorDuravit extends Insertador{
+public class InsertadorLema extends Insertador{
+
     @Override
     public void insertarABaseDeDatos(HashMap<Integer, HashMap<Integer, Producto>> datos) throws SQLException {
         ConectorDB.getConnection();
-        int codigo = ConstantesNumericas.codigoLista(ConstantesStrings.DURAVIT);
+        int codigo = ConstantesNumericas.codigoLista(ConstantesStrings.LEMA);
 
         HashMap<Integer, Producto> productos = datos.get(codigo);
         HashMap<Integer, HashMap<Integer, Producto>> resultado = separarProductos(productos);

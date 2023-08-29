@@ -32,16 +32,16 @@ public class ParserLema implements Parser{
             String codigoString, costoString;
             Producto producto;
 
-            String[] costoSeparado = linea.trim().split("$");
-            costoString = costoSeparado[1].replace(".", "");
-            costoString = costoString.split(",")[0];
-
-            costo = Integer.parseInt(costoString.replace("$", ""));
-
-            String[] lineaSeparada = costoSeparado[0].trim().split(" ");
+            String[] lineaSeparada = linea.trim().split("~");
             List<String> palabras = new ArrayList<>(Arrays.asList(lineaSeparada));
+
             codigoString = palabras.remove(0);
             codigo = Integer.parseInt(codigoString);
+
+            costoString = palabras.remove(palabras.size() - 1).replace("$", "").replace(".", "");
+            costoString = costoString.split(",")[0];
+
+            costo = Integer.parseInt(costoString.trim());
 
             for (String palabra : palabras){
                 if (!nombre.isEmpty())

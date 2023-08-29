@@ -156,7 +156,7 @@ public class LectorLema implements LectorArchivos{
                 Cell celda = fila.getCell(i);
                 if (i != COLUMNA_CODIGO_BARRAS) {
                     if (!linea.isEmpty())
-                        linea.append(" ");
+                        linea.append("~");
                     linea.append(formatter.formatCellValue(celda));
                 }
             }

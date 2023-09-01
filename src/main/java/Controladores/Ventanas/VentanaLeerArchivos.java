@@ -69,7 +69,7 @@ public class VentanaLeerArchivos {
             app.leerArchivo(archivo);
 
         } catch (Exception ex) {
-            mensaje = "Este archivo no se pudo abrir o no es de una lista";
+            mensaje = "Este archivo no se pudo abrir o no es de una lista " + ex;
         }
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

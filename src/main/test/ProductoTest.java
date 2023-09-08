@@ -21,7 +21,6 @@ public class ProductoTest {
 
         int costoRestado = COSTO - (COSTO*30)/100;
         int costoFinal = (int) (costoRestado + ConstantesNumericas.MEDIO_IVA * costoRestado /100);
-        costoFinal = costoFinal + costoFinal * 20/100;
         int precioFinal = costoFinal + costoFinal * producto.getPorcentaje() /100;
 
         ManejadorPrecios manejadorPrecios = new ManejadorPrecios();

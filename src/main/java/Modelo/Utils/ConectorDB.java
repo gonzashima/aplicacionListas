@@ -37,6 +37,10 @@ public class ConectorDB {
             connection.close();
     }
 
+    //TODO Ahora en teoria es redundante guardar el precio en la DB, porque se calcula nuevamente al traerlo y solamente
+    // es funcion del costo y del porcentaje
+
+
     /**
      * Selecciona los productos de la DB correspondientes al nombre ingresado
      * */
@@ -75,6 +79,9 @@ public class ConectorDB {
                 producto = new ProductoRigolleau(id, codigo, nombre, costo, precio, porcentaje);
             else if (nombreTabla.equals(ConstantesStrings.LEMA))
                 producto = new ProductoLema(id, codigo, nombre, costo, precio, porcentaje);
+
+            if (producto != null)
+                producto.calcularPrecio();
 
             productos.put(codigo, producto);
         }

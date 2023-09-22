@@ -232,4 +232,16 @@ public class PantallaPrincipalControl implements Initializable {
         VentanaLeerArchivos ventanaLeerArchivos = new VentanaLeerArchivos();
         ventanaLeerArchivos.display();
     }
+
+    /**
+     * Este metodo va cambiando en el tiempo. Actualiza la DB como corresponda en el momento del release.
+     * */
+    public void actualizarDB() throws SQLException {
+        ConectorDB.insertarLista("lema");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+        alert.setTitle("Actualizacion realizada");
+        alert.setHeaderText("Se actualizo la base de datos");
+        alert.showAndWait();
+    }
 }

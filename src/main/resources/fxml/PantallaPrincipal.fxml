@@ -34,7 +34,7 @@
          <MenuItem mnemonicParsing="false" onAction="#mostrarVentanaArchivos" text="Leer archivo" />
          <MenuItem fx:id="crearExcel" mnemonicParsing="false" onAction="#crearExcel" text="Pasar a excel" />
       </Menu>
-      <Menu mnemonicParsing="false" text="Actualizacion">
+      <Menu disable="true" mnemonicParsing="false" text="Actualizacion">
          <MenuItem fx:id="reformarDB" mnemonicParsing="false" onAction="#actualizarDB" text="Reformar base de datos" />
       </Menu>
    </MenuBar>

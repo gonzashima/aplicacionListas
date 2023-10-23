@@ -219,9 +219,15 @@ public class PantallaPrincipalControl implements Initializable {
     }
 
     public void crearExcel() throws IOException {
-        List<Producto> productos = listaOb.stream().toList();
-        VentanaExcel ventanaExcel = new VentanaExcel();
-        ventanaExcel.display(productos);
+        List<Producto> productos = tabla.getSelectionModel().getSelectedItems();
+
+        if (productos.isEmpty()) {
+            Alerta alerta = new AlertaProductoSinSeleccionar();
+            alerta.display();
+        } else {
+            VentanaExcel ventanaExcel = new VentanaExcel();
+            ventanaExcel.display(productos);
+        }
     }
 
 

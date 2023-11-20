@@ -72,7 +72,7 @@ public class PantallaPrincipalControl implements Initializable {
         costo.setCellValueFactory(new PropertyValueFactory<>("costo"));
         precio.setCellValueFactory(new PropertyValueFactory<>("precio"));
         porcentaje.setCellValueFactory(new PropertyValueFactory<>("porcentaje"));
-        costoDescontado.setCellValueFactory(new PropertyValueFactory<>("costoDescontado"));
+        costoDescontado.setCellValueFactory(new PropertyValueFactory<>("costoParcial"));
     }
 
     /**

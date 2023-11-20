@@ -7,12 +7,12 @@ public class ProductoRespontech extends Producto{
 
     public ProductoRespontech(String nombre, int codigo, int costo) {
         super(nombre, codigo, costo);
-        costoDescontado = costo;
+        costoParcial = costo;
     }
 
     public ProductoRespontech(int id, int codigo, String nombre, int costo, int precio, int porcentaje) {
         super(id, codigo, nombre, costo, precio, porcentaje);
-        costoDescontado = costo;
+        costoParcial = costo;
     }
 
     @Override

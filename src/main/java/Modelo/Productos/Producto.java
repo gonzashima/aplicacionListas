@@ -16,7 +16,7 @@ public abstract class Producto {
     protected int precio;
     protected int costo;
     protected int porcentaje;
-    protected int costoDescontado;
+    protected int costoParcial;
 
     public Producto(String nombre, int codigo, int costo){
         this.codigo = codigo;
@@ -37,7 +37,7 @@ public abstract class Producto {
 
     public void calcularPrecio() {
         ManejadorPrecios manejador = new ManejadorPrecios();
-        int parcial = costoDescontado + (costoDescontado * porcentaje) / 100;
+        int parcial = costoParcial + (costoParcial * porcentaje) / 100;
         this.precio = manejador.redondearPrecio(parcial);
     }
 
@@ -71,8 +71,8 @@ public abstract class Producto {
         return porcentaje;
     }
 
-    public int getCostoDescontado() {
-        return costoDescontado;
+    public int getCostoParcial() {
+        return costoParcial;
     }
 
     public void setPorcentaje(int porcentaje) {

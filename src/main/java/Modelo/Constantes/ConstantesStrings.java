@@ -21,6 +21,14 @@ public class ConstantesStrings {
     public static final String LUMILAGRO_TAPON_TERMO = "TAPON P/TERMO";
     public static final String LUMILAGRO_TAPON_JARRA = "TAPON P/JARRA";
     public static final String LUMILAGRO_TAPON_PICO = "TAPON PICO";
+    public static final String LUMILAGRO_BOCA = "BOCA";
+    public static final String LUMILAGRO_RIVER = "RIVER";
+    public static final String LUMILAGRO_INDEPENDIENTE = "INDEPENDIENTE";
+    public static final String LUMILAGRO_RACING = "RACING";
+    public static final String LUMILAGRO_ESTUDIANTES = "ESTUDIANTES";
+    public static final String LUMILAGRO_GIMNASIA = "GIMNASIA";
+    public static final String LUMILAGRO_SAN_LORENZO = "SAN LORENZO";
+    public static final String LUMILAGRO_SELECCION = "SELECCION";
 
     public static final String NOMBRE_ALMANDOZ = "almandoz";
     public static final String NOMBRE_BELGIOCO = "bel gioco";

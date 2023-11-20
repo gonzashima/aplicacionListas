@@ -53,7 +53,7 @@ public class ProductoTest {
     }
 
     @Test
-    public void productoRIgolleauPrecio() {
+    public void productoRigolleauPrecio() {
         Producto producto = new ProductoRigolleau("p", 213, COSTO);
         producto.calcularPrecio();
 
@@ -72,6 +72,12 @@ public class ProductoTest {
         Producto producto = new ProductoLema("p", 213, COSTO);
         producto.calcularPrecio();
 
-        Assert.assertEquals(600, producto.getPrecio());
+        int costoReal = (int) (COSTO + (COSTO * ConstantesNumericas.MEDIO_IVA) / 100);
+        int precioFinal = costoReal + costoReal * producto.getPorcentaje() / 100;
+
+        ManejadorPrecios manejadorPrecios = new ManejadorPrecios();
+        int precio = manejadorPrecios.redondearPrecio(precioFinal);
+
+        Assert.assertEquals(precio, producto.getPrecio());
     }
 }

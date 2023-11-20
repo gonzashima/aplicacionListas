@@ -7,12 +7,12 @@ public class ProductoLema extends Producto{
 
     public ProductoLema(String nombre, int codigo, int costo) {
         super(nombre, codigo, costo);
-        costoDescontado = (int) (costo + ConstantesNumericas.MEDIO_IVA * costo / 100);
+        costoParcial = (int) (costo + ConstantesNumericas.MEDIO_IVA * costo / 100);
     }
 
     public ProductoLema(int id, int codigo, String nombre, int costo, int precio, int porcentaje) {
         super(id, codigo, nombre, costo, precio, porcentaje);
-        costoDescontado = (int) (costo + ConstantesNumericas.MEDIO_IVA * costo / 100);
+        costoParcial = (int) (costo + ConstantesNumericas.MEDIO_IVA * costo / 100);
     }
 
     @Override

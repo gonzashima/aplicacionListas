@@ -68,7 +68,7 @@ public class ConectorDB {
                 producto = new ProductoDuravit(id, codigo, nombre, costo, precio, porcentaje);
 
             else if (nombresMafersa.stream().anyMatch(nombreTabla :: contains)) {
-                if (ConstantesStrings.getDistintosLumilagro().stream().anyMatch(nombre::contains))
+                if (ConstantesStrings.getDistintosLumilagro().stream().anyMatch(nombre::contains) && nombre.contains(ConstantesStrings.NOMBRE_LUMILAGRO.toUpperCase()))
                     producto = new ProductoLumilagro(id, codigo, nombre, costo, precio, porcentaje);
                 else
                     producto = new ProductoMafersa(id, codigo, nombre, costo, precio, porcentaje);

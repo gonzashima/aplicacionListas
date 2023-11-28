@@ -20,7 +20,7 @@ public class ParserDuravit implements Parser {
         HashMap<Integer, Producto> mapaDuravit;
 
         if (datos.get(ConstantesNumericas.codigoLista(ConstantesStrings.DURAVIT)) == null) { //si la tabla existe pero no esta en memoria, la cargo en memoria
-            mapaDuravit = cargarProductos();
+            mapaDuravit = ConectorDB.seleccionarProductos(ConstantesStrings.DURAVIT);
             datos.put(ConstantesNumericas.codigoLista(ConstantesStrings.DURAVIT), mapaDuravit);
         }
 
@@ -63,12 +63,5 @@ public class ParserDuravit implements Parser {
                 mapaDuravit.put(producto.getCodigo(), producto);                    //lo reemplazo porque puede pasar que el producto no se haga mas y hayan reasignado el codigo
             }
         }
-    }
-
-    /**
-     * Carga los productos de la base de datos al mapa
-     * */
-    private HashMap<Integer, Producto> cargarProductos() throws SQLException {
-        return ConectorDB.seleccionarProductos(ConstantesStrings.DURAVIT);
     }
 }

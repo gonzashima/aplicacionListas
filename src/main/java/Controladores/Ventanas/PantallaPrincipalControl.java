@@ -2,6 +2,7 @@ package Controladores.Ventanas;
 
 import Controladores.Alertas.*;
 import Modelo.Aplicacion;
+import Modelo.Constantes.ConstantesStrings;
 import Modelo.Productos.Producto;
 import Modelo.Utils.Casas;
 import Modelo.Utils.ConectorDB;
@@ -243,7 +244,7 @@ public class PantallaPrincipalControl implements Initializable {
      * Este metodo va cambiando en el tiempo. Actualiza la DB como corresponda en el momento del release.
      * */
     public void actualizarDB() throws SQLException {
-        ConectorDB.insertarLista("lema");
+        ConectorDB.insertarLista(ConstantesStrings.RODECA);
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
         alert.setTitle("Actualizacion realizada");

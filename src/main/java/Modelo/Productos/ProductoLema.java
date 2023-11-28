@@ -3,7 +3,6 @@ package Modelo.Productos;
 import Modelo.Constantes.ConstantesNumericas;
 
 public class ProductoLema extends Producto{
-    public static final int CODIGO = ConstantesNumericas.CODIGO_LEMA;
 
     public ProductoLema(String nombre, int codigo, int costo) {
         super(nombre, codigo, costo);
@@ -17,6 +16,6 @@ public class ProductoLema extends Producto{
 
     @Override
     public int codigoCasa() {
-        return CODIGO;
+        return ConstantesNumericas.CODIGO_LEMA;
     }
 }

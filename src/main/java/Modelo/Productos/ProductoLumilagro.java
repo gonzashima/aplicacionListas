@@ -3,7 +3,6 @@ package Modelo.Productos;
 import Modelo.Constantes.ConstantesNumericas;
 
 public class ProductoLumilagro extends Producto{
-    public static final int CODIGO = ConstantesNumericas.CODIGO_MAFERSA;
 
     public ProductoLumilagro(String nombre, int codigo, int costo) {
         super(nombre, codigo, costo);
@@ -18,6 +17,6 @@ public class ProductoLumilagro extends Producto{
     }
 
     public int codigoCasa() {
-        return CODIGO;
+        return ConstantesNumericas.CODIGO_MAFERSA;
     }
 }

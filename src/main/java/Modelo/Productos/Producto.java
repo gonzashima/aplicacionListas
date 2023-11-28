@@ -9,7 +9,7 @@ public abstract class Producto {
     //Id unico del programa
     protected int id;
 
-    //Codigo unico de la LISTA
+    //Codigo unico del producto en su LISTA
     protected final int codigo;
 
     protected final String nombre;

@@ -17,6 +17,8 @@ public class ConstantesNumericas {
     public static final int CODIGO_RESPONTECH = 238;
     public static final int CODIGO_LEMA = 4;
 
+    public static final int CODIGO_RODECA = 1;
+
     private static final HashMap<String, Integer> codigosListas;
 
     static {

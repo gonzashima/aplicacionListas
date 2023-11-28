@@ -3,7 +3,6 @@ package Modelo.Productos;
 import Modelo.Constantes.ConstantesNumericas;
 
 public class ProductoRigolleau extends Producto{
-    public static final int CODIGO = ConstantesNumericas.CODIGO_RIGOLLEAU;
 
     public ProductoRigolleau(String nombre, int codigo, int costo) {
         super(nombre, codigo, costo);
@@ -19,6 +18,6 @@ public class ProductoRigolleau extends Producto{
 
     @Override
     public int codigoCasa() {
-        return CODIGO;
+        return ConstantesNumericas.CODIGO_RIGOLLEAU;
     }
 }

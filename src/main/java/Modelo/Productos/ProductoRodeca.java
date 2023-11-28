@@ -2,20 +2,21 @@ package Modelo.Productos;
 
 import Modelo.Constantes.ConstantesNumericas;
 
-public class ProductoRespontech extends Producto{
+public class ProductoRodeca extends Producto{
 
-    public ProductoRespontech(String nombre, int codigo, int costo) {
+    public ProductoRodeca(String nombre, int codigo, int costo) {
         super(nombre, codigo, costo);
         costoParcial = costo;
     }
 
-    public ProductoRespontech(int id, int codigo, String nombre, int costo, int precio, int porcentaje) {
+    public ProductoRodeca(int id, int codigo, String nombre, int costo, int precio, int porcentaje) {
         super(id, codigo, nombre, costo, precio, porcentaje);
         costoParcial = costo;
     }
 
+    //TODO ver codigo rodeca real
     @Override
     public int codigoCasa() {
-        return ConstantesNumericas.CODIGO_RESPONTECH;
+        return ConstantesNumericas.CODIGO_RODECA;
     }
 }

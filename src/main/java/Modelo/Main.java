@@ -1,12 +1,5 @@
 package Modelo;
 
-import Modelo.Constantes.ConstantesNumericas;
-import Modelo.Constantes.ConstantesStrings;
-import Modelo.Lectores.LectorArchivos;
-import Modelo.Lectores.LectorRodeca;
-import Modelo.Parsers.Parser;
-import Modelo.Parsers.ParserRodeca;
-import Modelo.Productos.Producto;
 import Modelo.Utils.ConectorDB;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -19,8 +12,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 

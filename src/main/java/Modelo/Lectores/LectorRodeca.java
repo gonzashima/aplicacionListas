@@ -41,7 +41,7 @@ public class LectorRodeca implements LectorArchivos{
                 i--;
             }
         }
-
+        pdf.close();
         return texto;
     }
 }

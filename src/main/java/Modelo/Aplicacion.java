@@ -162,6 +162,9 @@ public class Aplicacion {
         else if (nombre.contains("casa lema") || nombre.contains("casalema"))
             resultado = new Resultado(new LectorLema(), new ParserLema(), new InsertadorLema());
 
+        else if (nombre.contains(ConstantesStrings.RODECA))
+            resultado = new Resultado(new LectorRodeca(), new ParserRodeca(), new InsertadorRodeca());
+
         return resultado;
     }
 }

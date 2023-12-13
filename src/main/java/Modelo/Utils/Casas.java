@@ -10,7 +10,8 @@ public enum Casas {
     "MAN FER", "MARINEX", "COLORES", "DATOMAX", "PLASTIC HOUSE", "YESI"}, "MAFERSA"),
     RESPONTECH(new String[]{"RESPONTECH"}, "RESPONTECH"),
     RIGOLLEAU(new String[]{"RIGOLLEAU"}, "RIGOLLEAU"),
-    LEMA(new String[]{"LEMA"}, "LEMA");
+    LEMA(new String[]{"LEMA"}, "LEMA"),
+    RODECA(new String[]{"RODECA"}, "RODECA");
 
 
     private final String[] listas;

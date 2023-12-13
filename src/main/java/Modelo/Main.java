@@ -72,23 +72,7 @@ public class Main extends Application {
         }
     }
 
-    public static void main(String[] args) throws IOException, SQLException {
-//        launch(args);
-        LectorArchivos lectorRodeca = new LectorRodeca();
-        List<String> texto = lectorRodeca.leerArchivo(null);
-
-        for (String s: texto)
-            System.out.println(s);
-        
-        Parser parser = new ParserRodeca();
-        HashMap<Integer, HashMap<Integer, Producto>> datos = new HashMap<>();
-        parser.parsearAProducto(texto, datos);
-
-        HashMap<Integer, Producto> mapaRodeca = datos.get(ConstantesNumericas.codigoLista(ConstantesStrings.RODECA));
-
-        for (int key : mapaRodeca.keySet())
-            System.out.println(mapaRodeca.get(key).toString());
-
-        System.out.println(mapaRodeca.keySet().size());
+    public static void main(String[] args) {
+        launch(args);
     }
 }

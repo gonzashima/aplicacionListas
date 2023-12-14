@@ -244,6 +244,7 @@ public class PantallaPrincipalControl implements Initializable {
      * Este metodo va cambiando en el tiempo. Actualiza la DB como corresponda en el momento del release.
      * */
     public void actualizarDB() throws SQLException {
+        ConectorDB.getConnection();
         ConectorDB.insertarLista(ConstantesStrings.RODECA);
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
 

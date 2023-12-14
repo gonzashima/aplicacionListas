@@ -26,8 +26,7 @@ public class LectorRodeca implements LectorArchivos{
 
     @Override
     public List<String> leerArchivo(File archivo) throws IOException {
-        File file = new File("src/main/resources/23-11-23 JUEGOS DE MESA.pdf");
-        PDDocument pdf = PDDocument.load(file);
+        PDDocument pdf = PDDocument.load(archivo);
         PDFTextStripper textStripper = new PDFTextStripper();
 
         String textoOriginal = textStripper.getText(pdf);

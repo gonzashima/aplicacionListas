@@ -27,5 +27,6 @@ public class InsertadorLema extends Insertador{
 
         ConectorDB.guardarCambios(paraActualizar);
         ConectorDB.insertarProcuctos(productosNuevos, codigo);
+        datos.replace(codigo, ConectorDB.seleccionarProductos(ConstantesStrings.LEMA));
     }
 }

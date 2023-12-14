@@ -27,5 +27,6 @@ public class InsertadorRespontech extends Insertador{
 
         ConectorDB.guardarCambios(paraActualizar);
         ConectorDB.insertarProcuctos(productosNuevos, codigo);
+        datos.replace(codigo, ConectorDB.seleccionarProductos(ConstantesStrings.RESPONTECH));
     }
 }

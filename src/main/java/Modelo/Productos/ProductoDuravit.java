@@ -3,7 +3,6 @@ package Modelo.Productos;
 import Modelo.Constantes.ConstantesNumericas;
 
 public class ProductoDuravit extends Producto{
-    public static final int CODIGO = ConstantesNumericas.CODIGO_TREBOL;
 
     public ProductoDuravit(String nombre, int codigo, int costo) {
         super(nombre, codigo, costo);
@@ -16,6 +15,6 @@ public class ProductoDuravit extends Producto{
     }
 
     public int codigoCasa() {
-        return CODIGO;
+        return ConstantesNumericas.CODIGO_TREBOL;
     }
 }

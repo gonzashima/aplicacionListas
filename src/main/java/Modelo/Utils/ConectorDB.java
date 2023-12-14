@@ -75,10 +75,15 @@ public class ConectorDB {
             }
             else if (nombreTabla.equals(ConstantesStrings.RESPONTECH))
                 producto = new ProductoRespontech(id, codigo, nombre, costo, precio, porcentaje);
+
             else if (nombreTabla.equals(ConstantesStrings.RIGOLLEAU))
                 producto = new ProductoRigolleau(id, codigo, nombre, costo, precio, porcentaje);
+
             else if (nombreTabla.equals(ConstantesStrings.LEMA))
                 producto = new ProductoLema(id, codigo, nombre, costo, precio, porcentaje);
+
+            else if (nombreTabla.equals(ConstantesStrings.RODECA))
+                producto = new ProductoRodeca(id, codigo,nombre, costo, precio, porcentaje);
 
             if (producto != null)
                 producto.calcularPrecio();

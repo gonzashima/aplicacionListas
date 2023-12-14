@@ -10,6 +10,7 @@ public class ConstantesStrings {
     public static final String RESPONTECH = "respontech";
     public static final String RIGOLLEAU = "rigolleau";
     public static final String LEMA = "lema";
+    public static final String RODECA = "rodeca";
 
 
     //COSAS QUE SE MARCAN DIFERENTE EN MAFERSA

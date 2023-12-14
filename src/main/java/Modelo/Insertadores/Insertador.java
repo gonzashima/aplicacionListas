@@ -13,6 +13,9 @@ public abstract class Insertador {
     protected static int CODIGO_NUEVOS = 0;
     protected static int CODIGO_ACTUALIZAR = 1;
 
+
+    //TODO habria que hacer un refactor de los insertadores. InsertarABaseDeDatos es basicamente el mismo codigo en todas las clases hijas, solo cambia el codigo. El unico diferente
+    //TODO es mafersa que hace lo mismo pero en loop
     public abstract void insertarABaseDeDatos(HashMap<Integer, HashMap<Integer, Producto>> datos) throws SQLException;
 
     public HashMap<Integer, HashMap<Integer, Producto>> separarProductos(HashMap<Integer, Producto> productos) {

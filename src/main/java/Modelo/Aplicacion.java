@@ -148,22 +148,22 @@ public class Aplicacion {
         Resultado resultado = null;
 
         if (nombre.contains(ConstantesStrings.DURAVIT))
-            resultado = new Resultado(new LectorDuravit(), new ParserDuravit(), new InsertadorDuravit());
+            resultado = new Resultado(new LectorDuravit(), new ParserDuravit(), new Insertador(ConstantesStrings.DURAVIT));
 
         else if (nombre.contains(ConstantesStrings.MAFERSA))
-            resultado = new Resultado(new LectorMafersa(), new ParserMafersa(), new InsertadorMafersa());
+            resultado = new Resultado(new LectorMafersa(), new ParserMafersa(), new InsertadorMafersa(ConstantesStrings.MAFERSA));
 
         else if (nombre.contains(ConstantesStrings.RESPONTECH))
-            resultado = new Resultado(new LectorRespontech(), new ParserRespontech(), new InsertadorRespontech());
+            resultado = new Resultado(new LectorRespontech(), new ParserRespontech(), new Insertador(ConstantesStrings.RESPONTECH));
 
         else if (nombre.contains(ConstantesStrings.RIGOLLEAU))
-            resultado = new Resultado(new LectorRigolleau(), new ParserRigolleau(), new InsertadorRigolleau());
+            resultado = new Resultado(new LectorRigolleau(), new ParserRigolleau(), new Insertador(ConstantesStrings.RIGOLLEAU));
 
         else if (nombre.contains("casa lema") || nombre.contains("casalema"))
-            resultado = new Resultado(new LectorLema(), new ParserLema(), new InsertadorLema());
+            resultado = new Resultado(new LectorLema(), new ParserLema(), new Insertador(ConstantesStrings.LEMA));
 
         else if (nombre.contains(ConstantesStrings.RODECA))
-            resultado = new Resultado(new LectorRodeca(), new ParserRodeca(), new InsertadorRodeca());
+            resultado = new Resultado(new LectorRodeca(), new ParserRodeca(), new Insertador(ConstantesStrings.RODECA));
 
         return resultado;
     }

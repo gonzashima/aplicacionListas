@@ -13,6 +13,11 @@ import java.util.List;
 
 public class InsertadorMafersa extends Insertador{
 
+    public InsertadorMafersa(String nombreLista) {
+        super(nombreLista);
+    }
+
+    @Override
     public void insertarABaseDeDatos(HashMap<Integer, HashMap<Integer, Producto>> datos) throws SQLException {
         ConectorDB.getConnection();
         ArrayList<String> nombresListas = ConstantesStrings.getNombresMafersa();

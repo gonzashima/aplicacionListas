@@ -22,7 +22,6 @@ public class Insertador {
         this.nombreLista = nombreLista;
     }
 
-
     public void insertarABaseDeDatos(HashMap<Integer, HashMap<Integer, Producto>> datos) throws SQLException {
         ConectorDB.getConnection();
         int codigo = ConstantesNumericas.codigoLista(nombreLista);

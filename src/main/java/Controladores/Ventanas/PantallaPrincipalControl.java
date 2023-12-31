@@ -245,11 +245,11 @@ public class PantallaPrincipalControl implements Initializable {
      * */
     public void actualizarDB() throws SQLException {
         ConectorDB.getConnection();
-        ConectorDB.insertarLista(ConstantesStrings.RODECA);
+        ConectorDB.insertarLista(ConstantesStrings.DIF_PLAST);
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
         alert.setTitle("Actualizacion realizada");
-        alert.setHeaderText("Se actualizo la base de datos");
+        alert.setHeaderText("Se agrego " + ConstantesStrings.DIF_PLAST + " a la base de datos");
         alert.showAndWait();
     }
 }

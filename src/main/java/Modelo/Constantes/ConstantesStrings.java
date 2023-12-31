@@ -11,6 +11,7 @@ public class ConstantesStrings {
     public static final String RIGOLLEAU = "rigolleau";
     public static final String LEMA = "lema";
     public static final String RODECA = "rodeca";
+    public static final String DIF_PLAST = "difplast";
 
 
     //COSAS QUE SE MARCAN DIFERENTE EN MAFERSA

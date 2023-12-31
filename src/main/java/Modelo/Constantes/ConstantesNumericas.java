@@ -48,6 +48,7 @@ public class ConstantesNumericas {
         codigosListas.put(ConstantesStrings.RIGOLLEAU, 23);
         codigosListas.put(ConstantesStrings.LEMA, 24);
         codigosListas.put(ConstantesStrings.RODECA, 25);
+        codigosListas.put(ConstantesStrings.DIF_PLAST, 26);
     }
 
     private ConstantesNumericas() {}

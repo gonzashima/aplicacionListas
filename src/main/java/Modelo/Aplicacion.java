@@ -165,6 +165,9 @@ public class Aplicacion {
         else if (nombre.contains(ConstantesStrings.RODECA))
             resultado = new Resultado(new LectorRodeca(), new ParserRodeca(), new Insertador(ConstantesStrings.RODECA));
 
+        else if (nombre.contains(ConstantesStrings.DIF_PLAST))
+            resultado = new Resultado(new LectorDifPlast(), new ParserDifPlast(), new Insertador(ConstantesStrings.DIF_PLAST));
+
         return resultado;
     }
 }

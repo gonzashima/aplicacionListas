@@ -14,8 +14,6 @@ import java.util.List;
 
 public class LectorDifPlast implements LectorArchivos{
 
-    private static final int COLUMNA_BARRA = 0;
-    private static final int COLUMNA_BULTO = 3;
     private static final int MAXIMO_COLUMNAS = 7;
 
     private final List<Integer> indicesIgnorados;
@@ -30,8 +28,7 @@ public class LectorDifPlast implements LectorArchivos{
 
     @Override
     public List<String> leerArchivo(File archivo) throws IOException {
-        File file = new File("src/main/resources/difplast.xlsx");
-        FileInputStream fileInputStream = new FileInputStream(file);
+        FileInputStream fileInputStream = new FileInputStream(archivo);
         XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
         XSSFSheet sheet = workbook.getSheetAt(0);
         DataFormatter formatter = new DataFormatter();

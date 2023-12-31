@@ -1,7 +1,5 @@
 package Modelo;
 
-import Modelo.Lectores.LectorArchivos;
-import Modelo.Lectores.LectorDifPlast;
 import Modelo.Utils.ConectorDB;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +12,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -66,12 +63,7 @@ public class Main extends Application {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-//        launch(args);
-        LectorArchivos lector = new LectorDifPlast();
-        List<String> texto = lector.leerArchivo(null);
-
-        for (String s : texto)
-            System.out.println(s);
+    public static void main(String[] args) {
+        launch(args);
     }
 }

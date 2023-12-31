@@ -85,6 +85,9 @@ public class ConectorDB {
             else if (nombreTabla.equals(ConstantesStrings.RODECA))
                 producto = new ProductoRodeca(id, codigo,nombre, costo, precio, porcentaje);
 
+            else if (nombreTabla.equals(ConstantesStrings.DIF_PLAST))
+                producto = new ProductoDifPlast(id, codigo, nombre, costo, precio, porcentaje);
+
             if (producto != null)
                 producto.calcularPrecio();
 

@@ -11,7 +11,8 @@ public enum Casas {
     RESPONTECH(new String[]{"RESPONTECH"}, "RESPONTECH"),
     RIGOLLEAU(new String[]{"RIGOLLEAU"}, "RIGOLLEAU"),
     LEMA(new String[]{"LEMA"}, "LEMA"),
-    RODECA(new String[]{"RODECA"}, "RODECA");
+    RODECA(new String[]{"RODECA"}, "RODECA"),
+    DIFPLAST(new String[]{"DIFPLAST"}, "DIFPLAST");
 
 
     private final String[] listas;

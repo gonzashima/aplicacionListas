@@ -6,15 +6,20 @@ public class ProductoDuravit extends Producto{
 
     public ProductoDuravit(String nombre, int codigo, int costo) {
         super(nombre, codigo, costo);
-        costoParcial = costo;
+        actualizarCostoParcial();
     }
 
     public ProductoDuravit(int id, int codigo, String nombre, int costo, int precio, int porcentaje) {
         super(id, codigo, nombre, costo, precio, porcentaje);
-        costoParcial = costo;
+        actualizarCostoParcial();
     }
 
     public int codigoCasa() {
         return ConstantesNumericas.CODIGO_TREBOL;
+    }
+
+    @Override
+    public void actualizarCostoParcial() {
+        costoParcial = costo;
     }
 }

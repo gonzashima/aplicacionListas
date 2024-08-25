@@ -83,6 +83,8 @@ public abstract class Producto {
         this.costo = costo;
     }
 
+    public abstract void actualizarCostoParcial();
+
     @Override
     public String toString() {
         return id + " " + codigo + " " + nombre + " " + costo + " " + precio;

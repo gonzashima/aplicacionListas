@@ -205,6 +205,39 @@ public class PantallaPrincipalControl implements Initializable {
     }
 
     /**
+     * Muestra una nueva ventana y modifica el costo del producto seleccionado
+     * */
+    public void modificarCosto() throws IOException {
+        List<Producto> productos = tabla.getSelectionModel().getSelectedItems();
+
+        try {
+            List<Integer> costosAnteriores = new ArrayList<>();
+            for (Producto producto : productos) {
+                costosAnteriores.add(producto.getCosto());
+            }
+
+            VentanaCosto ventanaCosto = new VentanaCosto();
+            List<Producto> modificados = ventanaCosto.display(productos);
+            tabla.refresh();
+
+            for (int i = 0; i < modificados.size(); i++) {
+                if (costosAnteriores.get(i) != modificados.get(i).getCosto()) {
+                    Aplicacion app = Aplicacion.getInstance();
+                    String nombreLista = opcionesListas.getValue();
+                    nombreLista = nombreLista.toLowerCase();
+
+                    app.agregarModificacion(nombreLista, modificados.get(i));
+                    guardarCambios.setDisable(false);
+                    advertenciaGuardado.setVisible(true);
+                }
+            }
+        } catch (NullPointerException e) {
+            Alerta alerta = new AlertaProductoSinSeleccionar();
+            alerta.display();
+        }
+    }
+
+    /**
      * Indica a Aplicacion que debe guardar todos los cambios acumulados hasta el momento
      * */
     public void guardarCambios() throws SQLException {

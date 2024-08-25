@@ -66,11 +66,12 @@
          <TextField fx:id="textoBuscado" alignment="CENTER" prefWidth="150.0" promptText="Nombre del producto" />
          <Button mnemonicParsing="false" onAction="#buscarProducto" prefHeight="25.0" prefWidth="60.0" text="Buscar" />
       </HBox>
-      <Button layoutX="599.0" layoutY="70.0" maxHeight="25.0" maxWidth="150.0" minHeight="25.0" minWidth="150.0" mnemonicParsing="false" onAction="#modificarPorcentaje" prefHeight="25.0" prefWidth="150.0" text="Cambiar porcentaje" AnchorPane.bottomAnchor="95.0" AnchorPane.leftAnchor="599.0" AnchorPane.rightAnchor="121.0" AnchorPane.topAnchor="70.0" />
+      <Button layoutX="514.0" layoutY="71.0" maxHeight="25.0" maxWidth="150.0" minHeight="25.0" minWidth="150.0" mnemonicParsing="false" onAction="#modificarPorcentaje" prefHeight="25.0" prefWidth="150.0" text="Cambiar porcentaje" AnchorPane.bottomAnchor="94.0" AnchorPane.leftAnchor="514.0" AnchorPane.rightAnchor="206.0" AnchorPane.topAnchor="71.0" />
       <Label fx:id="advertenciaGuardado" alignment="CENTER" contentDisplay="CENTER" layoutX="563.0" layoutY="126.0" prefHeight="27.0" prefWidth="222.0" text="Cambios sin guardar" textFill="#fc0000" AnchorPane.bottomAnchor="37.0" AnchorPane.leftAnchor="563.0" AnchorPane.rightAnchor="85.0" AnchorPane.topAnchor="126.0">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
+      <Button layoutX="674.0" layoutY="71.0" maxHeight="25.0" maxWidth="150.0" minHeight="25.0" minWidth="150.0" mnemonicParsing="false" onAction="#modificarCosto" prefHeight="25.0" prefWidth="150.0" text="Cambiar costo" />
    </AnchorPane>
 </AnchorPane>

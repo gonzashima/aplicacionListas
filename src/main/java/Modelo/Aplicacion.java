@@ -108,6 +108,7 @@ public class Aplicacion {
                 List<Producto> productos = modificaciones.get(codigoLista);
                 int parcial = ConectorDB.guardarCambios(productos);
                 cambiosTotales += parcial;
+                productos.clear();
             }
         }
         return cambiosTotales;

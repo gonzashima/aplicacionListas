@@ -1,5 +1,7 @@
 package Modelo.Lectores;
 import Modelo.Constantes.ConstantesStrings;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
@@ -11,9 +13,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class LectorMafersa implements LectorArchivos{
@@ -59,6 +61,7 @@ public class LectorMafersa implements LectorArchivos{
     private static final String LINEA_PLASTIC_HOUSE = "30PH -";
     private static final String LINEA_YESI = "353 -";
 
+    private static final String MAFERSA_REGEX = "^(\\S+(?:\\s+\\S+)*?)\\s*\\|\\s*(\\S+(?:\\s+\\S+)*?)$";
 
     private final List<String> codigos;
     private final List<String> lineas;
@@ -88,33 +91,70 @@ public class LectorMafersa implements LectorArchivos{
 
     @Override
     public List<String> leerArchivo(File archivo) throws IOException {
-        FileInputStream file = new FileInputStream(archivo);
+//        FileInputStream file = new FileInputStream(archivo);
+//        XSSFWorkbook workbook = new XSSFWorkbook(file);         //creo todas las cosas necesarias
+//        XSSFSheet hoja = workbook.getSheetAt(0);
+//        DataFormatter formatter = new DataFormatter();
+//        List<String> texto = new ArrayList<>();
+//
+//        List<Integer> indicesRubros = new ArrayList<>();   //aca se guardan los indices de TODOS los rubros en la lista
+//        List<Integer> indicesLineas = new ArrayList<>();
+//
+//        for (Row fila : hoja) {
+//            StringBuilder linea = new StringBuilder();
+//            for (Cell celda : fila){
+//                if (!linea.isEmpty())
+//                    linea.append(" ");
+//                linea.append(formatter.formatCellValue(celda));
+//            }
+//            if(!linea.isEmpty()) {    //solo la agrego si la linea tiene algo de texto
+//                texto.add(linea.toString());
+//                if (linea.toString().contains("rubro") || linea.toString().contains("RUBRO"))
+//                    indicesRubros.add(texto.indexOf(linea.toString()));
+//                else if (linea.toString().contains("LINEA"))
+//                    indicesLineas.add(texto.indexOf(linea.toString()));
+//            }
+//        }
+//
+//        workbook.close();
+//
+//        int indicePrimerRubro = indicesRubros.get(0);
+//        indicesLineas = indicesLineas.stream().map(x -> x - indicePrimerRubro).collect(Collectors.toList());
+//        texto.subList(0,indicePrimerRubro).clear();
+//        indicesRubros = indicesRubros.stream().map(r -> r - indicePrimerRubro).collect(Collectors.toList());
+//
+//        List<List<Integer>> resultado = filtrarRubros(indicesRubros, indicesLineas, texto);
+//        indicesRubros = resultado.get(0);
+//        indicesLineas = resultado.get(1);
+//
+//
+//        filtrarLineas(indicesRubros, indicesLineas, texto);
 
-        XSSFWorkbook workbook = new XSSFWorkbook(file);         //creo todas las cosas necesarias
-        XSSFSheet hoja = workbook.getSheetAt(0);
-        DataFormatter formatter = new DataFormatter();
+        PDDocument pdf = PDDocument.load(archivo);
+        PDFTextStripper textStripper = new PDFTextStripper();
+
+        String textoOriginal = String.valueOf(textStripper.getText(pdf));
+        String[] lineasTexto = textoOriginal.trim().split(textStripper.getLineSeparator());
         List<String> texto = new ArrayList<>();
 
         List<Integer> indicesRubros = new ArrayList<>();   //aca se guardan los indices de TODOS los rubros en la lista
         List<Integer> indicesLineas = new ArrayList<>();
 
-        for (Row fila : hoja) {
-            StringBuilder linea = new StringBuilder();
-            for (Cell celda : fila){
-                if (!linea.isEmpty())
-                    linea.append(" ");
-                linea.append(formatter.formatCellValue(celda));
+        Set<String> terminosExcluir = new HashSet<>(List.of(
+                "MAFERSA HOJA", "Codigo CODFAB", "Teléfono/FAX",
+                "www.bazarmafersa", "San Mauro 961", "LISTA DE PRECIOS"
+        ));
+
+        for (String linea : lineasTexto) {
+            if (!linea.isEmpty() && !linea.matches("^-+$") && terminosExcluir.stream().noneMatch(linea::contains)) {
+                texto.add(linea);
             }
-            if(!linea.isEmpty()) {    //solo la agrego si la linea tiene algo de texto
-                texto.add(linea.toString());
-                if (linea.toString().contains("rubro") || linea.toString().contains("RUBRO"))
-                    indicesRubros.add(texto.indexOf(linea.toString()));
-                else if (linea.toString().contains("LINEA"))
-                    indicesLineas.add(texto.indexOf(linea.toString()));
+            if (linea.contains("rubro") || linea.contains("RUBRO")) {
+                indicesRubros.add(texto.indexOf(linea));
+            } else if (linea.contains("LINEA")) {
+                indicesLineas.add(texto.indexOf(linea));
             }
         }
-
-        workbook.close();
 
         int indicePrimerRubro = indicesRubros.get(0);
         indicesLineas = indicesLineas.stream().map(x -> x - indicePrimerRubro).collect(Collectors.toList());
@@ -125,8 +165,30 @@ public class LectorMafersa implements LectorArchivos{
         indicesRubros = resultado.get(0);
         indicesLineas = resultado.get(1);
 
-
         filtrarLineas(indicesRubros, indicesLineas, texto);
+
+        texto = texto.stream().map(linea -> linea.replaceAll("(?<=\\S)\\s+(?=\\S)", " ").trim()).collect(Collectors.toList());
+
+        Pattern pattern = Pattern.compile(MAFERSA_REGEX);
+        ListIterator<String> iterator = texto.listIterator();
+
+        while (iterator.hasNext()) {
+            String linea = iterator.next();
+            Matcher matcher = pattern.matcher(linea);
+
+            if (matcher.matches()) {
+                String bloque1 = matcher.group(1).trim();
+                String bloque2 = matcher.group(2) != null ? matcher.group(2).trim() : null;
+
+                iterator.set(bloque1);
+
+                if (bloque2 != null && !bloque2.isBlank()) {
+                    iterator.add(bloque2);
+                }
+            }
+        }
+
+        texto = texto.stream().map(linea -> linea.replace("|", "")).collect(Collectors.toList());
 
         return texto;
     }

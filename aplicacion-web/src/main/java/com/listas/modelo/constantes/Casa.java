@@ -53,13 +53,17 @@ public enum Casa {
      * Busca la casa a la que pertenece un archivo por su nombre.
      */
     public static Casa buscarPorNombreArchivo(String nombreArchivo) {
-        nombreArchivo = nombreArchivo.toLowerCase();
+        // Normalizar: minúsculas, reemplazar espacios y guiones por nada (para comparación compacta)
+        String normalizado = nombreArchivo.toLowerCase();
+        String compacto = normalizado.replace(" ", "").replace("_", "").replace("-", "");
         for (Casa casa : values()) {
-            if (nombreArchivo.contains(casa.claveLectura)) {
+            // Comparar versión compacta de la clave (ej: "difplast" matchea "dif plast", "dif_plast")
+            String claveCompacta = casa.claveLectura.replace(" ", "").replace("_", "").replace("-", "");
+            if (compacto.contains(claveCompacta)) {
                 return casa;
             }
             // Caso especial para "casa lema" o "casalema"
-            if (casa == LEMA && (nombreArchivo.contains("casa lema") || nombreArchivo.contains("casalema"))) {
+            if (casa == LEMA && (normalizado.contains("casa lema") || normalizado.contains("casalema"))) {
                 return casa;
             }
         }
@@ -78,10 +82,15 @@ public enum Casa {
             return "lumilagro";
         }
         for (Casa casa : values()) {
+            // Comparar contra el array de listas
             for (String lista : casa.listas) {
                 if (CodigosListas.normalizarNombre(lista).equalsIgnoreCase(normalizado)) {
                     return casa.claveLectura;
                 }
+            }
+            // Fallback: comparar directamente contra la claveLectura
+            if (casa.claveLectura.equalsIgnoreCase(normalizado)) {
+                return casa.claveLectura;
             }
         }
         return null;

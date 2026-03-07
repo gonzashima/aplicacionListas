@@ -289,19 +289,36 @@ public class LectorArchivoService {
                     if (!sb.isEmpty()) lineas.add(sb.toString());
                 }
             } else if (casa == Casa.DIFPLAST) {
-                // DifPlast: 7 columnas, ignora columnas 0,3,4,5 — une con '~'
-                List<Integer> ignoradas = List.of(0, 3, 4, 5);
-                int maxCol = 7;
+                // DifPlast: 7 columnas (0-6), ignora cols 0 (cód. barras), 3, 5 (vacías/bulto).
+                // Columnas leídas: 1 (código), 2 (nombre), 4 (precio) → unidas con '~'.
+                // El precio (col 4) se lee como número directo si la celda es numérica
+                // para evitar que celdas sin formato moneda no tengan '$' y se filtren mal.
+                // Filtro: código (col 1) debe ser numérico y precio debe ser > 0.
                 for (Row row : sheet) {
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < maxCol; i++) {
-                        if (ignoradas.contains(i)) continue;
-                        Cell cell = row.getCell(i);
-                        if (!sb.isEmpty()) sb.append("~");
-                        sb.append(formatter.formatCellValue(cell).toUpperCase());
+                    Cell celdaCodigo = row.getCell(1);
+                    Cell celdaNombre  = row.getCell(2);
+                    Cell celdaPrecio  = row.getCell(4);
+
+                    if (celdaCodigo == null || celdaPrecio == null) continue;
+
+                    String codigoStr = formatter.formatCellValue(celdaCodigo).trim();
+                    if (codigoStr.isBlank()) continue;
+                    try { Integer.parseInt(codigoStr); } catch (NumberFormatException e) { continue; }
+
+                    String nombreStr = formatter.formatCellValue(celdaNombre).toUpperCase().trim();
+
+                    // Precio: si es numérica tomamos el valor directo para evitar problemas de formato
+                    String precioStr;
+                    if (celdaPrecio.getCellType() == CellType.NUMERIC) {
+                        long precioLong = (long) celdaPrecio.getNumericCellValue();
+                        if (precioLong <= 0) continue;
+                        precioStr = String.valueOf(precioLong);
+                    } else {
+                        precioStr = formatter.formatCellValue(celdaPrecio).trim();
+                        if (precioStr.isBlank()) continue;
                     }
-                    // Solo agregar si tiene un precio (contiene $)
-                    if (sb.toString().contains("$")) lineas.add(sb.toString());
+
+                    lineas.add(codigoStr + "~" + nombreStr + "~" + precioStr);
                 }
             } else if (casa == Casa.LEMA) {
                 // Lema: .xls, 4 columnas — col 0: código interno, col 1: código barras (ignorar),
@@ -368,28 +385,28 @@ public class LectorArchivoService {
 
                     String nombreStr = formatter.formatCellValue(celdaNombre);
 
-                    // Leer precio como número directo para evitar problemas de formato
-                    String precioStr;
-                    if (celdaPrecio.getCellType() == CellType.NUMERIC) {
-                        precioStr = String.valueOf((long) celdaPrecio.getNumericCellValue());
-                    } else {
-                        precioStr = formatter.formatCellValue(celdaPrecio);
-                    }
+                    // Precio: usar SIEMPRE el formatter para preservar el formato de la celda
+                    // ("1.234,56") y que parsearCosto maneje la conversión correctamente.
+                    String precioStr = formatter.formatCellValue(celdaPrecio);
 
                     if (codigoStr.isBlank() || precioStr.isBlank()) continue;
 
                     String lineaStr = codigoStr + "~" + nombreStr + "~" + precioStr;
 
-                    // Filtrar por palabras clave (igual que LectorLema.java)
-                    if (palabrasClave.stream().anyMatch(lineaStr::contains)) {
+                    // Filtrar por palabras clave — comparación en mayúsculas igual que LectorLema.java
+                    String lineaMayus = lineaStr.toUpperCase();
+                    if (palabrasClave.stream().anyMatch(lineaMayus::contains)) {
                         lineas.add(lineaStr);
                     }
                 }
             } else if (casa == Casa.RESPONTECH) {
                 // Respontech: 4 celdas, col 0 sin espacios, une con espacio.
-                // La col 3 (precio) se lee como número directo para evitar ambigüedad de formato.
                 // Replica LectorRespontech.java del original.
+                // El precio (col 3) se lee SIEMPRE con DataFormatter para preservar el formato
+                // "$1.475,00" y que parsearCosto pueda manejar correctamente miles/decimales.
+                // Filtro REGEX igual al legacy: línea debe terminar en X,XX (número con coma decimal)
                 int maxCol = 4;
+                Pattern regexRespontech = Pattern.compile(".*\\d{1,},\\d{2}");
                 for (Row row : sheet) {
                     // Construir línea con cols 0-2 (código, nombre, unidad)
                     StringBuilder sb = new StringBuilder();
@@ -404,20 +421,15 @@ public class LectorArchivoService {
                         if (!sb.isEmpty()) sb.append(" ");
                         sb.append(contenido);
                     }
-                    // Col 3: precio — leer como número si es posible
+                    // Col 3: precio — usar SIEMPRE el formatter para preservar formato de miles
                     Cell celdaPrecio = row.getCell(maxCol - 1);
                     if (celdaPrecio == null) continue;
-                    String precioStr;
-                    if (celdaPrecio.getCellType() == CellType.NUMERIC) {
-                        // Valor numérico directo, sin depender del formato de la celda
-                        precioStr = String.valueOf((long) celdaPrecio.getNumericCellValue());
-                    } else {
-                        precioStr = formatter.formatCellValue(celdaPrecio);
-                    }
+                    String precioStr = formatter.formatCellValue(celdaPrecio);
                     if (precioStr.isBlank()) continue;
                     sb.append(" ").append(precioStr);
                     String linea = sb.toString();
-                    if (linea.length() > 5) {
+                    // Mismo filtro del legacy: la línea debe terminar en X,XX y tener longitud mínima
+                    if (regexRespontech.matcher(linea).matches() && linea.length() > 5) {
                         lineas.add(linea);
                     }
                 }
@@ -527,19 +539,22 @@ public class LectorArchivoService {
 
     /**
      * Parsea un string de costo a entero, soportando múltiples formatos:
-     * - "$1.475,00" → 1475  (formato moneda argentino: punto=miles, coma=decimal)
-     * - "1.475"     → 1475  (DataFormatter devuelve miles con punto, sin decimales)
-     * - "1475"      → 1475  (número puro)
-     * - "1475.50"   → 1475  (decimal con punto — solo 2 dígitos después del punto)
+     * - "$1.475,00"   → 1475  (formato moneda argentino: punto=miles, coma=decimal)
+     * - "$ 1.475,00"  → 1475  (con espacio después del $)
+     * - "1.475"       → 1475  (DataFormatter con miles, sin decimales)
+     * - "1475"        → 1475  (número puro)
+     * - "1475.50"     → 1475  (decimal con punto anglosajón)
      *
-     * Regla: si el punto separa exactamente 3 dígitos al final → es separador de miles → se elimina.
-     *        si el punto separa exactamente 2 dígitos al final → es decimal → se toma la parte entera.
+     * Regla: si hay coma → formato argentino (punto=miles, coma=decimal).
+     *        si solo hay punto y 3 dígitos finales → separador de miles.
+     *        si solo hay punto y 2 dígitos finales → decimal → tomar parte entera.
      */
     private int parsearCosto(String costoRaw) {
+        // Quitar $ y espacios
         String s = costoRaw.replace("$", "").trim();
         if (s.contains(",")) {
-            // Formato argentino: "1.475,00" → quitar puntos de miles → "1475" → tomar parte entera
-            s = s.replace(".", "").split(",")[0];
+            // Formato argentino: "1.475,00" → quitar puntos de miles → "1475,00" → parte entera
+            s = s.replace(".", "").split(",")[0].trim();
         } else if (s.contains(".")) {
             String[] partes = s.split("\\.");
             String fraccion = partes[partes.length - 1];
@@ -637,8 +652,9 @@ public class LectorArchivoService {
     }
 
     /**
-     * DifPlast: separado por '~' (desde LectorDifPlast).
-     * Formato: CODIGO~NOMBRE~COSTO
+     * DifPlast: separado por '~' (desde leerExcel con casa DIFPLAST).
+     * Formato: CODIGO~NOMBRE~COSTO  (columnas 1, 2, 6 del Excel)
+     * Migrado de ParserDifPlast.java del original.
      */
     private List<Producto> parsearDifPlast(List<String> lineas) {
         int listaId = CodigosListas.codigoLista("difplast");
@@ -647,14 +663,20 @@ public class LectorArchivoService {
             String[] partes = linea.trim().split("~");
             if (partes.length < 3) continue;
             try {
-                int codigo = Integer.parseInt(partes[0].trim());
+                String codigoStr = partes[0].trim();
                 String nombre = partes[1].trim();
-                String costoStr = partes[2].trim().replace("$", "").replace(".", "").split(",")[0].trim();
-                int costo = Integer.parseInt(costoStr);
+                // Costo: puede venir como "$1.475,00" o "1475" o "1.475"
+                String costoStr = partes[2];
+
+                if (codigoStr.isEmpty() || costoStr.isEmpty()) continue;
+                int codigo = Integer.parseInt(codigoStr);
+                int costo = parsearCosto(costoStr);
                 Producto p = new Producto(codigo, nombre.toUpperCase(), costo, 100, listaId);
                 p.calcularPrecio("difplast");
                 productos.add(p);
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException e) {
+                // Línea de encabezado o fila inválida — ignorar
+            }
         }
         return productos;
     }

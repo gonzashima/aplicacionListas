@@ -304,9 +304,10 @@ public class LectorArchivoService {
                     if (sb.toString().contains("$")) lineas.add(sb.toString());
                 }
             } else if (casa == Casa.LEMA) {
-                // Lema: 4 columnas, ignora col 1 (código de barras), une con '~'
-                // Solo agrega líneas que matchean regex precio Y contienen alguna palabra clave
-                Pattern precioPattern = Pattern.compile(".*\\d+,\\d{2}");
+                // Lema: .xls, 4 columnas — col 0: código interno, col 1: código barras (ignorar),
+                // col 2: nombre, col 3: precio.
+                // Formato línea: CODIGO~NOMBRE~PRECIO  — igual que LectorLema.java del legacy.
+                // La celda de precio se lee como número directo para evitar problemas de formato.
                 List<String> palabrasClave = List.of(
                         "ABROCHADORA MAPED", "ACRILICO AD", "ACRILICO EQARTE",
                         "ADHESIVO SIMBALL", "ADHESIVO EZCO", "ACUARELA FILGO",
@@ -346,18 +347,41 @@ public class LectorArchivoService {
                         "TEMPERA PLAYCOLOR", "TEMPERA TINTORETTO",
                         "TIJERA ", "TIZAS ", "TRANSPORTADOR "
                 );
-                int maxCol = 4;
                 for (Row row : sheet) {
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < maxCol; i++) {
-                        if (i == 1) continue; // código de barras
-                        Cell cell = row.getCell(i);
-                        if (!sb.isEmpty()) sb.append("~");
-                        sb.append(formatter.formatCellValue(cell));
+                    // col 0: código interno
+                    Cell celdaCodigo = row.getCell(0);
+                    // col 1: código barras — ignorada
+                    // col 2: nombre
+                    Cell celdaNombre = row.getCell(2);
+                    // col 3: precio
+                    Cell celdaPrecio = row.getCell(3);
+
+                    if (celdaCodigo == null || celdaPrecio == null) continue;
+
+                    // Leer código como número directo para evitar "12345.0"
+                    String codigoStr;
+                    if (celdaCodigo.getCellType() == CellType.NUMERIC) {
+                        codigoStr = String.valueOf((long) celdaCodigo.getNumericCellValue());
+                    } else {
+                        codigoStr = formatter.formatCellValue(celdaCodigo);
                     }
-                    String lineaStr = sb.toString();
-                    if (precioPattern.matcher(lineaStr).matches()
-                            && palabrasClave.stream().anyMatch(lineaStr::contains)) {
+
+                    String nombreStr = formatter.formatCellValue(celdaNombre);
+
+                    // Leer precio como número directo para evitar problemas de formato
+                    String precioStr;
+                    if (celdaPrecio.getCellType() == CellType.NUMERIC) {
+                        precioStr = String.valueOf((long) celdaPrecio.getNumericCellValue());
+                    } else {
+                        precioStr = formatter.formatCellValue(celdaPrecio);
+                    }
+
+                    if (codigoStr.isBlank() || precioStr.isBlank()) continue;
+
+                    String lineaStr = codigoStr + "~" + nombreStr + "~" + precioStr;
+
+                    // Filtrar por palabras clave (igual que LectorLema.java)
+                    if (palabrasClave.stream().anyMatch(lineaStr::contains)) {
                         lineas.add(lineaStr);
                     }
                 }
@@ -562,8 +586,8 @@ public class LectorArchivoService {
 
     /**
      * Lema: separado por '~'.
-     * Formato: CODIGO~NOMBRE~COSTO
-     * El costo viene con formato "$1.234,56" → tomar parte entera.
+     * Formato: CODIGO~NOMBRE~COSTO  — igual que ParserLema.java del legacy.
+     * El código puede venir como "12345" o "12345.0" si la celda es numérica.
      */
     private List<Producto> parsearLema(List<String> lineas) {
         int listaId = CodigosListas.codigoLista("lema");
@@ -572,10 +596,10 @@ public class LectorArchivoService {
             List<String> partes = new ArrayList<>(Arrays.asList(linea.trim().split("~")));
             if (partes.size() < 3) continue;
             try {
-                int codigo = Integer.parseInt(partes.remove(0).trim());
-                String costoStr = partes.remove(partes.size() - 1)
-                        .replace("$", "").replace(".", "").split(",")[0].trim();
-                int costo = Integer.parseInt(costoStr);
+                // El código puede venir como "12345" o "12345.0" (celda numérica)
+                String codigoRaw = partes.remove(0).trim().split("\\.")[0];
+                int codigo = Integer.parseInt(codigoRaw);
+                int costo = parsearCosto(partes.remove(partes.size() - 1));
                 StringBuilder nombre = new StringBuilder();
                 for (String parte : partes) {
                     if (!nombre.isEmpty()) nombre.append(" ");
@@ -584,7 +608,7 @@ public class LectorArchivoService {
                 Producto p = new Producto(codigo, nombre.toString().toUpperCase(), costo, 100, listaId);
                 p.calcularPrecio("lema");
                 productos.add(p);
-            } catch (NumberFormatException ignored) {}
+            } catch (Exception ignored) {}
         }
         return productos;
     }

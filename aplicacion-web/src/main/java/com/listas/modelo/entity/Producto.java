@@ -1,12 +1,16 @@
 package com.listas.modelo.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Entidad JPA que representa un producto.
  * Migrado desde la clase abstracta Producto del proyecto original.
  * En Spring se usa una sola entidad con un campo 'tipo' en vez de subclases.
  */
+@Setter
+@Getter
 @Entity
 @Table(name = "productos")
 public class Producto {
@@ -127,30 +131,6 @@ public class Producto {
     }
 
     // ==================== Getters y Setters ====================
-
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
-
-    public int getCodigo() { return codigo; }
-    public void setCodigo(int codigo) { this.codigo = codigo; }
-
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-
-    public int getCosto() { return costo; }
-    public void setCosto(int costo) { this.costo = costo; }
-
-    public int getPrecio() { return precio; }
-    public void setPrecio(int precio) { this.precio = precio; }
-
-    public int getPorcentaje() { return porcentaje; }
-    public void setPorcentaje(int porcentaje) { this.porcentaje = porcentaje; }
-
-    public int getListaId() { return listaId; }
-    public void setListaId(int listaId) { this.listaId = listaId; }
-
-    public int getCodigoCasa() { return codigoCasa; }
-    public void setCodigoCasa(int codigoCasa) { this.codigoCasa = codigoCasa; }
 
     @Override
     public String toString() {

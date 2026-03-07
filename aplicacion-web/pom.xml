@@ -69,6 +69,12 @@
             <version>5.2.5</version>
         </dependency>
 
+        <!-- Apache Commons Codec para hash SHA-256 (Respontech, Rodeca) -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+
         <!-- Lombok (opcional, para reducir boilerplate) -->
         <dependency>
             <groupId>org.projectlombok</groupId>

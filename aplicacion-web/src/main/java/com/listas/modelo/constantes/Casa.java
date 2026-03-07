@@ -10,10 +10,10 @@ import java.util.List;
 public enum Casa {
     TREBOL(new String[]{"DURAVIT"}, "TREBOL", "duravit", 247),
     MAFERSA(new String[]{
-            "DESES PLAST", "ALMANDOZ", "BEL GIOCO", "NADIR", "TRAMONTINA",
-            "WHEATON", "CAMPAGNA", "CHEF", "CHURRASQUERAS Y SARTENES", "KUFO",
-            "DAYSAL", "GUADIX", "LOEKEMEYER", "LUMILAGRO", "MAN FER",
-            "MARINEX", "COLORES", "DATOMAX", "PLASTIC HOUSE", "YESI"
+            "deses-plast", "almandoz", "bel gioco", "nadir", "tramontina",
+            "wheaton", "campagna", "chef", "churrasqueras y sartenes", "kufo",
+            "daysal", "guadix", "loekemeyer", "lumilagro", "man-fer",
+            "marinex", "colores", "datomax", "plastic house", "yesi"
     }, "MAFERSA", "mafersa", 380),
     RESPONTECH(new String[]{"RESPONTECH"}, "RESPONTECH", "respontech", 238),
     RIGOLLEAU(new String[]{"RIGOLLEAU"}, "RIGOLLEAU", "rigolleau", 254),
@@ -69,15 +69,17 @@ public enum Casa {
     /**
      * Devuelve el tipo de cálculo de precio para una lista específica.
      * Útil para sublistas de MAFERSA que tienen distintas fórmulas.
+     * El nombre de lista se normaliza (espacios y guiones → '_') antes de comparar.
      */
     public static String tipoCasaParaLista(String nombreLista) {
-        nombreLista = nombreLista.toLowerCase();
-        if (nombreLista.contains("lumilagro")) {
+        if (nombreLista == null) return null;
+        String normalizado = CodigosListas.normalizarNombre(nombreLista.toLowerCase());
+        if (normalizado.contains("lumilagro")) {
             return "lumilagro";
         }
         for (Casa casa : values()) {
             for (String lista : casa.listas) {
-                if (lista.equalsIgnoreCase(nombreLista)) {
+                if (CodigosListas.normalizarNombre(lista).equalsIgnoreCase(normalizado)) {
                     return casa.claveLectura;
                 }
             }
@@ -92,9 +94,11 @@ public enum Casa {
     public static int codigoCasaPorListaId(int listaId) {
         String nombreLista = CodigosListas.nombreLista(listaId);
         if (nombreLista == null) return 0;
+        String normalizado = CodigosListas.normalizarNombre(nombreLista.toLowerCase());
         for (Casa casa : values()) {
             for (String lista : casa.listas) {
-                if (lista.equalsIgnoreCase(nombreLista) || casa.claveLectura.equalsIgnoreCase(nombreLista)) {
+                if (CodigosListas.normalizarNombre(lista).equalsIgnoreCase(normalizado)
+                        || casa.claveLectura.equalsIgnoreCase(normalizado)) {
                     return casa.codigoCasa;
                 }
             }

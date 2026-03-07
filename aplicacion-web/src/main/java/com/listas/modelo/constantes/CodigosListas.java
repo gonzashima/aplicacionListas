@@ -70,6 +70,10 @@ public class CodigosListas {
      * Unifica strings reemplazando espacios y guiones por '_'.
      * Migrado de UnificadorString.java
      */
+    public static String normalizarNombre(String string) {
+        return unirString(string);
+    }
+
     private static String unirString(String string) {
         if (!string.contains(" ") && !string.contains("-"))
             return string;

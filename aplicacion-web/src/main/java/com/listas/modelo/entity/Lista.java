@@ -1,11 +1,15 @@
 package com.listas.modelo.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Entidad JPA que representa una lista de precios.
  * Migrado desde la tabla 'listas' en la DB original.
  */
+@Setter
+@Getter
 @Entity
 @Table(name = "listas")
 public class Lista {
@@ -27,13 +31,5 @@ public class Lista {
         this.proveedor = proveedor;
     }
 
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
-
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-
-    public String getProveedor() { return proveedor; }
-    public void setProveedor(String proveedor) { this.proveedor = proveedor; }
 }
 

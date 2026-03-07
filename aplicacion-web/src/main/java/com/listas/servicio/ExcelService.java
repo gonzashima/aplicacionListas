@@ -26,39 +26,18 @@ public class ExcelService {
         try (XSSFWorkbook workbook = new XSSFWorkbook()) {
             XSSFSheet sheet = workbook.createSheet("Productos");
 
-            // Header
-            Row header = sheet.createRow(0);
-            header.createCell(0).setCellValue("Código");
-            header.createCell(1).setCellValue("Nombre");
-            header.createCell(2).setCellValue("Costo");
-            header.createCell(3).setCellValue("Precio");
-            header.createCell(4).setCellValue("Porcentaje");
-
-            // Bold header
-            Font boldFont = workbook.createFont();
-            boldFont.setBold(true);
-            CellStyle headerStyle = workbook.createCellStyle();
-            headerStyle.setFont(boldFont);
-            for (int i = 0; i < 5; i++) {
-                header.getCell(i).setCellStyle(headerStyle);
-            }
-
-            // Data
+            // Data — sin header, igual que el original CreadorExcel.crearLista()
             for (int i = 0; i < productos.size(); i++) {
                 Producto p = productos.get(i);
-                Row row = sheet.createRow(i + 1);
+                Row row = sheet.createRow(i);
                 row.createCell(0).setCellValue(p.getCodigo());
                 row.createCell(1).setCellValue(p.getNombre());
-                row.createCell(2).setCellValue(p.getCosto());
-                row.createCell(3).setCellValue(p.getPrecio());
-                row.createCell(4).setCellValue(p.getPorcentaje() + "%");
+                row.createCell(2).setCellValue(Casa.codigoCasaPorListaId(p.getListaId()));
+                row.createCell(3).setCellValue("-" + p.getCosto());
+                row.createCell(4).setCellValue("$" + p.getPrecio());
             }
 
             sheet.setColumnWidth(1, 18_000);
-            sheet.autoSizeColumn(0);
-            sheet.autoSizeColumn(2);
-            sheet.autoSizeColumn(3);
-            sheet.autoSizeColumn(4);
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             workbook.write(baos);
@@ -88,6 +67,7 @@ public class ExcelService {
             font3.setFontHeight((short) 250);
 
             CellStyle style = workbook.createCellStyle();
+            style.setFillBackgroundColor(IndexedColors.LIGHT_BLUE.getIndex());
             style.setAlignment(HorizontalAlignment.CENTER);
             style.setFont(font3);
 
@@ -109,6 +89,14 @@ public class ExcelService {
                         + "$" + producto.getPrecio();
 
                 RichTextString richText = workbook.getCreationHelper().createRichTextString(textoCompleto);
+
+                // Aplicar fonts igual que el original
+                int indiceSalto = textoCompleto.indexOf("\n");
+                int ultimoIndicePrecio = textoCompleto.length();
+                int primerIndicePrecio = ultimoIndicePrecio - String.valueOf(producto.getPrecio()).length() - 1;
+
+                richText.applyFont(0, indiceSalto, font1);
+                richText.applyFont(primerIndicePrecio, ultimoIndicePrecio, font2);
 
                 Cell celda = row.createCell(col);
                 celda.setCellValue(richText);

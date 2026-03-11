@@ -10,11 +10,9 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# ---- Run stage (nginx sirve el build de React) ----
-FROM nginx:alpine
-
-COPY --from=build /app/build /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# ---- Run stage (serve sirve los archivos estáticos) ----
+FROM node:20-alpine
+RUN npm install -g serve
+COPY --from=build /app/build /app/build
+EXPOSE 3000
+CMD ["serve", "-s", "/app/build", "-l", "3000"]

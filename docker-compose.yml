@@ -1,19 +1,20 @@
 services:
 
-  # ── Base de datos MySQL ──────────────────────────────────────────────
+  # ── Base de datos PostgreSQL ─────────────────────────────────────────
   db:
-    image: mysql:8.0
+    image: postgres:16-alpine
     container_name: listas-db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: 2520804
-      MYSQL_DATABASE: productos
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 2520804
+      POSTGRES_DB: productos
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p2520804"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -28,8 +29,8 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/productos?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/productos
+      SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: 2520804
     depends_on:
       db:

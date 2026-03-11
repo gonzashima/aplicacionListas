@@ -1,0 +1,8 @@
+target/
+*.iml
+.idea/
+*.class
+frontend/node_modules/
+frontend/build/
+src/
+

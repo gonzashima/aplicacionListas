@@ -385,11 +385,19 @@ public class LectorArchivoService {
 
                     String nombreStr = formatter.formatCellValue(celdaNombre);
 
-                    // Precio: usar SIEMPRE el formatter para preservar el formato de la celda
-                    // ("1.234,56") y que parsearCosto maneje la conversión correctamente.
-                    String precioStr = formatter.formatCellValue(celdaPrecio);
+                    // Precio: si la celda es numérica, leer el valor directo para evitar
+                    // problemas de formato (igual que se hizo con DifPlast y Respontech).
+                    String precioStr;
+                    if (celdaPrecio.getCellType() == CellType.NUMERIC) {
+                        long precioLong = (long) celdaPrecio.getNumericCellValue();
+                        if (precioLong <= 0) continue;
+                        precioStr = String.valueOf(precioLong);
+                    } else {
+                        precioStr = formatter.formatCellValue(celdaPrecio).trim();
+                        if (precioStr.isBlank()) continue;
+                    }
 
-                    if (codigoStr.isBlank() || precioStr.isBlank()) continue;
+                    if (codigoStr.isBlank()) continue;
 
                     String lineaStr = codigoStr + "~" + nombreStr + "~" + precioStr;
 

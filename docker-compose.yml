@@ -22,8 +22,8 @@ services:
   # ── Backend Spring Boot ──────────────────────────────────────────────
   backend:
     build:
-      context: .
-      dockerfile: aplicacion-web/Dockerfile
+      context: ./aplicacion-web
+      dockerfile: Dockerfile
     container_name: listas-backend
     restart: unless-stopped
     ports:

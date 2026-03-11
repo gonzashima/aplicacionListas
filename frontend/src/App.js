@@ -6,6 +6,7 @@ import ModalPorcentaje from './components/ModalPorcentaje';
 import ModalCosto from './components/ModalCosto';
 import ModalArchivo from './components/ModalArchivo';
 import Navbar from './components/Navbar';
+import toast, { Toaster } from 'react-hot-toast';
 import './App.css';
 
 function App() {
@@ -19,7 +20,6 @@ function App() {
   // UI
   const [cargando, setCargando] = useState(false);
   const [busqueda, setBusqueda] = useState('');
-  const [mensaje, setMensaje] = useState(null); // { tipo: 'success'|'error', texto }
 
   // Modales
   const [modalPorcentaje, setModalPorcentaje] = useState(false);
@@ -30,13 +30,8 @@ function App() {
   useEffect(() => {
     getCasas()
       .then((res) => setCasas(res.data))
-      .catch(() => mostrarMensaje('error', 'No se pudo conectar al servidor'));
+      .catch(() => toast.error('No se pudo conectar al servidor'));
   }, []);
-
-  const mostrarMensaje = (tipo, texto) => {
-    setMensaje({ tipo, texto });
-    setTimeout(() => setMensaje(null), 4000);
-  };
 
   // Cargar productos cuando se selecciona una lista
   const cargarProductos = useCallback((lista, texto = '') => {
@@ -47,7 +42,7 @@ function App() {
       .then((res) => {
         setProductos(res.data);
       })
-      .catch(() => mostrarMensaje('error', 'Error al cargar los productos'))
+      .catch(() => toast.error('Error al cargar los productos'))
       .finally(() => setCargando(false));
   }, []);
 
@@ -65,11 +60,11 @@ function App() {
     try {
       const ids = seleccionados;
       await modificarPorcentaje(ids, valor, listaSeleccionada);
-      mostrarMensaje('success', `Porcentaje actualizado en ${ids.length} producto(s)`);
+      toast.success(`Porcentaje actualizado en ${ids.length} producto(s)`);
       setModalPorcentaje(false);
       cargarProductos(listaSeleccionada, busqueda);
     } catch {
-      mostrarMensaje('error', 'Error al modificar el porcentaje');
+      toast.error('Error al modificar el porcentaje');
     }
   };
 
@@ -78,11 +73,11 @@ function App() {
     try {
       const ids = seleccionados;
       await modificarCosto(ids, valor, listaSeleccionada);
-      mostrarMensaje('success', `Costo actualizado en ${ids.length} producto(s)`);
+      toast.success(`Costo actualizado en ${ids.length} producto(s)`);
       setModalCosto(false);
       cargarProductos(listaSeleccionada, busqueda);
     } catch {
-      mostrarMensaje('error', 'Error al modificar el costo');
+      toast.error('Error al modificar el costo');
     }
   };
 
@@ -90,12 +85,12 @@ function App() {
   const handleSubirArchivo = async (archivo) => {
     try {
       const res = await subirArchivo(archivo);
-      mostrarMensaje('success', res.data.mensaje);
+      toast.success(res.data.mensaje);
       setModalArchivo(false);
       if (listaSeleccionada) cargarProductos(listaSeleccionada);
     } catch (err) {
       const msg = err.response?.data?.error || 'Error al procesar el archivo';
-      mostrarMensaje('error', msg);
+      toast.error(msg);
     }
   };
 
@@ -106,21 +101,21 @@ function App() {
       const res = await exportarExcel(listaSeleccionada);
       descargarBlob(res.data, `${listaSeleccionada}_productos.xlsx`);
     } catch {
-      mostrarMensaje('error', 'Error al exportar el Excel');
+      toast.error('Error al exportar el Excel');
     }
   };
 
   // Exportar carteles
   const handleExportarCarteles = async () => {
     if (seleccionados.length === 0) {
-      mostrarMensaje('error', 'Seleccioná al menos un producto para crear carteles');
+      toast.error('Seleccioná al menos un producto para crear carteles');
       return;
     }
     try {
       const res = await exportarCarteles(seleccionados, listaSeleccionada);
       descargarBlob(res.data, 'carteles.xlsx');
     } catch {
-      mostrarMensaje('error', 'Error al exportar los carteles');
+      toast.error('Error al exportar los carteles');
     }
   };
 
@@ -137,11 +132,31 @@ function App() {
 
   return (
     <div className="app">
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          success: {
+            style: {
+              background: '#d1e7dd',
+              color: '#0a3622',
+              border: '1px solid #a3cfbb',
+              fontWeight: 500,
+            },
+            iconTheme: { primary: '#198754', secondary: '#d1e7dd' },
+          },
+          error: {
+            style: {
+              background: '#f8d7da',
+              color: '#58151c',
+              border: '1px solid #f1aeb5',
+              fontWeight: 500,
+            },
+            iconTheme: { primary: '#dc3545', secondary: '#f8d7da' },
+          },
+        }}
+      />
       <Navbar onAbrirArchivo={() => setModalArchivo(true)} />
-
-      {mensaje && (
-        <div className={`alerta alerta-${mensaje.tipo}`}>{mensaje.texto}</div>
-      )}
 
       <div className="contenido">
         <BarraHerramientas
@@ -161,14 +176,14 @@ function App() {
           onBuscar={handleBuscar}
           onModificarPorcentaje={() => {
             if (seleccionados.length === 0) {
-              mostrarMensaje('error', 'Seleccioná al menos un producto');
+              toast.error('Seleccioná al menos un producto');
               return;
             }
             setModalPorcentaje(true);
           }}
           onModificarCosto={() => {
             if (seleccionados.length === 0) {
-              mostrarMensaje('error', 'Seleccioná al menos un producto');
+              toast.error('Seleccioná al menos un producto');
               return;
             }
             setModalCosto(true);
@@ -204,6 +219,7 @@ function App() {
         <ModalArchivo
           onSubir={handleSubirArchivo}
           onCancelar={() => setModalArchivo(false)}
+          listaSeleccionada={listaSeleccionada}
         />
       )}
     </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { getFormulaLista } from '../listasConfig';
 
 function BarraHerramientas({
   casas,
@@ -19,6 +20,7 @@ function BarraHerramientas({
 }) {
   const hayLista = !!listaSeleccionada;
   const haySeleccion = seleccionados.length > 0;
+  const formula = getFormulaLista(listaSeleccionada);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') onBuscar();
@@ -125,11 +127,22 @@ function BarraHerramientas({
         </button>
       </div>
 
+      {/* Espaciado flexible para empujar info a la derecha */}
+      <div style={{ flex: 1 }} />
+
       {haySeleccion && (
-        <span style={{ fontSize: '0.8rem', color: '#6c757d', marginLeft: 4 }}>
+        <span style={{ fontSize: '0.8rem', color: '#6c757d' }}>
           {seleccionados.length} seleccionado(s)
         </span>
       )}
+
+      {/* Chip de fórmula de costo — siempre visible a la derecha */}
+      <div className={`barra-formula-chip${formula ? ` barra-formula-chip-${formula.color}` : ' barra-formula-chip-vacio'}`}>
+        <span className="barra-formula-chip-icono">🧮</span>
+        <span className="barra-formula-chip-texto">
+          {formula ? `Costo: ${formula.texto}` : 'Seleccioná una lista'}
+        </span>
+      </div>
     </div>
   );
 }

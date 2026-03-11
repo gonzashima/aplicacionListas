@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
+import { MAPEO_FORMATOS } from '../listasConfig';
 
-function ModalArchivo({ onSubir, onCancelar }) {
+function ModalArchivo({ onSubir, onCancelar, listaSeleccionada }) {
   const [archivo, setArchivo] = useState(null);
   const [dragOver, setDragOver] = useState(false);
   const [cargando, setCargando] = useState(false);
@@ -28,7 +29,30 @@ function ModalArchivo({ onSubir, onCancelar }) {
   return (
     <div className="modal-overlay" onClick={onCancelar}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <h2>📂 Leer archivo de lista</h2>
+
+        <div className="modal-titulo-fila">
+          <h2>📂 Leer archivo de lista</h2>
+          <div className="modal-formato-tooltip">
+            <span className="modal-formato-icono" title="">📋</span>
+            <div className="modal-formato-popup">
+              <div className="modal-formato-popup-titulo">Formatos por lista</div>
+              <table className="modal-formato-tabla">
+                <tbody>
+                  {MAPEO_FORMATOS.map(({ lista, formato }) => (
+                    <tr key={lista}>
+                      <td className="modal-formato-tabla-lista">{lista}</td>
+                      <td>
+                        <span className={`modal-formato-badge modal-formato-badge-${formato.toLowerCase()}`}>
+                          {formato}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
 
         <div
           className={`zona-drop ${dragOver ? 'drag-over' : ''}`}
@@ -76,4 +100,3 @@ function ModalArchivo({ onSubir, onCancelar }) {
 }
 
 export default ModalArchivo;
-

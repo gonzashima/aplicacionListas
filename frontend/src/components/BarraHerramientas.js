@@ -71,7 +71,7 @@ function BarraHerramientas({
         <span className="barra-label">Buscar:</span>
         <input
           type="text"
-          placeholder="Nombre del producto"
+          placeholder="Nombre o codigo"
           value={busqueda}
           onChange={(e) => onBusquedaChange(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -113,15 +113,15 @@ function BarraHerramientas({
           className="btn btn-success"
           onClick={onExportarLista}
           disabled={!hayLista}
-          title="Exportar lista completa a Excel"
+          title={haySeleccion ? `Exportar ${seleccionados.length} producto(s) seleccionados a Excel` : 'Sin seleccion: exporta la lista completa a Excel'}
         >
-          📊 Exportar lista
+          📊 Lista
         </button>
         <button
           className="btn btn-outline"
           onClick={onExportarCarteles}
-          disabled={!haySeleccion}
-          title={haySeleccion ? 'Exportar carteles de productos seleccionados' : 'Seleccioná productos primero'}
+          disabled={!hayLista}
+          title={haySeleccion ? `Exportar carteles de ${seleccionados.length} producto(s) seleccionados` : 'Sin seleccion: exporta carteles de toda la lista'}
         >
           🏷️ Carteles
         </button>

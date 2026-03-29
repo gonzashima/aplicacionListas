@@ -33,12 +33,15 @@ export const subirArchivo = (archivo) => {
 
 // ==================== EXCEL ====================
 
-export const exportarExcel = (lista) =>
+export const exportarExcel = (lista, ids) =>
   api.get('/productos/excel', {
-    params: { lista },
+    params: {
+      lista,
+      ids: ids && ids.length > 0 ? ids.join(',') : undefined,
+    },
     responseType: 'blob',
   });
 
-export const exportarCarteles = (ids, lista) =>
+export const exportarCarteles = (lista, ids) =>
   api.post('/productos/carteles', { ids, lista }, { responseType: 'blob' });
 

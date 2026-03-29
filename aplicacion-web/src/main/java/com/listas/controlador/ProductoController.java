@@ -138,8 +138,10 @@ public class ProductoController {
      * Exporta los productos de una lista a Excel.
      */
     @GetMapping("/productos/excel")
-    public ResponseEntity<byte[]> exportarExcel(@RequestParam String lista) throws IOException {
-        List<Producto> productos = productoService.obtenerProductosPorLista(lista);
+    public ResponseEntity<byte[]> exportarExcel(
+            @RequestParam String lista,
+            @RequestParam(required = false) String ids) throws IOException {
+        List<Producto> productos = filtrarPorIds(productoService.obtenerProductosPorLista(lista), parsearIds(ids));
         byte[] excelBytes = excelService.crearLista(productos);
 
         String filename = lista.toLowerCase().replace(" ", "_") + "_productos.xlsx";
@@ -154,10 +156,7 @@ public class ProductoController {
      */
     @PostMapping("/productos/carteles")
     public ResponseEntity<byte[]> exportarCarteles(@RequestBody CartelesRequest request) throws IOException {
-        List<Producto> todos = productoService.obtenerProductosPorLista(request.lista());
-        List<Producto> seleccionados = todos.stream()
-                .filter(p -> request.ids().contains(p.getId()))
-                .toList();
+        List<Producto> seleccionados = filtrarPorIds(productoService.obtenerProductosPorLista(request.lista()), request.ids());
 
         byte[] excelBytes = excelService.crearCarteles(seleccionados);
 
@@ -171,5 +170,32 @@ public class ProductoController {
 
     public record ModificarRequest(List<Integer> ids, int valor, String lista) {}
     public record CartelesRequest(List<Integer> ids, String lista) {}
+
+    private static Set<Integer> parsearIds(String idsCsv) {
+        if (idsCsv == null || idsCsv.isBlank()) {
+            return Set.of();
+        }
+
+        Set<Integer> ids = new LinkedHashSet<>();
+        for (String parte : idsCsv.split(",")) {
+            String valor = parte.trim();
+            if (valor.isEmpty()) {
+                continue;
+            }
+            ids.add(Integer.parseInt(valor));
+        }
+        return ids;
+    }
+
+    private static List<Producto> filtrarPorIds(List<Producto> todos, Collection<Integer> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return todos;
+        }
+
+        Set<Integer> setIds = ids instanceof Set<Integer> set ? set : new HashSet<>(ids);
+        return todos.stream()
+                .filter(p -> setIds.contains(p.getId()))
+                .toList();
+    }
 }
 

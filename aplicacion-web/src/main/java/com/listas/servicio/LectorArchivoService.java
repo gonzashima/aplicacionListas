@@ -756,8 +756,9 @@ public class LectorArchivoService {
                     partes.remove(partes.size() - 1);
                     String nombre = String.join(" ", partes);
 
-                    boolean esLumilagro = distintos.stream().anyMatch(nombre::contains);
-                    String tipoCasa = esLumilagro ? "lumilagro" : "mafersa";
+                    boolean esLumilagroPorLista = "lumilagro".equals(nombreUnido);
+                    boolean esLumilagroPorNombre = distintos.stream().anyMatch(nombre::contains);
+                    String tipoCasa = esLumilagroPorLista && esLumilagroPorNombre ? "lumilagro" : "mafersa";
 
                     Producto p = new Producto(codigo, nombre, costo, 100, listaId);
                     p.calcularPrecio(tipoCasa);

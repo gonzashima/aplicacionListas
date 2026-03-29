@@ -137,7 +137,10 @@ function BarraHerramientas({
       )}
 
       {/* Chip de fórmula de costo — siempre visible a la derecha */}
-      <div className={`barra-formula-chip${formula ? ` barra-formula-chip-${formula.color}` : ' barra-formula-chip-vacio'}`}>
+      <div
+        className={`barra-formula-chip${formula ? ` barra-formula-chip-${formula.color}` : ' barra-formula-chip-vacio'}`}
+        title={formula?.tooltip || ''}
+      >
         <span className="barra-formula-chip-icono">🧮</span>
         <span className="barra-formula-chip-texto">
           {formula ? `Costo: ${formula.texto}` : 'Seleccioná una lista'}

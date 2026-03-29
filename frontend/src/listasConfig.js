@@ -12,9 +12,12 @@ const SUBLISTAS_MAFERSA = [
   'colores', 'datomax', 'plastic_house', 'yesi',
 ];
 
+const TEXTO_MAFERSA_DISTINTOS = '−30% + IVA según producto (distintos 21%, resto 10,5%)';
+const TOOLTIP_MAFERSA_DISTINTOS = 'En Mafersa/Lumilagro no todos los productos calculan igual: si el nombre entra en la lista de distintos usa IVA 21%; si no, medio IVA (10,5%).';
+
 /**
  * Devuelve la info de fórmula para una lista dada.
- * @returns {{ texto: string, color: string } | null}
+ * @returns {{ texto: string, color: string, tooltip?: string } | null}
  */
 export function getFormulaLista(lista) {
   if (!lista) return null;
@@ -24,7 +27,7 @@ export function getFormulaLista(lista) {
     return { texto: 'Precio de lista directo', color: 'neutral' };
   }
   if (key === 'lumilagro') {
-    return { texto: '−30% + IVA completo (21%)', color: 'iva' };
+    return { texto: TEXTO_MAFERSA_DISTINTOS, color: 'iva', tooltip: TOOLTIP_MAFERSA_DISTINTOS };
   }
   if (SUBLISTAS_MAFERSA.includes(key)) {
     return { texto: '−30% + medio IVA (10,5%)', color: 'descuento' };

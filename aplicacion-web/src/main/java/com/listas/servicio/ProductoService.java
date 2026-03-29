@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -29,8 +30,7 @@ public class ProductoService {
         this.listaRepository = listaRepository;
     }
 
-    // Nombres de producto que usan fórmula Lumilagro (IVA completo)
-    // Migrado de ConstantesStrings.getDistintosLumilagro()
+    // Nombres que se calculan como Lumilagro (IVA completo) dentro del universo Mafersa.
     private static final List<String> DISTINTOS_LUMILAGRO = List.of(
             "LUMINOX", "REPUESTO TERMO", "REPUESTO COMPACTO",
             "TAPON CEBADOR", "TAPON ESPIRAL", "TAPON P/TERMO",
@@ -77,17 +77,22 @@ public class ProductoService {
     /**
      * Para sublistas de Mafersa: detecta si un producto específico usa la fórmula
      * de Lumilagro (IVA completo) o Mafersa normal (medio IVA).
-     * En el original: ProductoLumilagro si nombre contiene término especial Y contiene "LUMILAGRO".
+     * No todo producto de la sublista Lumilagro usa la misma fórmula: se define por keywords.
      */
     private String detectarTipoCasa(String tipoCasaBase, String nombreProducto) {
-        if ("mafersa".equals(tipoCasaBase) || "lumilagro".equals(tipoCasaBase)) {
-            if (nombreProducto != null
-                    && nombreProducto.contains("LUMILAGRO")
-                    && DISTINTOS_LUMILAGRO.stream().anyMatch(nombreProducto::contains)) {
+        if ("lumilagro".equals(tipoCasaBase)) {
+            String nombreNormalizado = nombreProducto == null
+                    ? ""
+                    : nombreProducto.toUpperCase(Locale.ROOT);
+            if (DISTINTOS_LUMILAGRO.stream().anyMatch(nombreNormalizado::contains)) {
                 return "lumilagro";
             }
             return "mafersa";
         }
+        if ("mafersa".equals(tipoCasaBase)) {
+            return "mafersa";
+        }
+
         return tipoCasaBase;
     }
 

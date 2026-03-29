@@ -1,6 +1,19 @@
 import React from 'react';
 
-function TablaPrincipal({ productos, cargando, seleccionados, onSeleccionChange }) {
+function TablaPrincipal({ productos, cargando, seleccionados, onSeleccionChange, sortConfig, onSortChange }) {
+  const columnasOrdenables = [
+    { key: 'codigo', label: 'Codigo' },
+    { key: 'nombre', label: 'Nombre' },
+    { key: 'costo', label: 'Costo' },
+    { key: 'precio', label: 'Precio' },
+    { key: 'porcentaje', label: 'Porcentaje' },
+  ];
+
+  const indicadorOrden = (key) => {
+    if (sortConfig.key !== key) return '  ';
+    return sortConfig.direction === 'asc' ? ' ▲' : ' ▼';
+  };
+
   const toggleSeleccion = (id) => {
     if (seleccionados.includes(id)) {
       onSeleccionChange(seleccionados.filter((s) => s !== id));
@@ -37,11 +50,19 @@ function TablaPrincipal({ productos, cargando, seleccionados, onSeleccionChange 
                   title="Seleccionar todos"
                 />
               </th>
-              <th>Código</th>
-              <th>Nombre</th>
-              <th>Costo</th>
-              <th>Precio</th>
-              <th>Porcentaje</th>
+              {columnasOrdenables.map((columna) => (
+                <th key={columna.key}>
+                  <button
+                    type="button"
+                    className="th-sort-btn"
+                    onClick={() => onSortChange(columna.key)}
+                    title={`Ordenar por ${columna.label}`}
+                  >
+                    {columna.label}
+                    <span className="th-sort-indicador">{indicadorOrden(columna.key)}</span>
+                  </button>
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>

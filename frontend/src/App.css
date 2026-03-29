@@ -214,6 +214,30 @@ thead th:first-child {
   text-align: center;
 }
 
+.th-sort-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.th-sort-indicador {
+  min-width: 12px;
+  opacity: 0.85;
+}
+
+.th-sort-btn:hover {
+  opacity: 0.85;
+}
+
 tbody tr {
   border-bottom: 1px solid #f0f0f0;
   cursor: pointer;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { getCasas, getProductos, subirArchivo, modificarPorcentaje, modificarCosto, exportarExcel, exportarCarteles } from './api';
 import TablaPrincipal from './components/TablaPrincipal';
 import BarraHerramientas from './components/BarraHerramientas';
@@ -20,6 +20,7 @@ function App() {
   // UI
   const [cargando, setCargando] = useState(false);
   const [busqueda, setBusqueda] = useState('');
+  const [sortConfig, setSortConfig] = useState({ key: 'codigo', direction: 'asc' });
 
   // Modales
   const [modalPorcentaje, setModalPorcentaje] = useState(false);
@@ -33,18 +34,49 @@ function App() {
       .catch(() => toast.error('No se pudo conectar al servidor'));
   }, []);
 
+  const filtrarProductos = useCallback((items, texto = '') => {
+    const termino = texto.trim().toLowerCase();
+    if (!termino) return items;
+
+    return items.filter((p) => {
+      const nombre = String(p.nombre || '').toLowerCase();
+      const codigo = String(p.codigo || '').toLowerCase();
+      return nombre.includes(termino) || codigo.includes(termino);
+    });
+  }, []);
+
   // Cargar productos cuando se selecciona una lista
-  const cargarProductos = useCallback((lista, texto = '') => {
+  const cargarProductos = useCallback((lista, texto = '', opciones = {}) => {
     if (!lista) return;
+    const { preservarOrdenActual = false } = opciones;
     setCargando(true);
-    setSeleccionados([]);
-    getProductos(lista, texto)
+    getProductos(lista)
       .then((res) => {
-        setProductos(res.data);
+        const productosFiltrados = filtrarProductos(res.data, texto);
+        const idsVigentes = new Set(productosFiltrados.map((p) => p.id));
+        setSeleccionados((prev) => prev.filter((id) => idsVigentes.has(id)));
+
+        if (!preservarOrdenActual) {
+          setProductos(productosFiltrados);
+          return;
+        }
+
+        setProductos((prev) => {
+          const posicionPorId = new Map(prev.map((p, index) => [p.id, index]));
+          return [...productosFiltrados].sort((a, b) => {
+            const posA = posicionPorId.get(a.id);
+            const posB = posicionPorId.get(b.id);
+
+            if (posA == null && posB == null) return 0;
+            if (posA == null) return 1;
+            if (posB == null) return -1;
+            return posA - posB;
+          });
+        });
       })
       .catch(() => toast.error('Error al cargar los productos'))
       .finally(() => setCargando(false));
-  }, []);
+  }, [filtrarProductos]);
 
   const handleMostrar = () => {
     setBusqueda('');
@@ -62,7 +94,7 @@ function App() {
       await modificarPorcentaje(ids, valor, listaSeleccionada);
       toast.success(`Porcentaje actualizado en ${ids.length} producto(s)`);
       setModalPorcentaje(false);
-      cargarProductos(listaSeleccionada, busqueda);
+      cargarProductos(listaSeleccionada, busqueda, { preservarOrdenActual: true });
     } catch {
       toast.error('Error al modificar el porcentaje');
     }
@@ -75,7 +107,7 @@ function App() {
       await modificarCosto(ids, valor, listaSeleccionada);
       toast.success(`Costo actualizado en ${ids.length} producto(s)`);
       setModalCosto(false);
-      cargarProductos(listaSeleccionada, busqueda);
+      cargarProductos(listaSeleccionada, busqueda, { preservarOrdenActual: true });
     } catch {
       toast.error('Error al modificar el costo');
     }
@@ -94,25 +126,23 @@ function App() {
     }
   };
 
-  // Exportar Excel - lista completa
+  // Exportar Excel - seleccionados o toda la lista
   const handleExportarLista = async () => {
     if (!listaSeleccionada) return;
     try {
-      const res = await exportarExcel(listaSeleccionada);
+      const ids = seleccionados.length > 0 ? seleccionados : undefined;
+      const res = await exportarExcel(listaSeleccionada, ids);
       descargarBlob(res.data, `${listaSeleccionada}_productos.xlsx`);
     } catch {
       toast.error('Error al exportar el Excel');
     }
   };
 
-  // Exportar carteles
+  // Exportar carteles - seleccionados o toda la lista
   const handleExportarCarteles = async () => {
-    if (seleccionados.length === 0) {
-      toast.error('Seleccioná al menos un producto para crear carteles');
-      return;
-    }
     try {
-      const res = await exportarCarteles(seleccionados, listaSeleccionada);
+      const ids = seleccionados.length > 0 ? seleccionados : undefined;
+      const res = await exportarCarteles(listaSeleccionada, ids);
       descargarBlob(res.data, 'carteles.xlsx');
     } catch {
       toast.error('Error al exportar los carteles');
@@ -129,6 +159,42 @@ function App() {
   };
 
   const listasActuales = casas.find((c) => c.id === casaSeleccionada)?.listas || [];
+
+  const productosOrdenados = useMemo(() => {
+    if (!sortConfig.key) return productos;
+
+    const data = [...productos];
+    data.sort((a, b) => {
+      const aValue = a[sortConfig.key];
+      const bValue = b[sortConfig.key];
+
+      if (aValue == null && bValue == null) return 0;
+      if (aValue == null) return 1;
+      if (bValue == null) return -1;
+
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+
+      const comparacion = String(aValue).localeCompare(String(bValue), 'es', {
+        sensitivity: 'base',
+        numeric: true,
+      });
+
+      return sortConfig.direction === 'asc' ? comparacion : -comparacion;
+    });
+
+    return data;
+  }, [productos, sortConfig]);
+
+  const handleSortChange = (key) => {
+    setSortConfig((prev) => {
+      if (prev.key === key) {
+        return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' };
+      }
+      return { key, direction: 'asc' };
+    });
+  };
 
   return (
     <div className="app">
@@ -166,10 +232,16 @@ function App() {
             setCasaSeleccionada(c);
             setListaSeleccionada('');
             setProductos([]);
+            setSeleccionados([]);
+            setBusqueda('');
           }}
           listas={listasActuales}
           listaSeleccionada={listaSeleccionada}
-          onListaChange={setListaSeleccionada}
+          onListaChange={(lista) => {
+            setListaSeleccionada(lista);
+            setProductos([]);
+            setSeleccionados([]);
+          }}
           onMostrar={handleMostrar}
           busqueda={busqueda}
           onBusquedaChange={setBusqueda}
@@ -194,10 +266,12 @@ function App() {
         />
 
         <TablaPrincipal
-          productos={productos}
+          productos={productosOrdenados}
           cargando={cargando}
           seleccionados={seleccionados}
           onSeleccionChange={setSeleccionados}
+          sortConfig={sortConfig}
+          onSortChange={handleSortChange}
         />
       </div>
 

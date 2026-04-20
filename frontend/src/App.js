@@ -20,7 +20,7 @@ function App() {
   // UI
   const [cargando, setCargando] = useState(false);
   const [busqueda, setBusqueda] = useState('');
-  const [sortConfig, setSortConfig] = useState({ key: 'codigo', direction: 'asc' });
+  const [sortConfig, setSortConfig] = useState({ key: 'nombre', direction: 'asc' });
 
   // Modales
   const [modalPorcentaje, setModalPorcentaje] = useState(false);

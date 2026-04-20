@@ -1,9 +1,18 @@
 package com.listas.servicio;
 
+import com.listas.modelo.constantes.Casa;
 import com.listas.modelo.entity.Producto;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -11,6 +20,43 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
 class LectorArchivoServiceTest {
+
+    @Test
+    void leerExcelDifPlastUsaNombreEnCdeYPrecioEnG() throws Exception {
+        LectorArchivoService service = new LectorArchivoService(mock(ProductoService.class));
+
+        byte[] contenidoExcel;
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet();
+
+            Row filaValida = sheet.createRow(0);
+            filaValida.createCell(1).setCellValue("12345");
+            filaValida.createCell(2).setCellValue("VASO");
+            filaValida.createCell(3).setCellValue("PLASTICO");
+            filaValida.createCell(4).setCellValue("500ML");
+            filaValida.createCell(6).setCellValue(2500);
+
+            Row filaInvalida = sheet.createRow(1);
+            filaInvalida.createCell(1).setCellValue("ABC");
+            filaInvalida.createCell(2).setCellValue("NO ENTRA");
+            filaInvalida.createCell(6).setCellValue(999);
+
+            workbook.write(os);
+            contenidoExcel = os.toByteArray();
+        }
+
+        MultipartFile archivo = new MockMultipartFile(
+                "archivo",
+                "difplast.xlsx",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                contenidoExcel
+        );
+
+        List<String> lineas = leerExcel(service, archivo, Casa.DIFPLAST);
+
+        assertEquals(1, lineas.size());
+        assertEquals("12345~VASO PLASTICO 500ML~2500", lineas.get(0));
+    }
 
     @ParameterizedTest
     @CsvSource(delimiter = '|', value = {
@@ -51,6 +97,13 @@ class LectorArchivoServiceTest {
         Method method = LectorArchivoService.class.getDeclaredMethod("parsearCosto", String.class);
         method.setAccessible(true);
         return (int) method.invoke(service, costoRaw);
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> leerExcel(LectorArchivoService service, MultipartFile archivo, Casa casa) throws Exception {
+        Method method = LectorArchivoService.class.getDeclaredMethod("leerExcel", MultipartFile.class, Casa.class);
+        method.setAccessible(true);
+        return (List<String>) method.invoke(service, archivo, casa);
     }
 }
 

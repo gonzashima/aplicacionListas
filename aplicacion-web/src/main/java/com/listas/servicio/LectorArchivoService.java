@@ -289,15 +289,17 @@ public class LectorArchivoService {
                     if (!sb.isEmpty()) lineas.add(sb.toString());
                 }
             } else if (casa == Casa.DIFPLAST) {
-                // DifPlast: 7 columnas (0-6), ignora cols 0 (cód. barras), 3, 5 (vacías/bulto).
-                // Columnas leídas: 1 (código), 2 (nombre), 4 (precio) → unidas con '~'.
-                // El precio (col 4) se lee como número directo si la celda es numérica
+                // DifPlast: 7 columnas (0-6).
+                // Columnas leídas: 1 (código), 2-4 (nombre en CDE), 6 (precio en G) → unidas con '~'.
+                // El precio (col 6) se lee como número directo si la celda es numérica
                 // para evitar que celdas sin formato moneda no tengan '$' y se filtren mal.
                 // Filtro: código (col 1) debe ser numérico y precio debe ser > 0.
                 for (Row row : sheet) {
                     Cell celdaCodigo = row.getCell(1);
-                    Cell celdaNombre  = row.getCell(2);
-                    Cell celdaPrecio  = row.getCell(4);
+                    Cell celdaNombreC = row.getCell(2);
+                    Cell celdaNombreD = row.getCell(3);
+                    Cell celdaNombreE = row.getCell(4);
+                    Cell celdaPrecio  = row.getCell(6);
 
                     if (celdaCodigo == null || celdaPrecio == null) continue;
 
@@ -305,7 +307,11 @@ public class LectorArchivoService {
                     if (codigoStr.isBlank()) continue;
                     try { Integer.parseInt(codigoStr); } catch (NumberFormatException e) { continue; }
 
-                    String nombreStr = formatter.formatCellValue(celdaNombre).toUpperCase().trim();
+                    String nombreStr = String.join(" ",
+                            celdaNombreC == null ? "" : formatter.formatCellValue(celdaNombreC).trim(),
+                            celdaNombreD == null ? "" : formatter.formatCellValue(celdaNombreD).trim(),
+                            celdaNombreE == null ? "" : formatter.formatCellValue(celdaNombreE).trim()
+                    ).replaceAll("\\s+", " ").toUpperCase().trim();
 
                     // Precio: si es numérica tomamos el valor directo para evitar problemas de formato
                     String precioStr;

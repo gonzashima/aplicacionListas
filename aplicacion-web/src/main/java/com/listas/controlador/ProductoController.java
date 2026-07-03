@@ -5,6 +5,8 @@ import com.listas.modelo.entity.Producto;
 import com.listas.servicio.ExcelService;
 import com.listas.servicio.LectorArchivoService;
 import com.listas.servicio.ProductoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,8 @@ import java.util.*;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class ProductoController {
+
+    private static final Logger log = LoggerFactory.getLogger(ProductoController.class);
 
     private final ProductoService productoService;
     private final LectorArchivoService lectorArchivoService;
@@ -61,6 +65,7 @@ public class ProductoController {
             Casa casaEnum = Casa.valueOf(casa.toUpperCase());
             return ResponseEntity.ok(casaEnum.getListas());
         } catch (IllegalArgumentException e) {
+            log.warn("Casa desconocida solicitada: {}", casa);
             return ResponseEntity.notFound().build();
         }
     }
@@ -83,6 +88,7 @@ public class ProductoController {
             }
             return ResponseEntity.ok(productos);
         } catch (Exception e) {
+            log.warn("No se pudieron obtener productos. lista={}, busqueda={}", lista, busqueda, e);
             return ResponseEntity.badRequest().build();
         }
     }
@@ -99,6 +105,8 @@ public class ProductoController {
                     "cantidad", cantidad
             ));
         } catch (Exception e) {
+            log.warn("No se pudo modificar porcentaje. lista={}, ids={}, valor={}",
+                    request.lista(), request.ids(), request.valor(), e);
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
@@ -115,6 +123,8 @@ public class ProductoController {
                     "cantidad", cantidad
             ));
         } catch (Exception e) {
+            log.warn("No se pudo modificar costo. lista={}, ids={}, valor={}",
+                    request.lista(), request.ids(), request.valor(), e);
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
@@ -130,6 +140,8 @@ public class ProductoController {
             String mensaje = lectorArchivoService.procesarArchivo(archivo);
             return ResponseEntity.ok(Map.of("mensaje", mensaje));
         } catch (Exception e) {
+            log.error("No se pudo procesar archivo. nombre={}, size={}",
+                    archivo.getOriginalFilename(), archivo.getSize(), e);
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
@@ -141,14 +153,19 @@ public class ProductoController {
     public ResponseEntity<byte[]> exportarExcel(
             @RequestParam String lista,
             @RequestParam(required = false) String ids) throws IOException {
-        List<Producto> productos = filtrarPorIds(productoService.obtenerProductosPorLista(lista), parsearIds(ids));
-        byte[] excelBytes = excelService.crearLista(productos);
+        try {
+            List<Producto> productos = filtrarPorIds(productoService.obtenerProductosPorLista(lista), parsearIds(ids));
+            byte[] excelBytes = excelService.crearLista(productos);
 
-        String filename = lista.toLowerCase().replace(" ", "_") + "_productos.xlsx";
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(excelBytes);
+            String filename = lista.toLowerCase().replace(" ", "_") + "_productos.xlsx";
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(excelBytes);
+        } catch (IOException | RuntimeException e) {
+            log.error("No se pudo exportar lista a Excel. lista={}, ids={}", lista, ids, e);
+            throw e;
+        }
     }
 
     /**
@@ -156,14 +173,19 @@ public class ProductoController {
      */
     @PostMapping("/productos/carteles")
     public ResponseEntity<byte[]> exportarCarteles(@RequestBody CartelesRequest request) throws IOException {
-        List<Producto> seleccionados = filtrarPorIds(productoService.obtenerProductosPorLista(request.lista()), request.ids());
+        try {
+            List<Producto> seleccionados = filtrarPorIds(productoService.obtenerProductosPorLista(request.lista()), request.ids());
 
-        byte[] excelBytes = excelService.crearCarteles(seleccionados);
+            byte[] excelBytes = excelService.crearCarteles(seleccionados);
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=carteles.xlsx")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(excelBytes);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=carteles.xlsx")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(excelBytes);
+        } catch (IOException | RuntimeException e) {
+            log.error("No se pudieron exportar carteles. lista={}, ids={}", request.lista(), request.ids(), e);
+            throw e;
+        }
     }
 
     // ==================== DTOs ====================
@@ -198,4 +220,3 @@ public class ProductoController {
                 .toList();
     }
 }
-

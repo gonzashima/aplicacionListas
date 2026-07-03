@@ -7,6 +7,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.ss.usermodel.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +24,9 @@ import java.util.stream.Collectors;
  */
 @Service
 public class LectorArchivoService {
+
+    private static final Logger log = LoggerFactory.getLogger(LectorArchivoService.class);
+    private static final int LOG_LINE_LIMIT = 180;
 
     private final ProductoService productoService;
 
@@ -49,6 +54,9 @@ public class LectorArchivoService {
             throw new IllegalArgumentException("No se pudo determinar la casa del archivo: " + nombreOriginal);
         }
 
+        log.info("Procesando archivo de lista. archivo={}, extension={}, casa={}, size={}",
+                nombreOriginal, extension, casa, archivo.getSize());
+
         // Leer las líneas del archivo según la casa
         List<String> lineas;
         if ("pdf".equals(extension)) {
@@ -59,8 +67,21 @@ public class LectorArchivoService {
             throw new IllegalArgumentException("Formato de archivo no soportado: " + extension);
         }
 
+        if (lineas.isEmpty()) {
+            log.warn("El archivo no produjo lineas parseables. archivo={}, casa={}", nombreOriginal, casa);
+        } else {
+            log.info("Archivo leido. archivo={}, casa={}, lineas={}", nombreOriginal, casa, lineas.size());
+        }
+
         // Parsear a productos según la casa
         List<Producto> productos = parsear(lineas, casa);
+        if (productos.isEmpty()) {
+            log.warn("El archivo no produjo productos. archivo={}, casa={}, lineas={}",
+                    nombreOriginal, casa, lineas.size());
+        } else if (productos.size() < lineas.size()) {
+            log.info("Se parsearon menos productos que lineas leidas. archivo={}, casa={}, lineas={}, productos={}",
+                    nombreOriginal, casa, lineas.size(), productos.size());
+        }
 
         // Mafersa: cada producto ya tiene su lista_id correcto (sublista),
         // se insertan agrupados por lista_id
@@ -71,6 +92,9 @@ public class LectorArchivoService {
             int listaId = CodigosListas.codigoLista(casa.getClaveLectura());
             cantidad = productoService.insertarProductos(productos, listaId);
         }
+
+        log.info("Archivo procesado correctamente. archivo={}, casa={}, productosGuardados={}",
+                nombreOriginal, casa, cantidad);
 
         return nombreSinExtension + " se leyó correctamente. " + cantidad + " productos procesados.";
     }
@@ -301,11 +325,23 @@ public class LectorArchivoService {
                     Cell celdaNombreE = row.getCell(4);
                     Cell celdaPrecio  = row.getCell(6);
 
-                    if (celdaCodigo == null || celdaPrecio == null) continue;
+                    if (celdaCodigo == null || celdaPrecio == null) {
+                        log.debug("Fila DifPlast descartada por codigo/precio faltante. fila={}", row.getRowNum() + 1);
+                        continue;
+                    }
 
                     String codigoStr = formatter.formatCellValue(celdaCodigo).trim();
-                    if (codigoStr.isBlank()) continue;
-                    try { Integer.parseInt(codigoStr); } catch (NumberFormatException e) { continue; }
+                    if (codigoStr.isBlank()) {
+                        log.debug("Fila DifPlast descartada por codigo vacio. fila={}", row.getRowNum() + 1);
+                        continue;
+                    }
+                    try {
+                        Integer.parseInt(codigoStr);
+                    } catch (NumberFormatException e) {
+                        log.debug("Fila DifPlast descartada por codigo no numerico. fila={}, codigo={}",
+                                row.getRowNum() + 1, codigoStr);
+                        continue;
+                    }
 
                     String nombreStr = String.join(" ",
                             celdaNombreC == null ? "" : formatter.formatCellValue(celdaNombreC).trim(),
@@ -317,11 +353,18 @@ public class LectorArchivoService {
                     String precioStr;
                     if (celdaPrecio.getCellType() == CellType.NUMERIC) {
                         long precioLong = (long) celdaPrecio.getNumericCellValue();
-                        if (precioLong <= 0) continue;
+                        if (precioLong <= 0) {
+                            log.debug("Fila DifPlast descartada por precio numerico invalido. fila={}, precio={}",
+                                    row.getRowNum() + 1, precioLong);
+                            continue;
+                        }
                         precioStr = String.valueOf(precioLong);
                     } else {
                         precioStr = formatter.formatCellValue(celdaPrecio).trim();
-                        if (precioStr.isBlank()) continue;
+                        if (precioStr.isBlank()) {
+                            log.debug("Fila DifPlast descartada por precio vacio. fila={}", row.getRowNum() + 1);
+                            continue;
+                        }
                     }
 
                     lineas.add(codigoStr + "~" + nombreStr + "~" + precioStr);
@@ -379,7 +422,10 @@ public class LectorArchivoService {
                     // col 3: precio
                     Cell celdaPrecio = row.getCell(3);
 
-                    if (celdaCodigo == null || celdaPrecio == null) continue;
+                    if (celdaCodigo == null || celdaPrecio == null) {
+                        log.debug("Fila Lema descartada por codigo/precio faltante. fila={}", row.getRowNum() + 1);
+                        continue;
+                    }
 
                     // Leer código como número directo para evitar "12345.0"
                     String codigoStr;
@@ -396,14 +442,24 @@ public class LectorArchivoService {
                     String precioStr;
                     if (celdaPrecio.getCellType() == CellType.NUMERIC) {
                         long precioLong = (long) celdaPrecio.getNumericCellValue();
-                        if (precioLong <= 0) continue;
+                        if (precioLong <= 0) {
+                            log.debug("Fila Lema descartada por precio numerico invalido. fila={}, precio={}",
+                                    row.getRowNum() + 1, precioLong);
+                            continue;
+                        }
                         precioStr = String.valueOf(precioLong);
                     } else {
                         precioStr = formatter.formatCellValue(celdaPrecio).trim();
-                        if (precioStr.isBlank()) continue;
+                        if (precioStr.isBlank()) {
+                            log.debug("Fila Lema descartada por precio vacio. fila={}", row.getRowNum() + 1);
+                            continue;
+                        }
                     }
 
-                    if (codigoStr.isBlank()) continue;
+                    if (codigoStr.isBlank()) {
+                        log.debug("Fila Lema descartada por codigo vacio. fila={}", row.getRowNum() + 1);
+                        continue;
+                    }
 
                     String lineaStr = codigoStr + "~" + nombreStr + "~" + precioStr;
 
@@ -416,11 +472,10 @@ public class LectorArchivoService {
             } else if (casa == Casa.RESPONTECH) {
                 // Respontech: 4 celdas, col 0 sin espacios, une con espacio.
                 // Replica LectorRespontech.java del original.
-                // El precio (col 3) se lee SIEMPRE con DataFormatter para preservar el formato
-                // "$1.475,00" y que parsearCosto pueda manejar correctamente miles/decimales.
-                // Filtro REGEX igual al legacy: línea debe terminar en X,XX (número con coma decimal)
+                // El legacy filtraba por coma decimal al final de la línea. En la web, según cómo
+                // venga guardada la celda, DataFormatter puede devolver "$1.475,00", "$1,475.00"
+                // o "1475"; se acepta cualquiera mientras el costo sea parseable.
                 int maxCol = 4;
-                Pattern regexRespontech = Pattern.compile(".*\\d{1,},\\d{2}");
                 for (Row row : sheet) {
                     // Construir línea con cols 0-2 (código, nombre, unidad)
                     StringBuilder sb = new StringBuilder();
@@ -437,14 +492,22 @@ public class LectorArchivoService {
                     }
                     // Col 3: precio — usar SIEMPRE el formatter para preservar formato de miles
                     Cell celdaPrecio = row.getCell(maxCol - 1);
-                    if (celdaPrecio == null) continue;
+                    if (celdaPrecio == null) {
+                        log.debug("Fila Respontech descartada por precio faltante. fila={}", row.getRowNum() + 1);
+                        continue;
+                    }
                     String precioStr = formatter.formatCellValue(celdaPrecio);
-                    if (precioStr.isBlank()) continue;
+                    if (precioStr.isBlank()) {
+                        log.debug("Fila Respontech descartada por precio vacio. fila={}", row.getRowNum() + 1);
+                        continue;
+                    }
                     sb.append(" ").append(precioStr);
                     String linea = sb.toString();
-                    // Mismo filtro del legacy: la línea debe terminar en X,XX y tener longitud mínima
-                    if (regexRespontech.matcher(linea).matches() && linea.length() > 5) {
+                    if (linea.length() > 5 && esCostoValido(precioStr)) {
                         lineas.add(linea);
+                    } else {
+                        log.debug("Fila Respontech descartada. fila={}, precio={}, linea={}",
+                                row.getRowNum() + 1, precioStr, resumen(linea));
                     }
                 }
             } else {
@@ -526,7 +589,10 @@ public class LectorArchivoService {
             String[] arr = linea.trim().split("\\s+");
             List<String> palabras = new ArrayList<>(Arrays.asList(arr));
             palabras.removeIf(String::isEmpty);
-            if (palabras.size() < 3) continue;
+            if (palabras.size() < 3) {
+                log.debug("Linea Respontech descartada por tener pocos campos. linea={}", resumen(linea));
+                continue;
+            }
             try {
                 String codigoStr = palabras.remove(0);
                 String costoRaw = palabras.remove(palabras.size() - 1);
@@ -546,7 +612,9 @@ public class LectorArchivoService {
                 Producto p = new Producto(codigo, nombre, costo, 100, listaId);
                 p.calcularPrecio("respontech");
                 productos.add(p);
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                log.warn("No se pudo parsear linea Respontech. linea={}", resumen(linea), e);
+            }
         }
         return productos;
     }
@@ -558,7 +626,6 @@ public class LectorArchivoService {
      * - "1.475"       → 1475  (DataFormatter con miles, sin decimales)
      * - "1475"        → 1475  (número puro)
      * - "1475.50"     → 1475  (decimal con punto anglosajón)
-     *
      * Regla: si hay coma → formato argentino (punto=miles, coma=decimal).
      *        si solo hay punto y 3 dígitos finales → separador de miles.
      *        si solo hay punto y 2 dígitos finales → decimal → tomar parte entera.
@@ -566,9 +633,26 @@ public class LectorArchivoService {
     private int parsearCosto(String costoRaw) {
         // Quitar $ y espacios
         String s = costoRaw.replace("$", "").trim();
-        if (s.contains(",")) {
-            // Formato argentino: "1.475,00" → quitar puntos de miles → "1475,00" → parte entera
-            s = s.replace(".", "").split(",")[0].trim();
+        if (s.contains(",") && s.contains(".")) {
+            int ultimaComa = s.lastIndexOf(",");
+            int ultimoPunto = s.lastIndexOf(".");
+            if (ultimaComa > ultimoPunto) {
+                // Formato argentino: "1.475,00" → quitar puntos de miles → parte entera.
+                s = s.replace(".", "").split(",")[0].trim();
+            } else {
+                // Formato estadounidense: "1,475.00" → quitar comas de miles → parte entera.
+                s = s.replace(",", "").split("\\.")[0].trim();
+            }
+        } else if (s.contains(",")) {
+            String[] partes = s.split(",");
+            String fraccion = partes[partes.length - 1];
+            if (fraccion.length() == 3) {
+                // "1,475" → la coma es separador de miles.
+                s = s.replace(",", "");
+            } else {
+                // "1475,50" → la coma es separador decimal.
+                s = partes[0];
+            }
         } else if (s.contains(".")) {
             String[] partes = s.split("\\.");
             String fraccion = partes[partes.length - 1];
@@ -583,6 +667,15 @@ public class LectorArchivoService {
         return Integer.parseInt(s.trim());
     }
 
+    private boolean esCostoValido(String costoRaw) {
+        try {
+            parsearCosto(costoRaw);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     /**
      * Rigolleau: separado por ':'.
      * Formato: CODIGO:NOMBRE:CAPACIDAD:UNIDADES_BULTO:COSTO:ACLARACIONES...
@@ -592,7 +685,10 @@ public class LectorArchivoService {
         List<Producto> productos = new ArrayList<>();
         for (String linea : lineas) {
             List<String> partes = new ArrayList<>(Arrays.asList(linea.split(":")));
-            if (partes.size() < 5) continue;
+            if (partes.size() < 5) {
+                log.debug("Linea Rigolleau descartada por tener pocos campos. linea={}", resumen(linea));
+                continue;
+            }
             try {
                 int codigo = Integer.parseInt(partes.remove(0).trim());
                 // nombre = nombre + capacidad
@@ -608,7 +704,9 @@ public class LectorArchivoService {
                 Producto p = new Producto(codigo, nombre.toString().toUpperCase(), costo, 100, listaId);
                 p.calcularPrecio("rigolleau");
                 productos.add(p);
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException e) {
+                log.warn("No se pudo parsear linea Rigolleau. linea={}", resumen(linea), e);
+            }
         }
         return productos;
     }
@@ -623,7 +721,10 @@ public class LectorArchivoService {
         List<Producto> productos = new ArrayList<>();
         for (String linea : lineas) {
             List<String> partes = new ArrayList<>(Arrays.asList(linea.trim().split("~")));
-            if (partes.size() < 3) continue;
+            if (partes.size() < 3) {
+                log.debug("Linea Lema descartada por tener pocos campos. linea={}", resumen(linea));
+                continue;
+            }
             try {
                 // El código puede venir como "12345" o "12345.0" (celda numérica)
                 String codigoRaw = partes.remove(0).trim().split("\\.")[0];
@@ -637,7 +738,9 @@ public class LectorArchivoService {
                 Producto p = new Producto(codigo, nombre.toString().toUpperCase(), costo, 100, listaId);
                 p.calcularPrecio("lema");
                 productos.add(p);
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                log.warn("No se pudo parsear linea Lema. linea={}", resumen(linea), e);
+            }
         }
         return productos;
     }
@@ -660,7 +763,10 @@ public class LectorArchivoService {
                 Producto p = new Producto(codigo, nombre.toUpperCase(), costo, 100, listaId);
                 p.calcularPrecio("rodeca");
                 productos.add(p);
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                log.warn("No se pudo parsear bloque Rodeca. indiceInicio={}, lineas={}|{}|{}",
+                        i, resumen(lineas.get(i)), resumen(lineas.get(i + 1)), resumen(lineas.get(i + 2)), e);
+            }
         }
         return productos;
     }
@@ -675,21 +781,27 @@ public class LectorArchivoService {
         List<Producto> productos = new ArrayList<>();
         for (String linea : lineas) {
             String[] partes = linea.trim().split("~");
-            if (partes.length < 3) continue;
+            if (partes.length < 3) {
+                log.debug("Linea DifPlast descartada por tener pocos campos. linea={}", resumen(linea));
+                continue;
+            }
             try {
                 String codigoStr = partes[0].trim();
                 String nombre = partes[1].trim();
                 // Costo: puede venir como "$1.475,00" o "1475" o "1.475"
                 String costoStr = partes[2];
 
-                if (codigoStr.isEmpty() || costoStr.isEmpty()) continue;
+                if (codigoStr.isEmpty() || costoStr.isEmpty()) {
+                    log.debug("Linea DifPlast descartada por codigo/costo vacio. linea={}", resumen(linea));
+                    continue;
+                }
                 int codigo = Integer.parseInt(codigoStr);
                 int costo = parsearCosto(costoStr);
                 Producto p = new Producto(codigo, nombre.toUpperCase(), costo, 100, listaId);
                 p.calcularPrecio("difplast");
                 productos.add(p);
             } catch (NumberFormatException e) {
-                // Línea de encabezado o fila inválida — ignorar
+                log.warn("No se pudo parsear linea DifPlast. linea={}", resumen(linea), e);
             }
         }
         return productos;
@@ -736,12 +848,16 @@ public class LectorArchivoService {
             String nombreUnido = CodigosListas.normalizarNombre(nombreLista);
             List<String> lista = rubrosSeparados.get(nombreUnido);
 
-            if (lista == null) continue;
+            if (lista == null) {
+                log.debug("Rubro Mafersa no encontrado en archivo. lista={}", nombreUnido);
+                continue;
+            }
 
             int listaId;
             try {
                 listaId = CodigosListas.codigoLista(nombreUnido);
             } catch (IllegalArgumentException e) {
+                log.warn("No se pudo resolver lista Mafersa. lista={}", nombreUnido, e);
                 continue;
             }
 
@@ -769,10 +885,22 @@ public class LectorArchivoService {
                     Producto p = new Producto(codigo, nombre, costo, 100, listaId);
                     p.calcularPrecio(tipoCasa);
                     productos.add(p);
-                } catch (Exception ignored) {}
+                } catch (Exception e) {
+                    log.warn("No se pudo parsear linea Mafersa. lista={}, linea={}", nombreUnido, resumen(linea), e);
+                }
             }
         }
         return productos;
     }
-}
 
+    private static String resumen(String valor) {
+        if (valor == null) {
+            return "";
+        }
+        String normalizado = valor.replaceAll("\\s+", " ").trim();
+        if (normalizado.length() <= LOG_LINE_LIMIT) {
+            return normalizado;
+        }
+        return normalizado.substring(0, LOG_LINE_LIMIT) + "...";
+    }
+}

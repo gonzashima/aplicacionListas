@@ -6,6 +6,8 @@ import com.listas.modelo.entity.Lista;
 import com.listas.modelo.entity.Producto;
 import com.listas.modelo.repository.ListaRepository;
 import com.listas.modelo.repository.ProductoRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,8 @@ import java.util.Map;
  */
 @Service
 public class ProductoService {
+
+    private static final Logger log = LoggerFactory.getLogger(ProductoService.class);
 
     private final ProductoRepository productoRepository;
     private final ListaRepository listaRepository;
@@ -45,6 +49,8 @@ public class ProductoService {
     public List<Producto> obtenerProductosPorLista(String nombreLista) {
         int listaId = CodigosListas.codigoLista(nombreLista);
         List<Producto> productos = productoRepository.findByListaId(listaId);
+        log.debug("Productos obtenidos por lista. lista={}, listaId={}, cantidad={}",
+                nombreLista, listaId, productos.size());
 
         // Recalcular precios (como hacía el original al traer de DB)
         String tipoCasa = Casa.tipoCasaParaLista(nombreLista);
@@ -63,6 +69,8 @@ public class ProductoService {
     public List<Producto> buscarProductos(String nombreLista, String busqueda) {
         int listaId = CodigosListas.codigoLista(nombreLista);
         List<Producto> productos = productoRepository.findByListaIdAndNombreContainingIgnoreCase(listaId, busqueda);
+        log.debug("Busqueda de productos. lista={}, listaId={}, busqueda={}, cantidad={}",
+                nombreLista, listaId, busqueda, productos.size());
 
         String tipoCasa = Casa.tipoCasaParaLista(nombreLista);
         for (Producto p : productos) {
@@ -103,6 +111,11 @@ public class ProductoService {
     public int modificarPorcentaje(List<Integer> ids, int nuevoPorcentaje, String nombreLista) {
         String tipoCasa = Casa.tipoCasaParaLista(nombreLista);
         List<Producto> productos = productoRepository.findAllById(ids);
+        int idsSolicitados = ids.size();
+        if (productos.size() != idsSolicitados) {
+            log.warn("No se encontraron todos los productos para modificar porcentaje. lista={}, idsSolicitados={}, encontrados={}",
+                    nombreLista, idsSolicitados, productos.size());
+        }
 
         for (Producto p : productos) {
             p.setPorcentaje(nuevoPorcentaje);
@@ -112,6 +125,8 @@ public class ProductoService {
         }
 
         productoRepository.saveAll(productos);
+        log.info("Porcentaje modificado. lista={}, cantidad={}, nuevoPorcentaje={}",
+                nombreLista, productos.size(), nuevoPorcentaje);
         return productos.size();
     }
 
@@ -122,6 +137,11 @@ public class ProductoService {
     public int modificarCosto(List<Integer> ids, int nuevoCosto, String nombreLista) {
         String tipoCasa = Casa.tipoCasaParaLista(nombreLista);
         List<Producto> productos = productoRepository.findAllById(ids);
+        int idsSolicitados = ids.size();
+        if (productos.size() != idsSolicitados) {
+            log.warn("No se encontraron todos los productos para modificar costo. lista={}, idsSolicitados={}, encontrados={}",
+                    nombreLista, idsSolicitados, productos.size());
+        }
 
         for (Producto p : productos) {
             p.setCosto(nuevoCosto);
@@ -131,6 +151,8 @@ public class ProductoService {
         }
 
         productoRepository.saveAll(productos);
+        log.info("Costo modificado. lista={}, cantidad={}, nuevoCosto={}",
+                nombreLista, productos.size(), nuevoCosto);
         return productos.size();
     }
 
@@ -152,9 +174,11 @@ public class ProductoService {
 
         // Para cada producto nuevo, si ya existía por código, conservar porcentaje e id
         String tipoCasa = Casa.tipoCasaParaLista(CodigosListas.nombreLista(listaId));
+        int preservados = 0;
         for (Producto nuevo : productos) {
             Producto anterior = mapaPorCodigo.get(nuevo.getCodigo());
             if (anterior != null) {
+                preservados++;
                 nuevo.setPorcentaje(anterior.getPorcentaje());
                 nuevo.setId(anterior.getId());
                 if (tipoCasa != null) {
@@ -166,6 +190,8 @@ public class ProductoService {
         // Borrar los que ya no existen y guardar los nuevos
         productoRepository.deleteByListaId(listaId);
         productoRepository.saveAll(productos);
+        log.info("Lista reemplazada. listaId={}, existentesPrevios={}, nuevos={}, porcentajesPreservados={}",
+                listaId, existentes.size(), productos.size(), preservados);
         return productos.size();
     }
 
@@ -182,8 +208,10 @@ public class ProductoService {
         }
         int total = 0;
         for (Map.Entry<Integer, List<Producto>> entry : porLista.entrySet()) {
+            log.debug("Insertando grupo Mafersa. listaId={}, cantidad={}", entry.getKey(), entry.getValue().size());
             total += insertarProductos(entry.getValue(), entry.getKey());
         }
+        log.info("Productos Mafersa insertados por sublistas. sublistas={}, total={}", porLista.size(), total);
         return total;
     }
 
@@ -193,8 +221,10 @@ public class ProductoService {
             if (nombreLista != null) {
                 Lista lista = new Lista(listaId, nombreLista.toUpperCase(), nombreLista.toUpperCase());
                 listaRepository.save(lista);
+                log.info("Lista creada automaticamente. listaId={}, nombre={}", listaId, nombreLista);
+            } else {
+                log.warn("No se pudo crear lista automaticamente: listaId sin nombre conocido. listaId={}", listaId);
             }
         }
     }
 }
-

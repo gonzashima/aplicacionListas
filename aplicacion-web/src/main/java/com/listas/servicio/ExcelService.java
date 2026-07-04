@@ -5,6 +5,8 @@ import com.listas.modelo.entity.Producto;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -18,11 +20,14 @@ import java.util.List;
 @Service
 public class ExcelService {
 
+    private static final Logger log = LoggerFactory.getLogger(ExcelService.class);
+
     /**
      * Crea un Excel en formato lista con los productos dados.
      * @return bytes del archivo Excel
      */
     public byte[] crearLista(List<Producto> productos) throws IOException {
+        log.info("Creando Excel de lista. productos={}", productos.size());
         try (XSSFWorkbook workbook = new XSSFWorkbook()) {
             XSSFSheet sheet = workbook.createSheet("Productos");
 
@@ -41,6 +46,7 @@ public class ExcelService {
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             workbook.write(baos);
+            log.info("Excel de lista creado. productos={}, bytes={}", productos.size(), baos.size());
             return baos.toByteArray();
         }
     }
@@ -50,6 +56,7 @@ public class ExcelService {
      * @return bytes del archivo Excel
      */
     public byte[] crearCarteles(List<Producto> productos) throws IOException {
+        log.info("Creando Excel de carteles. productos={}", productos.size());
         int maxColumnas = 5;
 
         try (XSSFWorkbook workbook = new XSSFWorkbook()) {
@@ -111,8 +118,8 @@ public class ExcelService {
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             workbook.write(baos);
+            log.info("Excel de carteles creado. productos={}, bytes={}", productos.size(), baos.size());
             return baos.toByteArray();
         }
     }
 }
-

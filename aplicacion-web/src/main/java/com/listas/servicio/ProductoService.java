@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Servicio principal para la gestión de productos.
@@ -187,8 +189,12 @@ public class ProductoService {
             }
         }
 
-        // Borrar los que ya no existen y guardar los nuevos
-        productoRepository.deleteByListaId(listaId);
+        // No borrar los códigos conservados: JPA recrearía las entidades eliminadas
+        // con IDs nuevos al guardarlas, aunque se les haya asignado el ID anterior.
+        Set<Integer> codigosNuevos = productos.stream().map(Producto::getCodigo).collect(Collectors.toSet());
+        productoRepository.deleteAll(existentes.stream()
+                .filter(p -> !codigosNuevos.contains(p.getCodigo()))
+                .toList());
         productoRepository.saveAll(productos);
         log.info("Lista reemplazada. listaId={}, existentesPrevios={}, nuevos={}, porcentajesPreservados={}",
                 listaId, existentes.size(), productos.size(), preservados);

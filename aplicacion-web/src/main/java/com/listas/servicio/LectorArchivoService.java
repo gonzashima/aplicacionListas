@@ -78,6 +78,7 @@ public class LectorArchivoService {
         if (productos.isEmpty()) {
             log.warn("El archivo no produjo productos. archivo={}, casa={}, lineas={}",
                     nombreOriginal, casa, lineas.size());
+            throw new IllegalArgumentException("El archivo no contiene productos válidos. No se modificó ninguna lista.");
         } else if (productos.size() < lineas.size()) {
             log.info("Se parsearon menos productos que lineas leidas. archivo={}, casa={}, lineas={}, productos={}",
                     nombreOriginal, casa, lineas.size(), productos.size());
@@ -121,6 +122,8 @@ public class LectorArchivoService {
     );
 
     private static final String MAFERSA_REGEX = "^(\\S+(?:\\s+\\S+)*?)\\s*\\|\\s*(\\S+(?:\\s+\\S+)*?)$";
+    // El proveedor también publica Daysal como "12D - DAYS"; el código del rubro se mantiene.
+    private static final Pattern RUBRO_DAYSAL = Pattern.compile("^rubro\\s*:\\s*12d\\s*-");
 
     private List<String> leerPdf(MultipartFile archivo, Casa casa) throws IOException {
         try (InputStream is = archivo.getInputStream();
@@ -833,7 +836,9 @@ public class LectorArchivoService {
             linea = linea.toLowerCase();
             if (linea.contains("rubro :")) {
                 nuevaLista = new ArrayList<>();
-                Optional<String> nombreLista = nombres.stream().filter(linea::contains).findFirst();
+                Optional<String> nombreLista = RUBRO_DAYSAL.matcher(linea).find()
+                        ? Optional.of("daysal")
+                        : nombres.stream().filter(linea::contains).findFirst();
                 if (nombreLista.isPresent())
                     rubrosSeparados.put(CodigosListas.normalizarNombre(nombreLista.get()), nuevaLista);
             } else if (!linea.contains("linea :")) {
@@ -851,6 +856,9 @@ public class LectorArchivoService {
             if (lista == null) {
                 log.debug("Rubro Mafersa no encontrado en archivo. lista={}", nombreUnido);
                 continue;
+            }
+            if ("daysal".equals(nombreUnido) && lista.isEmpty()) {
+                throw new IllegalArgumentException("El rubro Daysal no contiene productos válidos. No se modificó ninguna lista.");
             }
 
             int listaId;
@@ -886,6 +894,9 @@ public class LectorArchivoService {
                     p.calcularPrecio(tipoCasa);
                     productos.add(p);
                 } catch (Exception e) {
+                    if ("daysal".equals(nombreUnido)) {
+                        throw new IllegalArgumentException("No se pudo leer un producto de Daysal. No se modificó ninguna lista.", e);
+                    }
                     log.warn("No se pudo parsear linea Mafersa. lista={}, linea={}", nombreUnido, resumen(linea), e);
                 }
             }

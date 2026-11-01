@@ -133,6 +133,12 @@ class ProductoServiceTest {
                     productos.removeIf(p -> p.getListaId() == (int) args[0]);
                     yield null;
                 }
+                case "deleteAll" -> {
+                    for (Producto producto : (Iterable<Producto>) args[0]) {
+                        productos.removeIf(p -> p.getId().equals(producto.getId()));
+                    }
+                    yield null;
+                }
                 case "saveAll" -> guardarTodos((Iterable<Producto>) args[0]);
                 case "save" -> guardar((Producto) args[0]);
                 default -> metodoObjectOUnsupported(proxy, method, args);
